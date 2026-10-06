@@ -1,0 +1,1580 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Physique-Chimie CAP Coiffure | S3 P1 - Signal Alternatif Sinusoïdal</title>
+  <!-- MathJax v3 -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      }
+    };
+  </script>
+  <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    :root {
+      --cma-bordeaux: #A50F23;
+      --cma-corail: #EE3C3D;
+      --cma-dark: #1E293B;
+      --cma-light: #F8FAFC;
+      --cma-card-bg: #FFFFFF;
+      --cma-border: #E2E8F0;
+      --cma-success: #16A34A;
+      --cma-warning: #D97706;
+      --cma-danger: #DC2626;
+      --radius: 12px;
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: #F1F5F9;
+      color: var(--cma-dark);
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 10px;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 860px;
+      background: var(--cma-card-bg);
+      border-radius: var(--radius);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      margin: auto;
+    }
+
+    /* HEADER */
+    header {
+      background: #FFFFFF;
+      padding: 16px 20px 8px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .app-logo {
+      height: 48px;
+      width: auto;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+
+    .header-text {
+      flex: 1;
+      min-width: 220px;
+    }
+
+    .header-text h1 {
+      font-size: 1.15rem;
+      color: var(--cma-bordeaux);
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    .header-text p {
+      font-size: 0.8rem;
+      color: #64748B;
+      margin-top: 3px;
+    }
+
+    .cma-wave-border {
+      width: 100%;
+      height: 14px;
+      background-image: url('ruban_vague.png');
+      background-repeat: repeat-x;
+      background-position: center bottom;
+      background-size: auto 26px;
+      margin-top: 6px;
+      border-bottom: 2px solid var(--cma-corail);
+    }
+
+    .icon-bullet {
+      height: 18px;
+      width: 18px;
+      object-fit: contain;
+      display: inline-block;
+      vertical-align: middle;
+      flex-shrink: 0;
+      margin-right: 6px;
+    }
+
+    /* PROGRESS BAR */
+    .progress-track {
+      width: 100%;
+      height: 8px;
+      background-color: #E2E8F0;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 25%;
+      background: linear-gradient(90deg, var(--cma-bordeaux), var(--cma-corail));
+      transition: width 0.4s ease;
+    }
+
+    /* STEP NAVIGATION */
+    nav.step-nav {
+      display: flex;
+      background: #F8FAFC;
+      padding: 8px;
+      gap: 6px;
+      border-bottom: 1px solid var(--cma-border);
+      overflow-x: auto;
+      scrollbar-width: thin;
+    }
+
+    .nav-btn {
+      flex: 1;
+      min-width: 110px;
+      padding: 8px 10px;
+      border-radius: 20px;
+      border: 1px solid var(--cma-border);
+      background: #FFFFFF;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #475569;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .nav-btn:hover {
+      background: #F1F5F9;
+    }
+
+    .nav-btn.active {
+      background: var(--cma-bordeaux);
+      color: #FFFFFF;
+      border-color: var(--cma-bordeaux);
+      box-shadow: 0 2px 6px rgba(165, 15, 35, 0.3);
+    }
+
+    /* MAIN CONTENT */
+    main {
+      padding: 20px;
+      flex: 1;
+    }
+
+    .step-section {
+      display: none;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .step-section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h2.section-title {
+      font-size: 1.2rem;
+      color: var(--cma-bordeaux);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+    }
+
+    h3.card-title {
+      font-size: 1rem;
+      color: var(--cma-dark);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+    }
+
+    /* CARDS */
+    .card {
+      background: #FFFFFF;
+      border: 1px solid var(--cma-border);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .card.highlight {
+      border-left: 4px solid var(--cma-corail);
+      background: #FFFBFB;
+    }
+
+    .badge-reunion {
+      background: #FEF2F2;
+      color: var(--cma-bordeaux);
+      border: 1px solid #FECACA;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      display: inline-block;
+      margin-bottom: 8px;
+    }
+
+    /* ACCORDION */
+    .accordion-item {
+      border: 1px solid var(--cma-border);
+      border-radius: 8px;
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+
+    .accordion-header {
+      background: #F8FAFC;
+      padding: 12px 14px;
+      font-weight: 600;
+      font-size: 0.92rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.2s;
+    }
+
+    .accordion-header:hover {
+      background: #F1F5F9;
+    }
+
+    .accordion-content {
+      padding: 14px;
+      display: none;
+      background: #FFFFFF;
+      border-top: 1px solid var(--cma-border);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .accordion-content.open {
+      display: block;
+    }
+
+    /* SIMULATEUR */
+    .sim-container {
+      background: #0F172A;
+      border-radius: 12px;
+      padding: 16px;
+      color: #F8FAFC;
+      margin-top: 14px;
+    }
+
+    .scope-screen {
+      width: 100%;
+      height: 220px;
+      background: #020617;
+      border: 2px solid #334155;
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+
+    canvas#oscilloCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .sim-controls {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      background: #1E293B;
+      padding: 14px;
+      border-radius: 8px;
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .control-group label {
+      font-size: 0.78rem;
+      color: #94A3B8;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .control-group input[type="range"] {
+      accent-color: var(--cma-corail);
+      cursor: pointer;
+    }
+
+    .sim-readout {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .readout-box {
+      background: #1E293B;
+      padding: 8px 10px;
+      border-radius: 6px;
+      border-left: 3px solid var(--cma-corail);
+      font-size: 0.8rem;
+    }
+
+    .readout-box span {
+      display: block;
+      color: #94A3B8;
+      font-size: 0.72rem;
+    }
+
+    .readout-box strong {
+      color: #38BDF8;
+      font-size: 0.95rem;
+    }
+
+    /* EXERCICE STYLES */
+    .exo-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #F1F5F9;
+    }
+
+    .level-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .level-btn {
+      padding: 7px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--cma-border);
+      background: #FFFFFF;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .level-btn.active {
+      border-color: var(--cma-bordeaux);
+      background: #FFF1F2;
+      color: var(--cma-bordeaux);
+    }
+
+    .level-btn.locked {
+      opacity: 0.55;
+      cursor: not-allowed;
+      background: #F1F5F9;
+    }
+
+    .exo-card {
+      background: #FFFFFF;
+      border: 1px solid var(--cma-border);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+
+    .question-block {
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px dashed #CBD5E1;
+    }
+
+    .question-block p {
+      font-size: 0.88rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #334155;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .input-row input[type="number"] {
+      width: 160px;
+      padding: 9px 12px;
+      border: 1px solid #CBD5E1;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border 0.2s;
+    }
+
+    .input-row input[type="number"]:focus {
+      border-color: var(--cma-corail);
+      box-shadow: 0 0 0 2px rgba(238, 60, 61, 0.15);
+    }
+
+    .unit-tag {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #64748B;
+    }
+
+    .btn-action {
+      background: var(--cma-bordeaux);
+      color: #FFFFFF;
+      border: none;
+      padding: 9px 16px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+
+    .btn-action:hover {
+      background: #870C1C;
+    }
+
+    .feedback-msg {
+      margin-top: 8px;
+      font-size: 0.84rem;
+      padding: 8px 12px;
+      border-radius: 6px;
+      display: none;
+      line-height: 1.4;
+    }
+
+    .feedback-msg.success {
+      display: block;
+      background: #DCFCE7;
+      color: #166534;
+      border: 1px solid #BBF7D0;
+    }
+
+    .feedback-msg.error {
+      display: block;
+      background: #FEE2E2;
+      color: #991B1B;
+      border: 1px solid #FECACA;
+    }
+
+    /* ATTESTATION */
+    .attestation-box {
+      border: 3px double var(--cma-bordeaux);
+      border-radius: 12px;
+      padding: 24px;
+      background: #FCFDFD;
+      text-align: center;
+      position: relative;
+    }
+
+    .attestation-header {
+      border-bottom: 2px solid var(--cma-corail);
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+    }
+
+    .attestation-header h2 {
+      color: var(--cma-bordeaux);
+      font-size: 1.3rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .attestation-meta {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      text-align: left;
+      background: #F8FAFC;
+      padding: 12px;
+      border-radius: 8px;
+      margin: 16px 0;
+      font-size: 0.85rem;
+    }
+
+    .badge-grid {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 18px 0;
+    }
+
+    .badge-item {
+      background: #FFFFFF;
+      border: 1px solid var(--cma-border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      min-width: 130px;
+    }
+
+    .badge-item.unlocked {
+      border-color: #F59E0B;
+      background: #FFFBEB;
+    }
+
+    .badge-icon {
+      font-size: 1.8rem;
+    }
+
+    .badge-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--cma-dark);
+    }
+
+    .qualiopi-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 0.8rem;
+      text-align: left;
+    }
+
+    .qualiopi-table th, .qualiopi-table td {
+      border: 1px solid var(--cma-border);
+      padding: 8px 10px;
+    }
+
+    .qualiopi-table th {
+      background: #F1F5F9;
+      color: var(--cma-bordeaux);
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 0.7rem;
+    }
+
+    .status-ok {
+      background: #DCFCE7;
+      color: #166534;
+    }
+
+    .status-pending {
+      background: #FEF3C7;
+      color: #92400E;
+    }
+
+    .btn-print {
+      background: #0F172A;
+      color: #FFFFFF;
+      padding: 10px 20px;
+      border-radius: 20px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* FOOTER */
+    footer {
+      background: #F8FAFC;
+      border-top: 1px solid var(--cma-border);
+      padding: 12px 20px;
+      font-size: 0.75rem;
+      color: #64748B;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    @media print {
+      body {
+        background: #FFFFFF;
+        padding: 0;
+      }
+      .app-container {
+        box-shadow: none;
+        max-width: 100%;
+      }
+      header, .progress-track, nav.step-nav, footer, .btn-print, #step1, #step2, #step3 {
+        display: none !important;
+      }
+      #step4 {
+        display: block !important;
+      }
+      .attestation-box {
+        border: 2px solid #000;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-container">
+  <!-- EN-TÊTE OFFICIEL -->
+  <header>
+    <img src="logo.png" alt="Logo CMA Formation" class="app-logo">
+    <div class="header-text">
+      <h1>Sciences Appliquées & Physique-Chimie</h1>
+      <p>CAP Métiers de la Coiffure | Année 2 • Séance S3 P1 : Signal Alternatif Sinusoïdal</p>
+    </div>
+    <div style="text-align: right; font-size: 0.75rem; color: #64748B;">
+      <strong>CMA Sainte-Clotilde</strong><br>Île de La Réunion
+    </div>
+  </header>
+  
+  <div class="cma-wave-border"></div>
+
+  <!-- BARRE DE PROGRESSION -->
+  <div class="progress-track">
+    <div class="progress-fill" id="mainProgress"></div>
+  </div>
+
+  <!-- NAVIGATION HORIZONTALE -->
+  <nav class="step-nav">
+    <button class="nav-btn active" onclick="switchStep(1)" id="btnStep1">1. Découverte</button>
+    <button class="nav-btn" onclick="switchStep(2)" id="btnStep2">2. Cours & Labo</button>
+    <button class="nav-btn" onclick="switchStep(3)" id="btnStep3">3. Entraînement</button>
+    <button class="nav-btn" onclick="switchStep(4)" id="btnStep4">4. Attestation</button>
+  </nav>
+
+  <main>
+    <!-- ========================================================================= -->
+    <!-- ÉTAPE 1 : DÉCOUVERTE                                                      -->
+    <!-- ========================================================================= -->
+    <section id="step1" class="step-section active">
+      <h2 class="section-title">
+        <img src="fleche_rouge.png" alt="Puce CMA" class="icon-bullet">
+        Mise en Situation Professionnelle — Salon à Sainte-Clotilde
+      </h2>
+
+      <div class="card highlight">
+        <span class="badge-reunion">Contexte Local • Sainte-Clotilde (La Réunion)</span>
+        <h3 class="card-title">
+          <img src="fleche_rouge.png" alt="Puce CMA" class="icon-bullet">
+          Contrôle technique d'un casque séchant au salon "L'Étoile du Nord"
+        </h3>
+        <p style="font-size: 0.9rem; line-height: 1.5; color: #334155; margin-bottom: 10px;">
+          Au salon de coiffure <em>L'Étoile du Nord</em> à Sainte-Clotilde, un casque séchant sur pied professionnel est utilisé pour accélérer la prise des colorations et permanentes. Le salon est relié au réseau monophasé d'<strong>EDF Réunion</strong>.
+        </p>
+        <p style="font-size: 0.9rem; line-height: 1.5; color: #334155; margin-bottom: 10px;">
+          Sur la plaque signalétique du casque séchant, l'apprentie lit : <strong>230 V ~ 50 Hz — 1 200 W</strong>. Lors du contrôle périodique au voltmètre et à l'oscilloscope numérique :
+        </p>
+        <div style="background: #F8FAFC; border-left: 3px solid var(--cma-corail); padding: 10px 14px; margin-bottom: 10px; font-size: 0.85rem;">
+          • Le <strong>voltmètre</strong> en mode AC indique précisément <strong>230 V</strong>.<br>
+          • L'<strong>oscilloscope</strong> affiche une tension de crête maximale <strong>supérieure à 300 V</strong> (environ 325 V) !
+        </div>
+        <p style="font-size: 0.88rem; color: var(--cma-bordeaux); font-weight: 600;">
+          L'apprentie s'inquiète : s'agit-il d'une surtension anormale risquant de brûler le cuir chevelu de la cliente ou d'endommager l'appareil ?
+        </p>
+      </div>
+
+      <!-- QUESTIONS D'INVESTIGATION GUIDÉES -->
+      <div class="card">
+        <h3 class="card-title">
+          <img src="fleche_rouge.png" alt="Puce CMA" class="icon-bullet">
+          Mission d'investigation de l'apprentie
+        </h3>
+        
+        <div class="question-block">
+          <p>1. [C1] Relevez la tension efficace <em>Ueff</em> (en V) indiquée sur la plaque du casque :</p>
+          <div class="input-row">
+            <input type="number" id="q_invest_1" placeholder="Votre résultat...">
+            <span class="unit-tag">V</span>
+            <button class="btn-action" onclick="checkInvest(1, 230, 'Parfait ! 230 V est la tension efficace nominale distribuée par EDF Réunion.')">Valider</button>
+          </div>
+          <div id="fb_invest_1" class="feedback-msg"></div>
+        </div>
+
+        <div class="question-block">
+          <p>2. [C2] L'oscillogramme montre une crête de 3,25 divisions avec un calibre de 100 V/div. Calculez <em>Umax</em> = 3,25 × 100 :</p>
+          <div class="input-row">
+            <input type="number" id="q_invest_2" placeholder="Votre résultat...">
+            <span class="unit-tag">V</span>
+            <button class="btn-action" onclick="checkInvest(2, 325, 'Exact ! Umax = 3,25 × 100 = 325 V. C\'est la tension maximale de crête.')">Valider</button>
+          </div>
+          <div id="fb_invest_2" class="feedback-msg"></div>
+        </div>
+
+        <div class="question-block">
+          <p>3. [C3] Calculez le rapport <em>Umax / Ueff</em> (325 ÷ 230) :</p>
+          <div class="input-row">
+            <input type="number" id="q_invest_3" placeholder="Votre résultat...">
+            <button class="btn-action" onclick="checkInvest(3, 1.41, 'Remarquable ! 325 / 230 = 1,41, ce qui correspond exactement à la racine carrée de 2 (√2 ≈ 1,414). L\'appareil est donc en parfait état de marche !')">Valider</button>
+          </div>
+          <div id="fb_invest_3" class="feedback-msg"></div>
+        </div>
+
+        <div class="question-block">
+          <p>4. [C2] Un motif complet occupe 4 divisions horizontales à 5 ms/div. Calculez la période <em>T</em> en millisecondes :</p>
+          <div class="input-row">
+            <input type="number" id="q_invest_4" placeholder="Votre résultat...">
+            <span class="unit-tag">ms</span>
+            <button class="btn-action" onclick="checkInvest(4, 20, 'Très bien ! T = 4 × 5 = 20 ms, soit 0,02 seconde.')">Valider</button>
+          </div>
+          <div id="fb_invest_4" class="feedback-msg"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- ÉTAPE 2 : COURS & SIMULATEUR D'OSCILLOSCOPE                                -->
+    <!-- ========================================================================= -->
+    <section id="step2" class="step-section">
+      <h2 class="section-title">
+        <img src="fleche_rouge.png" alt="Puce CMA" class="icon-bullet">
+        Synthèse de Cours & Laboratoire Virtuel
+      </h2>
+
+      <!-- ACCORDÉONS DU COURS -->
+      <div class="accordion-item">
+        <div class="accordion-header" onclick="toggleAcc(this)">
+          <span><img src="fleche_rouge.png" alt="Puce CMA" class="icon-bullet"> 1. Signal alternatif sinusoïdal & Amplitude (Umax, Ueff)</span>
+          <span>▼</span>
+        </div>
+        <div class="accordion-content open">
+          <p>Une tension alternative sinusoïdale prend tour à tour des valeurs positives et négatives régulières et symétriques par rapport à zéro.</p>
+          <ul style="margin: 8px 0 8px 20px; line-height: 1.6;">
+            <li><strong>Tension maximale $U_{max}$ :</strong> Valeur de crête la plus haute atteinte par la courbe (en volts V). Mesurée sur l'oscilloscope par :
+            <div style="text-align: center; margin: 4px 0;">$$U_{max} = Y \times S_v$$</div>
+            <em>($Y$ = nombre de divisions verticales de crête, $S_v$ = sensibilité verticale en V/div).</em></li>
+            <li><strong>Tension efficace $U_{eff}$ :</strong> Valeur mesurée directement au voltmètre numérique en position AC (en volts V). C'est la tension équivalente continue qui produit le même effet thermique.</li>
+            <li><strong>Relation fondamentale :</strong>
+            <div style="text-align: center; margin: 4px 0;">$$U_{max} = U_{eff} \times \sqrt{2} \approx U_{eff} \times 1{,}414 \quad \iff \quad U_{eff} = \frac{U_{max}}{\sqrt{2}}$$</div></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <div class="accordion-header" onclick="toggleAcc(this)">
+          <span><img src="fleche_rouge.png" alt="Puce CMA" class="icon-bullet"> 2. Paramètres temporels : Période (T) et Fréquence (f)</span>
+          <span>▼</span>
+        </div>
+        <div class="accordion-content">
+          <p>Le signal se reproduit à l'identique à intervalles réguliers :</p>
+          <ul style="margin: 8px 0 8px 20px; line-height: 1.6;">
+            <li><strong>Période $T$ :</strong> Plus petite durée nécessaire pour accomplir un cycle complet ou « motif élémentaire » (exprimée en <strong>secondes s</strong>). Mesurée par :
+            <div style="text-align: center; margin: 4px 0;">$$T = X \times B_h$$</div>
+            <em>($X$ = divisions pour un motif, $B_h$ = balayage temporel horizontal). Rappel : $1\text{ s} = 1\,000\text{ ms}$.</em></li>
+            <li><strong>Fréquence $f$ :</strong> Nombre de cycles par seconde, exprimée en <strong>Hertz (Hz)</strong> :
+            <div style="text-align: center; margin: 4px 0;">$$f = \frac{1}{T} \quad \text{avec } T \text{ en secondes (s)}$$</div></li>
+            <li><strong>Réseau EDF Réunion :</strong> Fréquence stable de <strong>50 Hz</strong>, ce qui équivaut à une période de $T = \frac{1}{50} = 0{,}02\text{ s} = 20\text{ ms}$.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- SIMULATEUR INTERACTIF -->
+      <div class="sim-container">
+        <h3 style="color: #38BDF8; font-size: 0.98rem; margin-bottom: 8px; display: flex; align-items: center;">
+          <img src="fleche_rouge.png" alt="Puce CMA" class="icon-bullet">
+          Simulateur Interactif d'Oscilloscope de Laboratoire
+        </h3>
+        <p style="font-size: 0.8rem; color: #94A3B8; margin-bottom: 12px;">
+          Ajustez la tension efficace et la fréquence pour observer en direct la déformation de l'onde sinusoïdale et vérifier les grandeurs mesurées.
+        </p>
+
+        <div class="scope-screen">
+          <canvas id="oscilloCanvas" width="800" height="220"></canvas>
+        </div>
+
+        <div class="sim-controls">
+          <div class="control-group">
+            <label>Tension efficace $U_{eff}$ : <span id="valUeffLabel" style="color: #F8FAFC; font-weight: bold;">230 V</span></label>
+            <input type="range" id="sliderUeff" min="10" max="300" step="5" value="230" oninput="updateSim()">
+          </div>
+          <div class="control-group">
+            <label>Fréquence $f$ : <span id="valFreqLabel" style="color: #F8FAFC; font-weight: bold;">50 Hz</span></label>
+            <input type="range" id="sliderFreq" min="10" max="120" step="5" value="50" oninput="updateSim()">
+          </div>
+          <div class="control-group">
+            <label>Sensibilité verticale ($S_v$) : <span id="valSvLabel" style="color: #F8FAFC; font-weight: bold;">100 V/div</span></label>
+            <input type="range" id="sliderSv" min="20" max="200" step="20" value="100" oninput="updateSim()">
+          </div>
+          <div class="control-group">
+            <label>Balayage horizontal ($B_h$) : <span id="valBhLabel" style="color: #F8FAFC; font-weight: bold;">5 ms/div</span></label>
+            <input type="range" id="sliderBh" min="1" max="10" step="1" value="5" oninput="updateSim()">
+          </div>
+        </div>
+
+        <div class="sim-readout">
+          <div class="readout-box">
+            <span>Tension Crête Umax</span>
+            <strong id="simUmax">325.3 V</strong>
+          </div>
+          <div class="readout-box">
+            <span>Hauteur Crête (Y)</span>
+            <strong id="simYDiv">3.25 div</strong>
+          </div>
+          <div class="readout-box">
+            <span>Période T (ms / s)</span>
+            <strong id="simPeriod">20.0 ms (0.020 s)</strong>
+          </div>
+          <div class="readout-box">
+            <span>Largeur Période (X)</span>
+            <strong id="simXDiv">4.0 div</strong>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- ÉTAPE 3 : ENTRAÎNEMENT GAMIFIÉ COMPLET                                    -->
+    <!-- ========================================================================= -->
+    <section id="step3" class="step-section">
+      <div class="exo-banner">
+        <h2 class="section-title" style="margin-bottom: 0;">
+          <img src="fleche_rouge.png" alt="Puce CMA" class="icon-bullet">
+          Parcours d'Entraînement Progressif
+        </h2>
+        <div style="font-size: 0.82rem; font-weight: bold; color: var(--cma-bordeaux);">
+          Score CAP : <span id="scoreCapDisplay">0%</span>
+        </div>
+      </div>
+
+      <!-- ONGLETS DE NIVEAUX -->
+      <div class="level-tabs">
+        <button class="level-btn active" id="btnLvl1" onclick="switchLevel(1)">
+          🟢 Niveau 1 (Socle CAP)
+        </button>
+        <button class="level-btn locked" id="btnLvl2" onclick="switchLevel(2)">
+          🔒 🟡 Niveau 2 (Avancé)
+        </button>
+        <button class="level-btn locked" id="btnLvl3" onclick="switchLevel(3)">
+          🔴 Niveau 3 (Expert)
+        </button>
+      </div>
+
+      <!-- ================= CONTENU NIVEAU 1 ================= -->
+      <div id="lvlContainer1">
+        <div class="card highlight" style="margin-bottom: 12px;">
+          <p style="font-size: 0.85rem; color: #166534; font-weight: 600;">
+            🌟 Objectif Diplôme : Réussissez les 4 exercices ci-dessous pour valider à 100% votre socle officiel CAP et débloquer immédiatement votre Attestation Numérique de Réussite !
+          </p>
+        </div>
+
+        <!-- Ex 1.1 -->
+        <div class="exo-card">
+          <h3 class="card-title">
+            <img src="fleche_rouge.png" alt="Puce CMA" class="icon-bullet">
+            Exercice 1.1 : Tension maximale sur un fer à lisser professionnel
+          </h3>
+          <p style="font-size: 0.88rem; color: #475569;">
+            Un fer à lisser branché au salon fonctionne sous une tension efficace de <em>Ueff = 230 V</em>.
+          </p>
+          <div class="question-block">
+            <p>Calculez la valeur maximale <em>Umax</em> aux bornes du fer à lisser (arrondie à l'unité) :</p>
+            <div class="input-row">
+              <input type="number" id="in_1_1" placeholder="Votre résultat...">
+              <span class="unit-tag">V</span>
+              <button class="btn-action" onclick="verifierExo('1_1', 325, 2, 'Bravo ! Umax = 230 × 1,414 ≈ 325 V.')">Valider</button>
+            </div>
+            <div id="fb_1_1" class="feedback-msg"></div>
+          </div>
+        </div>
+
+        <!-- Ex 1.2 -->
+        <div class="exo-card">
+          <h3 class="card-title">
+            <img src="fleche_rouge.png" alt="Puce CMA" class="icon-bullet">
+            Exercice 1.2 : Tension efficace d'un sèche-cheveux à l'oscilloscope
+          </h3>
+          <p style="font-size: 0.88rem; color: #475569;">
+            L'écran d'un oscilloscope relié à un sèche-cheveux indique une déviation de crête <em>Y = 3,4 divisions</em> avec une sensibilité verticale de <em>100 V/div</em>.
+          </p>
+          <div class="question-block">
+            <p>1. Calculez la tension maximale <em>Umax</em> :</p>
+            <div class="input-row">
+              <input type="number" id="in_1_2_a" placeholder="Votre résultat...">
+              <span class="unit-tag">V</span>
+              <button class="btn-action" onclick="verifierExo('1_2_a', 340, 2, 'Correct ! Umax = 3,4 × 100 = 340 V.')">Valider</button>
+            </div>
+            <div id="fb_1_2_a" class="feedback-msg"></div>
+          </div>
+          <div class="question-block">
+            <p>2. En déduire la tension efficace <em>Ueff</em> mesurée par le voltmètre (arrondie à l'unité) :</p>
+            <div class="input-row">
+              <input type="number" id="in_1_2_b" placeholder="Votre résultat...">
+              <span class="unit-tag">V</span>
+              <button class="btn-action" onclick="verifierExo('1_2_b', 240, 3, 'Très bien ! Ueff = 340 / √2 ≈ 240,4 V (environ 240 V).')">Valider</button>
+            </div>
+            <div id="fb_1_2_b" class="feedback-msg"></div>
+          </div>
+        </div>
+
+        <!-- Ex 1.3 -->
+        <div class="exo-card">
+          <h3 class="card-title">
+            <img src="fleche_rouge.png" alt="Puce CMA" class="icon-bullet">
+            Exercice 1.3 : Calcul de fréquence à partir de la période
+          </h3>
+          <p style="font-size: 0.88rem; color: #475569;">
+            Un générateur de test en atelier délivre un signal périodique de période <em>T = 0,02 s</em>.
+          </p>
+          <div class="question-block">
+            <p>Calculez la fréquence <em>f = 1 / T</em> de ce signal :</p>
+            <div class="input-row">
+              <input type="number" id="in_1_3" placeholder="Votre résultat...">
+              <span class="unit-tag">Hz</span>
+              <button class="btn-action" onclick="verifierExo('1_3', 50, 0.5, 'Exact ! f = 1 / 0,02 = 50 Hz.')">Valider</button>
+            </div>
+            <div id="fb_1_3" class="feedback-msg"></div>
+          </div>
+        </div>
+
+        <!-- Ex 1.4 -->
+        <div class="exo-card">
+          <h3 class="card-title">
+            <img src="fleche_rouge.png" alt="Puce CMA" class="icon-bullet">
+            Exercice 1.4 : Période du réseau électrique EDF Réunion
+          </h3>
+          <p style="font-size: 0.88rem; color: #475569;">
+            Le réseau EDF Réunion présente une fréquence normalisée de <em>f = 50 Hz</em>.
+          </p>
+          <div class="question-block">
+            <p>1. Calculez la période <em>T</em> en secondes (s) :</p>
+            <div class="input-row">
+              <input type="number" id="in_1_4_a" placeholder="Votre résultat...">
+              <span class="unit-tag">s</span>
+              <button class="btn-action" onclick="verifierExo('1_4_a', 0.02, 0.005, 'Parfait ! T = 1 / 50 = 0,02 s.')">Valider</button>
+            </div>
+            <div id="fb_1_4_a" class="feedback-msg"></div>
+          </div>
+          <div class="question-block">
+            <p>2. Convertissez cette période en millisecondes (ms) :</p>
+            <div class="input-row">
+              <input type="number" id="in_1_4_b" placeholder="Votre résultat...">
+              <span class="unit-tag">ms</span>
+              <button class="btn-action" onclick="verifierExo('1_4_b', 20, 0.5, 'Excellent ! 0,02 s × 1 000 = 20 ms.')">Valider</button>
+            </div>
+            <div id="fb_1_4_b" class="feedback-msg"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= CONTENU NIVEAU 2 ================= -->
+      <div id="lvlContainer2" style="display: none;">
+        <div class="card" style="background: #FEFCE8; border-color: #FEF08A; margin-bottom: 12px;">
+          <p style="font-size: 0.85rem; color: #854D0E; font-weight: 600;">
+            🟡 Défi Avancé (Bonus Élite) : Renforcez vos compétences techniques sur des calculs d'ateliers réels.
+          </p>
+        </div>
+
+        <!-- Ex 2.1 -->
+        <div class="exo-card">
+          <h3 class="card-title">
+            <img src="fleche_rouge.png" alt="Puce CMA" class="icon-bullet">
+            Exercice 2.1 : Oscillogramme d'un transformateur de tondeuse à Saint-Denis
+          </h3>
+          <p style="font-size: 0.88rem; color: #475569;">
+            Réglages : Sensibilité verticale = <em>5 V/div</em> ; Balayage = <em>2 ms/div</em>.<br>
+            Mesures : Sommet à <em>3,4 divisions</em> de l'axe central ; motif complet sur <em>10 divisions</em>.
+          </p>
+          <div class="question-block">
+            <p>1. Calculez la tension maximale <em>Umax</em> (en V) :</p>
+            <div class="input-row">
+              <input type="number" id="in_2_1_a" placeholder="Votre résultat...">
+              <span class="unit-tag">V</span>
+              <button class="btn-action" onclick="verifierExo('2_1_a', 17, 0.2, 'Juste ! Umax = 3,4 × 5 = 17 V.')">Valider</button>
+            </div>
+            <div id="fb_2_1_a" class="feedback-msg"></div>
+          </div>
+          <div class="question-block">
+            <p>2. Calculez la tension efficace <em>Ueff</em> (arrondie à l'unité) :</p>
+            <div class="input-row">
+              <input type="number" id="in_2_1_b" placeholder="Votre résultat...">
+              <span class="unit-tag">V</span>
+              <button class="btn-action" onclick="verifierExo('2_1_b', 12, 0.5, 'Exact ! 17 / 1,414 ≈ 12,02 V, soit 12 V nominal.')">Valider</button>
+            </div>
+            <div id="fb_2_1_b" class="feedback-msg"></div>
+          </div>
+          <div class="question-block">
+            <p>3. Calculez la période <em>T</em> en millisecondes (ms) :</p>
+            <div class="input-row">
+              <input type="number" id="in_2_1_c" placeholder="Votre résultat...">
+              <span class="unit-tag">ms</span>
+              <button class="btn-action" onclick="verifierExo('2_1_c', 20, 0.5, 'Très bien ! T = 10 div × 2 ms/div = 20 ms = 0,02 s.')">Valider</button>
+            </div>
+            <div id="fb_2_1_c" class="feedback-msg"></div>
+          </div>
+          <div class="question-block">
+            <p>4. Calculez la fréquence <em>f</em> (en Hz) :</p>
+            <div class="input-row">
+              <input type="number" id="in_2_1_d" placeholder="Votre résultat...">
+              <span class="unit-tag">Hz</span>
+              <button class="btn-action" onclick="verifierExo('2_1_d', 50, 0.5, 'Bravo ! f = 1 / 0,02 = 50 Hz.')">Valider</button>
+            </div>
+            <div id="fb_2_1_d" class="feedback-msg"></div>
+          </div>
+        </div>
+
+        <!-- Ex 2.2 -->
+        <div class="exo-card">
+          <h3 class="card-title">
+            <img src="fleche_rouge.png" alt="Puce CMA" class="icon-bullet">
+            Exercice 2.2 : Chute de tension lors des fortes chaleurs à Sainte-Clotilde
+          </h3>
+          <p style="font-size: 0.88rem; color: #475569;">
+            L'usage massif des climatiseurs fait chuter la tension du réseau. Le voltmètre indique <em>Ueff = 215 V</em>.
+          </p>
+          <div class="question-block">
+            <p>1. Calculez la nouvelle tension maximale <em>Umax</em> (arrondie à l'unité) :</p>
+            <div class="input-row">
+              <input type="number" id="in_2_2_a" placeholder="Votre résultat...">
+              <span class="unit-tag">V</span>
+              <button class="btn-action" onclick="verifierExo('2_2_a', 304, 1.5, 'Exact ! 215 × 1,414 ≈ 304 V.')">Valider</button>
+            </div>
+            <div id="fb_2_2_a" class="feedback-msg"></div>
+          </div>
+          <div class="question-block">
+            <p>2. Calculez l'écart de tension maximale par rapport aux 325 V normaux (325 - Umax) :</p>
+            <div class="input-row">
+              <input type="number" id="in_2_2_b" placeholder="Votre résultat...">
+              <span class="unit-tag">V</span>
+              <button class="btn-action" onclick="verifierExo('2_2_b', 21, 1.5, 'Très bon diagnostic ! Une baisse de crête de 21 V.')">Valider</button>
+            </div>
+            <div id="fb_2_2_b" class="feedback-msg"></div>
+          </div>
+        </div>
+
+        <!-- Ex 2.3 -->
+        <div class="exo-card">
+          <h3 class="card-title">
+            <img src="fleche_rouge.png" alt="Puce CMA" class="icon-bullet">
+            Exercice 2.3 : Moteur accéléré d'un séchoir professionnel
+          </h3>
+          <p style="font-size: 0.88rem; color: #475569;">
+            Le moteur électronique d'un séchoir rapide est alimenté par un signal de période <em>T = 0,01 s</em>.
+          </p>
+          <div class="question-block">
+            <p>Calculez la fréquence <em>f = 1 / T</em> de commande (en Hz) :</p>
+            <div class="input-row">
+              <input type="number" id="in_2_3" placeholder="Votre résultat...">
+              <span class="unit-tag">Hz</span>
+              <button class="btn-action" onclick="verifierExo('2_3', 100, 1, 'Superbe ! f = 1 / 0,01 = 100 Hz (fréquence doublée par hacheur électronique).')">Valider</button>
+            </div>
+            <div id="fb_2_3" class="feedback-msg"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= CONTENU NIVEAU 3 ================= -->
+      <div id="lvlContainer3" style="display: none;">
+        <div class="card" style="background: #FEF2F2; border-color: #FECACA; margin-bottom: 12px;">
+          <p style="font-size: 0.85rem; color: #991B1B; font-weight: 600;">
+            🔴 Défi Expert / Bac Pro : Analyse critique sur site isolé et sécurité en atelier.
+          </p>
+        </div>
+
+        <!-- Ex 3.1 -->
+        <div class="exo-card">
+          <h3 class="card-title">
+            <img src="fleche_rouge.png" alt="Puce CMA" class="icon-bullet">
+            Exercice 3.1 : Camion de coiffure mobile dans les Hauts (Salazie/Cilaos)
+          </h3>
+          <p style="font-size: 0.88rem; color: #475569;">
+            Un camion itinérant utilise un onduleur solaire autonome. L'oscilloscope affiche : <em>Umax = 311 V</em> et une période <em>T = 16,67 ms (0,01667 s)</em>.
+          </p>
+          <div class="question-block">
+            <p>1. Calculez la tension efficace <em>Ueff = Umax / √2</em> délivrée (en V) :</p>
+            <div class="input-row">
+              <input type="number" id="in_3_1_a" placeholder="Votre résultat...">
+              <span class="unit-tag">V</span>
+              <button class="btn-action" onclick="verifierExo('3_1_a', 220, 2, 'Bien joué ! 311 / 1,414 ≈ 220 V.')">Valider</button>
+            </div>
+            <div id="fb_3_1_a" class="feedback-msg"></div>
+          </div>
+          <div class="question-block">
+            <p>2. Calculez la fréquence <em>f = 1 / T</em> de ce signal (arrondie à l'unité) :</p>
+            <div class="input-row">
+              <input type="number" id="in_3_1_b" placeholder="Votre résultat...">
+              <span class="unit-tag">Hz</span>
+              <button class="btn-action" onclick="verifierExo('3_1_b', 60, 1, 'Impressionnant ! f ≈ 60 Hz. Attention : l\'onduleur est calibré sur la norme américaine (60 Hz au lieu de 50 Hz), ce qui peut surchauffer les moteurs des casques séchants.')">Valider</button>
+            </div>
+            <div id="fb_3_1_b" class="feedback-msg"></div>
+          </div>
+        </div>
+
+        <!-- Ex 3.2 -->
+        <div class="exo-card">
+          <h3 class="card-title">
+            <img src="fleche_rouge.png" alt="Puce CMA" class="icon-bullet">
+            Exercice 3.2 : Sécurité et calibre d'un multimètre d'atelier
+          </h3>
+          <p style="font-size: 0.88rem; color: #475569;">
+            Une apprentie doit contrôler une prise 230 V de poste de coiffage. Le multimètre propose les calibres : <em>20 V DC, 200 V DC, 600 V DC, 200 V AC, 600 V AC</em>.
+          </p>
+          <div class="question-block">
+            <p>Indiquez la valeur du calibre (en V) à sélectionner en mode AC pour mesurer 230 V en sécurité :</p>
+            <div class="input-row">
+              <input type="number" id="in_3_2" placeholder="Votre résultat...">
+              <span class="unit-tag">V</span>
+              <button class="btn-action" onclick="verifierExo('3_2', 600, 1, 'Excellente réponse sécurité ! Le calibre 600 V AC est indispensable car 230 V dépasse le calibre 200 V.')">Valider</button>
+            </div>
+            <div id="fb_3_2" class="feedback-msg"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- ÉTAPE 4 : BILAN & ATTESTATION NUMÉRIQUE                                    -->
+    <!-- ========================================================================= -->
+    <section id="step4" class="step-section">
+      <div class="attestation-box">
+        <div class="attestation-header">
+          <img src="logo.png" alt="Logo CMA Formation" style="max-height: 48px; margin-bottom: 8px;">
+          <h2>Attestation Numérique de Réussite</h2>
+          <p style="font-size: 0.82rem; color: #64748B;">CMA Formation Sainte-Clotilde • Île de La Réunion</p>
+        </div>
+
+        <p style="font-size: 0.95rem; color: #334155;">
+          Cette attestation certifie que l'apprenant(e) :
+        </p>
+        <div style="margin: 10px auto; max-width: 300px;">
+          <input type="text" id="studentNameInput" placeholder="Saisir Prénom et Nom" style="width: 100%; padding: 8px 12px; border: 1px solid #CBD5E1; border-radius: 6px; font-weight: 700; text-align: center;" value="Apprenti(e) Coiffure">
+        </div>
+
+        <p style="font-size: 0.88rem; color: #475569;">
+          a complété avec succès les modules de formation en Physique-Chimie appliquée :<br>
+          <strong>Séance S3 P1 : Valeur efficace, maximale, période et fréquence</strong>
+        </p>
+
+        <div class="attestation-meta">
+          <div>
+            <strong>Formateur référent :</strong><br>Rachel Lamberet-Lezais
+          </div>
+          <div>
+            <strong>Validation Socle CAP :</strong><br><span id="attestCapStatus" style="color: #DC2626; font-weight: 700;">En cours (0%)</span>
+          </div>
+          <div>
+            <strong>Score Global & Bonus :</strong><br><span id="attestGlobalScore" style="color: var(--cma-bordeaux); font-weight: 700;">0 pts</span>
+          </div>
+        </div>
+
+        <!-- BADGES -->
+        <h4 style="font-size: 0.9rem; color: var(--cma-dark); margin-top: 14px; text-align: left;">
+          <img src="fleche_rouge.png" alt="Puce CMA" class="icon-bullet">
+          Badges & Titres de Compétences
+        </h4>
+        <div class="badge-grid">
+          <div class="badge-item" id="badgeCap">
+            <span class="badge-icon">🎓</span>
+            <span class="badge-label">Socle CAP 100%</span>
+            <span style="font-size: 0.65rem; color: #64748B;" id="badgeCapTxt">Verrouillé</span>
+          </div>
+          <div class="badge-item" id="badgeLvl2">
+            <span class="badge-icon">⚡</span>
+            <span class="badge-label">Expert Salon</span>
+            <span style="font-size: 0.65rem; color: #64748B;" id="badgeLvl2Txt">Verrouillé</span>
+          </div>
+          <div class="badge-item" id="badgeLvl3">
+            <span class="badge-icon">🏆</span>
+            <span class="badge-label">Élite Réunion</span>
+            <span style="font-size: 0.65rem; color: #64748B;" id="badgeLvl3Txt">Verrouillé</span>
+          </div>
+        </div>
+
+        <!-- TABLEAU QUALIOPI -->
+        <h4 style="font-size: 0.9rem; color: var(--cma-dark); margin-top: 14px; text-align: left;">
+          <img src="fleche_rouge.png" alt="Puce CMA" class="icon-bullet">
+          Grille d'Évaluation des Compétences (Norme Qualiopi)
+        </h4>
+        <table class="qualiopi-table">
+          <thead>
+            <tr>
+              <th>Compétence</th>
+              <th>Indicateurs d'Évaluation</th>
+              <th>État</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>C1 : S'informer</strong></td>
+              <td>Extraire $U_{eff}$ et $f$ de la plaque signalétique et de l'oscilloscope</td>
+              <td><span class="status-badge status-ok" id="q_c1">Validé</span></td>
+            </tr>
+            <tr>
+              <td><strong>C2 : Exécuter</strong></td>
+              <td>Mesurer $U_{max}$ et $T$ avec les calibres $S_v$ et $B_h$</td>
+              <td><span class="status-badge" id="q_c2">En cours</span></td>
+            </tr>
+            <tr>
+              <td><strong>C3 : Appliquer</strong></td>
+              <td>Calculer $U_{eff} = U_{max}/\sqrt{2}$ et $f = 1/T$</td>
+              <td><span class="status-badge" id="q_c3">En cours</span></td>
+            </tr>
+            <tr>
+              <td><strong>C4 : Communiquer</strong></td>
+              <td>Vérifier la conformité de l'appareil avec le réseau EDF Réunion (230 V / 50 Hz)</td>
+              <td><span class="status-badge" id="q_c4">En cours</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <button class="btn-print" onclick="window.print()">
+          🖨️ Imprimer ou Enregistrer en PDF
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <!-- PIED DE PAGE -->
+  <footer>
+    <div><strong>CMA Formation Sainte-Clotilde</strong> • Métiers de la Coiffure</div>
+    <div>Auteur : Rachel Lamberet-Lezais • Année 2</div>
+  </footer>
+</div>
+
+<script>
+  /* ========================================================================= */
+  /* GESTION DE L'ÉTAT DE L'APPLICATION                                        */
+  /* ========================================================================= */
+  const state = {
+    currentStep: 1,
+    currentLevel: 1,
+    // Questions Socle CAP (Niveau 1)
+    lvl1Done: {
+      '1_1': false,
+      '1_2_a': false,
+      '1_2_b': false,
+      '1_3': false,
+      '1_4_a': false,
+      '1_4_b': false
+    },
+    // Questions Niveau 2
+    lvl2Done: {
+      '2_1_a': false,
+      '2_1_b': false,
+      '2_1_c': false,
+      '2_1_d': false,
+      '2_2_a': false,
+      '2_2_b': false,
+      '2_3': false
+    },
+    // Questions Niveau 3
+    lvl3Done: {
+      '3_1_a': false,
+      '3_1_b': false,
+      '3_2': false
+    }
+  };
+
+  /* NAVIGATION ÉTAPES */
+  function switchStep(stepNum) {
+    state.currentStep = stepNum;
+    for (let i = 1; i <= 4; i++) {
+      document.getElementById('step' + i).classList.remove('active');
+      document.getElementById('btnStep' + i).classList.remove('active');
+    }
+    document.getElementById('step' + stepNum).classList.add('active');
+    document.getElementById('btnStep' + stepNum).classList.add('active');
+
+    // Progression barre supérieure
+    const progressPercent = stepNum === 1 ? 25 : stepNum === 2 ? 50 : stepNum === 3 ? 75 : 100;
+    document.getElementById('mainProgress').style.width = progressPercent + '%';
+
+    if (stepNum === 2) {
+      setTimeout(updateSim, 50);
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  /* NAVIGATION NIVEAUX D'EXERCICES */
+  function switchLevel(lvlNum) {
+    if (lvlNum === 2 && !isLvl1Finished()) {
+      alert("Veuillez d'abord valider l'ensemble des exercices du Niveau 1 (Socle CAP) !");
+      return;
+    }
+    if (lvlNum === 3 && !isLvl2Finished()) {
+      alert("Veuillez d'abord réussir les exercices du Niveau 2 !");
+      return;
+    }
+
+    state.currentLevel = lvlNum;
+    for (let i = 1; i <= 3; i++) {
+      document.getElementById('lvlContainer' + i).style.display = (i === lvlNum) ? 'block' : 'none';
+      document.getElementById('btnLvl' + i).classList.remove('active');
+    }
+    document.getElementById('btnLvl' + lvlNum).classList.add('active');
+  }
+
+  /* ACCORDÉON DU COURS */
+  function toggleAcc(el) {
+    const content = el.nextElementSibling;
+    const isOpen = content.classList.contains('open');
+    document.querySelectorAll('.accordion-content').forEach(c => c.classList.remove('open'));
+    if (!isOpen) {
+      content.classList.add('open');
+    }
+  }
+
+  /* VÉRIFICATION QUESTION DÉCOUVERTE */
+  function checkInvest(num, expected, successTxt) {
+    const inp = document.getElementById('q_invest_' + num);
+    const fb = document.getElementById('fb_invest_' + num);
+    const val = parseFloat((inp.value || '').replace(',', '.'));
+
+    if (isNaN(val)) {
+      fb.className = 'feedback-msg error';
+      fb.innerHTML = 'Veuillez saisir une valeur numérique.';
+      return;
+    }
+
+    if (Math.abs(val - expected) <= 0.15) {
+      fb.className = 'feedback-msg success';
+      fb.innerHTML = '<strong>Bravo !</strong> ' + successTxt;
+    } else {
+      fb.className = 'feedback-msg error';
+      fb.innerHTML = 'Valeur incorrecte. Relisez attentivement les indications de l\'énoncé.';
+    }
+  }
+
+  /* VÉRIFICATION EXERCICES NUMÉRIQUES SANS QCM */
+  function verifierExo(id, expected, tolerance, feedbackOk) {
+    const input = document.getElementById('in_' + id);
+    const fb = document.getElementById('fb_' + id);
+    const rawVal = input.value || '';
+    const cleanVal = parseFloat(rawVal.replace(',', '.'));
+
+    if (isNaN(cleanVal)) {
+      fb.className = 'feedback-msg error';
+      fb.innerHTML = 'Veuillez saisir un nombre dans le champ.';
+      return;
+    }
+
+    if (Math.abs(cleanVal - expected) <= tolerance) {
+      fb.className = 'feedback-msg success';
+      fb.innerHTML = '<strong>Résultat exact !</strong> ' + feedbackOk;
+      enregistrerReussite(id);
+    } else {
+      fb.className = 'feedback-msg error';
+      fb.innerHTML = 'Ce n\'est pas la valeur attendue. Pensez aux formules du cours et vérifiez vos unités.';
+    }
+  }
+
+  function isLvl1Finished() {
+    return Object.values(state.lvl1Done).every(v => v === true);
+  }
+
+  function isLvl2Finished() {
+    return Object.values(state.lvl2Done).every(v => v === true);
+  }
+
+  function isLvl3Finished() {
+    return Object.values(state.lvl3Done).every(v => v === true);
+  }
+
+  function enregistrerReussite(id) {
+    if (id in state.lvl1Done) state.lvl1Done[id] = true;
+    if (id in state.lvl2Done) state.lvl2Done[id] = true;
+    if (id in state.lvl3Done) state.lvl3Done[id] = true;
+
+    // Calcul score CAP (Niveau 1)
+    const totalLvl1 = Object.keys(state.lvl1Done).length;
+    const okLvl1 = Object.values(state.lvl1Done).filter(Boolean).length;
+    const capPercent = Math.round((okLvl1 / totalLvl1) * 100);
+
+    document.getElementById('scoreCapDisplay').innerText = capPercent + '%';
+
+    // Déblocage Niveau 2 dès Niveau 1 complet
+    if (isLvl1Finished()) {
+      const btn2 = document.getElementById('btnLvl2');
+      btn2.classList.remove('locked');
+      btn2.innerHTML = '🟡 Niveau 2 (Avancé)';
+
+      // Attribution Badge CAP
+      const badgeCap = document.getElementById('badgeCap');
+      badgeCap.classList.add('unlocked');
+      document.getElementById('badgeCapTxt').innerText = 'Validé (100%)';
+      document.getElementById('badgeCapTxt').style.color = '#16A34A';
+      document.getElementById('attestCapStatus').innerText = '100% Acquis (Diplôme validé)';
+      document.getElementById('attestCapStatus').style.color = '#16A34A';
+
+      document.getElementById('q_c2').className = 'status-badge status-ok';
+      document.getElementById('q_c2').innerText = 'Validé';
+      document.getElementById('q_c3').className = 'status-badge status-ok';
+      document.getElementById('q_c3').innerText = 'Validé';
+      document.getElementById('q_c4').className = 'status-badge status-ok';
+      document.getElementById('q_c4').innerText = 'Validé';
+    }
+
+    // Déblocage Niveau 3 dès Niveau 2 complet
+    if (isLvl2Finished()) {
+      const btn3 = document.getElementById('btnLvl3');
+      btn3.classList.remove('locked');
+      btn3.innerHTML = '🔴 Niveau 3 (Expert)';
+
+      const badge2 = document.getElementById('badgeLvl2');
+      badge2.classList.add('unlocked');
+      document.getElementById('badgeLvl2Txt').innerText = 'Validé (Élite)';
+      document.getElementById('badgeLvl2Txt').style.color = '#16A34A';
+    }
+
+    if (isLvl3Finished()) {
+      const badge3 = document.getElementById('badgeLvl3');
+      badge3.classList.add('unlocked');
+      document.getElementById('badgeLvl3Txt').innerText = 'Validé (Expert Réunion)';
+      document.getElementById('badgeLvl3Txt').style.color = '#16A34A';
+    }
+
+    // Points totaux
+    const totalPoints = (okLvl1 * 10) + (Object.values(state.lvl2Done).filter(Boolean).length * 15) + (Object.values(state.lvl3Done).filter(Boolean).length * 25);
+    document.getElementById('attestGlobalScore').innerText = totalPoints + ' pts';
+  }
+
+  /* ========================================================================= */
+  /* SIMULATEUR D'OSCILLOSCOPE SUR CANEVAS                                      */
+  /* ========================================================================= */
+  const canvas = document.getElementById('oscilloCanvas');
+  const ctx = canvas.getContext('2d');
+
+  function updateSim() {
+    const uEff = parseFloat(document.getElementById('sliderUeff').value);
+    const freq = parseFloat(document.getElementById('sliderFreq').value);
+    const sv = parseFloat(document.getElementById('sliderSv').value);
+    const bh = parseFloat(document.getElementById('sliderBh').value);
+
+    // Calculs théoriques
+    const uMax = uEff * Math.SQRT2;
+    const periodSec = 1 / freq;
+    const periodMs = periodSec * 1000;
+    const yDiv = uMax / sv;
+    const xDiv = periodMs / bh;
+
+    // Mise à jour textes
+    document.getElementById('valUeffLabel').innerText = uEff + ' V';
+    document.getElementById('valFreqLabel').innerText = freq + ' Hz';
+    document.getElementById('valSvLabel').innerText = sv + ' V/div';
+    document.getElementById('valBhLabel').innerText = bh + ' ms/div';
+
+    document.getElementById('simUmax').innerText = uMax.toFixed(1) + ' V';
+    document.getElementById('simYDiv').innerText = yDiv.toFixed(2) + ' div';
+    document.getElementById('simPeriod').innerText = periodMs.toFixed(1) + ' ms (' + periodSec.toFixed(3) + ' s)';
+    document.getElementById('simXDiv').innerText = xDiv.toFixed(1) + ' div';
+
+    // Rendu Canvas
+    renderOscilloscope(uMax, freq, sv, bh);
+  }
+
+  function renderOscilloscope(uMax, freq, sv, bh) {
+    const w = canvas.width;
+    const h = canvas.height;
+    ctx.clearRect(0, 0, w, h);
+
+    const numDivX = 10;
+    const numDivY = 8;
+    const dx = w / numDivX;
+    const dy = h / numDivY;
+
+    // Graticule (Grille de l'oscilloscope)
+    ctx.strokeStyle = '#1E293B';
+    ctx.lineWidth = 1;
+    for (let i = 0; i <= numDivX; i++) {
+      ctx.beginPath();
+      ctx.moveTo(i * dx, 0);
+      ctx.lineTo(i * dx, h);
+      ctx.stroke();
+    }
+    for (let j = 0; j <= numDivY; j++) {
+      ctx.beginPath();
+      ctx.moveTo(0, j * dy);
+      ctx.lineTo(w, j * dy);
+      ctx.stroke();
+    }
+
+    // Axes médians avec graduations fines
+    const midX = w / 2;
+    const midY = h / 2;
+    ctx.strokeStyle = '#334155';
+    ctx.lineWidth = 1.5;
+
+    ctx.beginPath();
+    ctx.moveTo(0, midY);
+    ctx.lineTo(w, midY);
+    ctx.moveTo(midX, 0);
+    ctx.lineTo(midX, h);
+    ctx.stroke();
+
+    // Petites graduations millimétriques sur les axes
+    ctx.strokeStyle = '#475569';
+    for (let i = 0; i <= numDivX; i++) {
+      for (let s = 1; s < 5; s++) {
+        const subX = i * dx + s * (dx / 5);
+        if (subX < w) {
+          ctx.beginPath();
+          ctx.moveTo(subX, midY - 3);
+          ctx.lineTo(subX, midY + 3);
+          ctx.stroke();
+        }
+      }
+    }
+    for (let j = 0; j <= numDivY; j++) {
+      for (let s = 1; s < 5; s++) {
+        const subY = j * dy + s * (dy / 5);
+        if (subY < h) {
+          ctx.beginPath();
+          ctx.moveTo(midX - 3, subY);
+          ctx.lineTo(midX + 3, subY);
+          ctx.stroke();
+        }
+      }
+    }
+
+    // Tracé de la sinusoïde (Trace verte phosphorescente)
+    ctx.strokeStyle = '#22C55E';
+    ctx.lineWidth = 2.5;
+    ctx.shadowBlur = 8;
+    ctx.shadowColor = '#22C55E';
+
+    ctx.beginPath();
+    const totalMs = numDivX * bh;
+    for (let px = 0; px <= w; px++) {
+      const tMs = (px / w) * totalMs;
+      const tSec = tMs / 1000;
+      const v = uMax * Math.sin(2 * Math.PI * freq * tSec);
+      const vDiv = v / sv;
+      const py = midY - (vDiv * dy);
+
+      if (px === 0) {
+        ctx.moveTo(px, py);
+      } else {
+        ctx.lineTo(px, py);
+      }
+    }
+    ctx.stroke();
+    ctx.shadowBlur = 0; // Réinitialisation de l'ombre
+  }
+
+  // Initialisation à l'ouverture
+  window.addEventListener('DOMContentLoaded', () => {
+    updateSim();
+  });
+</script>
+</body>
+</html>
