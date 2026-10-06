@@ -1,0 +1,1805 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CMA Formation - Fonctions Affines & Amortissement</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- MathJax v3 pour les énoncés statiques -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <style>
+    /* Charte graphique CMA Formation Sainte-Clotilde */
+    :root {
+      --cma-bordeaux: #A50F23;
+      --cma-corail: #EE3C3D;
+      --cma-bg: #F8FAFC;
+      --cma-text: #1E293B;
+    }
+
+    body {
+      font-family: Arial, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--cma-bg);
+      color: var(--cma-text);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* En-tête et ruban vague officiel CMA */
+    .app-header {
+      position: relative;
+      overflow: hidden;
+      padding-bottom: 20px;
+      background: linear-gradient(135deg, #7C0A1A 0%, #A50F23 55%, #B9132A 100%);
+    }
+
+    .app-logo {
+      height: 48px;
+      width: auto;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+
+    .icon-bullet {
+      height: 18px;
+      width: 18px;
+      object-fit: contain;
+      display: inline-block;
+      vertical-align: middle;
+      flex-shrink: 0;
+      margin-right: 8px;
+    }
+
+    .cma-wave-border {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: auto;
+      height: 14px;
+      margin: 0;
+      border: 0;
+      background-image: url("ruban_vague.png");
+      background-repeat: repeat-x;
+      background-size: 102.941176px 102.941176px;
+      background-position: left -46.941176px;
+    }
+
+    /* Champs de saisie tactiles Mobile-First */
+    .cma-input {
+      min-height: 44px;
+      font-size: 16px;
+      border: 2px solid #CBD5E1;
+      border-radius: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      width: 100%;
+      outline: none;
+      transition: all 0.2s ease;
+      background-color: #FFFFFF;
+      color: #0F172A;
+    }
+    .cma-input:focus {
+      border-color: var(--cma-corail);
+      box-shadow: 0 0 0 3px rgba(238, 60, 61, 0.18);
+    }
+    .cma-input.valid {
+      border-color: #10B981;
+      background-color: #F0FDF4;
+    }
+    .cma-input.invalid {
+      border-color: #EF4444;
+      background-color: #FEF2F2;
+    }
+
+    /* Boutons tactiles (>= 44x44px) */
+    .cma-btn {
+      min-height: 44px;
+      min-width: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      border-radius: 0.5rem;
+      transition: background-color 0.15s ease, transform 0.05s ease;
+      user-select: none;
+      touch-action: manipulation;
+    }
+    .cma-btn:active {
+      transform: scale(0.98);
+    }
+
+    /* Défilement fluide sans barre apparente */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* Styles pour impression / export PDF de l'attestation */
+    @media print {
+      body {
+        background: #FFFFFF !important;
+        color: #000000 !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      #print-area {
+        display: block !important;
+        position: static !important;
+        border: 2px solid #A50F23 !important;
+        padding: 24px !important;
+        margin: 0 !important;
+        box-shadow: none !important;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+  <!-- En-tête principal -->
+  <header class="app-header text-white shadow-md no-print">
+    <div class="max-w-4xl mx-auto px-4 pt-3 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <img src="logo.png" alt="Logo CMA Formation" class="app-logo" onerror="this.onerror=null; this.src='https://placehold.co/120x48/A50F23/FFFFFF?text=CMA+Formation';">
+        <div>
+          <span class="inline-block bg-white/20 text-xs px-2 py-0.5 rounded font-bold uppercase tracking-wide">CMA Sainte-Clotilde</span>
+          <h1 class="text-sm sm:text-base font-bold leading-tight">CAP Métiers de la Coiffure</h1>
+        </div>
+      </div>
+      <div class="text-right hidden sm:block">
+        <span class="text-xs text-red-100 block">Année 2 - S4 M2</span>
+        <span class="text-xs font-semibold text-white">Algèbre & Fonctions Affines</span>
+      </div>
+    </div>
+
+    <!-- Barre thématique -->
+    <div class="max-w-4xl mx-auto px-4 mt-2 mb-1 flex items-center justify-between">
+      <div class="text-xs sm:text-sm text-red-100 font-medium">
+        <span>Fonctions affines : Étude complète, pente & amortissement du mobilier</span>
+      </div>
+      <span class="text-[11px] bg-white/10 px-2 py-0.5 rounded text-white/90 hidden sm:inline">Formatrice : Rachel Lamberet-Lezais</span>
+    </div>
+
+    <!-- Ruban Vague CMA Officiel (14px) -->
+    <div class="cma-wave-border"></div>
+  </header>
+
+  <!-- Barre de progression générale (8px) -->
+  <div class="bg-slate-200 w-full h-2 sticky top-0 z-40 no-print">
+    <div id="global-progress" class="h-2 bg-gradient-to-r from-[#EE3C3D] to-[#A50F23] transition-all duration-500 ease-out" style="width: 0%;"></div>
+  </div>
+
+  <!-- Navigation horizontale tactile 4 Étapes -->
+  <nav class="bg-white border-b border-slate-200 sticky top-2 z-30 shadow-sm no-print">
+    <div class="max-w-4xl mx-auto px-2 py-2 flex items-center space-x-2 overflow-x-auto no-scrollbar">
+      <button onclick="switchTab(1)" id="tab-btn-1" class="cma-btn flex-shrink-0 px-3.5 py-2 text-xs sm:text-sm rounded-full bg-[#A50F23] text-white shadow">
+        1. Découverte
+      </button>
+      <button onclick="switchTab(2)" id="tab-btn-2" class="cma-btn flex-shrink-0 px-3.5 py-2 text-xs sm:text-sm rounded-full bg-slate-100 text-slate-700 hover:bg-slate-200">
+        2. Cours & Simulateur
+      </button>
+      <button onclick="switchTab(3)" id="tab-btn-3" class="cma-btn flex-shrink-0 px-3.5 py-2 text-xs sm:text-sm rounded-full bg-slate-100 text-slate-700 hover:bg-slate-200">
+        3. Entraînement
+      </button>
+      <button onclick="switchTab(4)" id="tab-btn-4" class="cma-btn flex-shrink-0 px-3.5 py-2 text-xs sm:text-sm rounded-full bg-slate-100 text-slate-700 hover:bg-slate-200">
+        4. Bilan & Attestation
+      </button>
+    </div>
+  </nav>
+
+  <!-- CONTENEUR PRINCIPAL MOBILE-FIRST (360px+) -->
+  <main class="flex-grow max-w-4xl w-full mx-auto p-3 sm:p-6 space-y-6">
+
+    <!-- ============================================================== -->
+    <!-- ÉTAPE 1 : DÉCOUVERTE PROFESSIONNELLE                          -->
+    <!-- ============================================================== -->
+    <section id="stage-1" class="stage-container space-y-5">
+      <!-- Contexte professionnel -->
+      <div class="bg-white p-4 sm:p-5 rounded-xl shadow-sm border border-slate-200 space-y-3">
+        <h2 class="text-base sm:text-lg font-bold text-[#A50F23] flex items-center">
+          <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.onerror=null; this.style.display='none';">
+          Situation Professionnelle : Amortissement d'un poste de coiffage
+        </h2>
+        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+          La gérante du salon <em>« L'Atelier Kréol »</em> à Sainte-Clotilde a investi dans un poste de coiffage complet neuf avec fauteuil hydraulique et miroir rétroéclairé pour un montant d'achat de <strong>3 500 €</strong>.
+        </p>
+        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+          En comptabilité d'entreprise, ce matériel professionnel subit un <strong>amortissement linéaire sur 5 ans</strong> en raison de son utilisation quotidienne sous climat tropical humide. Chaque année, la valeur comptable diminue d'un montant constant de <strong>700 €</strong>.
+        </p>
+
+        <!-- Données clés -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 my-2">
+          <div class="bg-red-50 p-3 rounded-lg border border-red-200">
+            <span class="text-[11px] text-[#A50F23] uppercase font-bold block">Valeur initiale (Année 0)</span>
+            <span class="text-xl font-bold text-slate-900">3 500 €</span>
+            <span class="text-[11px] text-slate-500 block">Ordonnée à l'origine ($b$)</span>
+          </div>
+          <div class="bg-amber-50 p-3 rounded-lg border border-amber-200">
+            <span class="text-[11px] text-amber-800 uppercase font-bold block">Dépréciation annuelle</span>
+            <span class="text-xl font-bold text-slate-900">− 700 € / an</span>
+            <span class="text-[11px] text-slate-500 block">Taux de variation ($a$)</span>
+          </div>
+          <div class="bg-emerald-50 p-3 rounded-lg border border-emerald-200">
+            <span class="text-[11px] text-emerald-800 uppercase font-bold block">Durée de vie comptable</span>
+            <span class="text-xl font-bold text-slate-900">5 ans</span>
+            <span class="text-[11px] text-slate-500 block">Intervalle $x \in [0 ; 5]$</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tableau interactif des valeurs d'amortissement -->
+      <div class="bg-white p-4 sm:p-5 rounded-xl shadow-sm border border-slate-200 space-y-3">
+        <h3 class="text-sm sm:text-base font-bold text-slate-800 flex items-center">
+          <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.onerror=null; this.style.display='none';">
+          Tableau d'amortissement linéaire sur 5 ans
+        </h3>
+        <p class="text-xs text-slate-500">
+          Complétez la valeur nette comptable $f(x)$ pour les années 3, 4 et 5 puis validez le tableau :
+        </p>
+
+        <div class="overflow-x-auto pb-1">
+          <table class="min-w-full text-xs sm:text-sm text-center border-collapse">
+            <thead>
+              <tr class="bg-slate-100 text-slate-700">
+                <th class="p-2 border border-slate-200 text-left font-semibold">Année ($x$)</th>
+                <th class="p-2 border border-slate-200">0</th>
+                <th class="p-2 border border-slate-200">1</th>
+                <th class="p-2 border border-slate-200">2</th>
+                <th class="p-2 border border-slate-200 bg-red-50 text-[#A50F23] font-bold">3</th>
+                <th class="p-2 border border-slate-200 bg-red-50 text-[#A50F23] font-bold">4</th>
+                <th class="p-2 border border-slate-200 bg-red-50 text-[#A50F23] font-bold">5</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="p-2 border border-slate-200 text-left font-medium text-slate-600">Calcul détaillé</td>
+                <td class="p-2 border border-slate-200">3 500</td>
+                <td class="p-2 border border-slate-200">3 500 − 700</td>
+                <td class="p-2 border border-slate-200">3 500 − 2×700</td>
+                <td class="p-2 border border-slate-200">3 500 − 3×700</td>
+                <td class="p-2 border border-slate-200">3 500 − 4×700</td>
+                <td class="p-2 border border-slate-200">3 500 − 5×700</td>
+              </tr>
+              <tr>
+                <td class="p-2 border border-slate-200 text-left font-medium text-slate-600">Valeur $f(x)$ (€)</td>
+                <td class="p-2 border border-slate-200 font-semibold text-slate-800">3 500</td>
+                <td class="p-2 border border-slate-200 font-semibold text-slate-800">2 800</td>
+                <td class="p-2 border border-slate-200 font-semibold text-slate-800">2 100</td>
+                <td class="p-1 border border-slate-200">
+                  <input type="text" inputmode="decimal" id="tab-val-3" class="cma-input text-xs text-center min-w-[70px]" placeholder="...">
+                </td>
+                <td class="p-1 border border-slate-200">
+                  <input type="text" inputmode="decimal" id="tab-val-4" class="cma-input text-xs text-center min-w-[70px]" placeholder="...">
+                </td>
+                <td class="p-1 border border-slate-200">
+                  <input type="text" inputmode="decimal" id="tab-val-5" class="cma-input text-xs text-center min-w-[70px]" placeholder="...">
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="flex items-center justify-between pt-2">
+          <button onclick="checkInvestigationTable()" class="cma-btn px-4 bg-[#A50F23] text-white text-xs sm:text-sm">
+            Valider le tableau
+          </button>
+          <div id="fb-inv-table" class="text-xs font-semibold"></div>
+        </div>
+      </div>
+
+      <!-- Questions d'investigation C1 à C4 -->
+      <div class="bg-white p-4 sm:p-5 rounded-xl shadow-sm border border-slate-200 space-y-4">
+        <h3 class="text-sm sm:text-base font-bold text-slate-800 flex items-center">
+          <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.onerror=null; this.style.display='none';">
+          Questions d'investigation mathématique
+        </h3>
+
+        <!-- Q2 : Variation Delta y -->
+        <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-2">
+          <span class="text-xs font-bold text-[#A50F23] bg-red-100 px-2 py-0.5 rounded">C2 - Exécuter</span>
+          <p class="text-xs sm:text-sm text-slate-800 font-medium">
+            2. Calculer la variation $\Delta y = f(1) - f(0)$ entre l'année 0 et l'année 1 (€) :
+          </p>
+          <div class="flex items-center space-x-2">
+            <input type="text" inputmode="decimal" id="inv-q2" class="cma-input max-w-[160px]" placeholder="Votre résultat...">
+            <span class="text-xs sm:text-sm font-semibold text-slate-600">€</span>
+            <button onclick="checkInvQ2()" class="cma-btn px-4 bg-[#A50F23] text-white text-xs sm:text-sm">Valider</button>
+          </div>
+          <div id="fb-inv-q2" class="text-xs pt-1"></div>
+        </div>
+
+        <!-- Q3 : Modélisation f(x) = ax + b -->
+        <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-2">
+          <span class="text-xs font-bold text-[#A50F23] bg-red-100 px-2 py-0.5 rounded">C3 - Appliquer</span>
+          <p class="text-xs sm:text-sm text-slate-800 font-medium">
+            3. On modélise la valeur par $f(x) = ax + b$. Indiquer la pente $a$ et l'ordonnée à l'origine $b$ :
+          </p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <div class="flex items-center space-x-2">
+              <span class="text-xs font-bold text-slate-600">Pente $a$ :</span>
+              <input type="text" inputmode="decimal" id="inv-q3-a" class="cma-input" placeholder="Votre résultat...">
+            </div>
+            <div class="flex items-center space-x-2">
+              <span class="text-xs font-bold text-slate-600">Ordonnée $b$ :</span>
+              <input type="text" inputmode="decimal" id="inv-q3-b" class="cma-input" placeholder="Votre résultat...">
+            </div>
+          </div>
+          <div class="flex items-center justify-between pt-1">
+            <button onclick="checkInvQ3()" class="cma-btn px-4 bg-[#A50F23] text-white text-xs sm:text-sm">Valider coefficients</button>
+            <div id="fb-inv-q3" class="text-xs"></div>
+          </div>
+        </div>
+
+        <!-- Q4 : Sens de variation -->
+        <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-2">
+          <span class="text-xs font-bold text-[#A50F23] bg-red-100 px-2 py-0.5 rounded">C2 - Exécuter</span>
+          <p class="text-xs sm:text-sm text-slate-800 font-medium">
+            4. Le coefficient directeur étant négatif ($a = -700 &lt; 0$), la fonction $f$ est-elle croissante (taper 1) ou décroissante (taper 2) sur $[0 ; 5]$ ?
+          </p>
+          <div class="flex items-center space-x-2">
+            <input type="text" inputmode="numeric" id="inv-q4" class="cma-input max-w-[160px]" placeholder="1 ou 2">
+            <span class="text-xs text-slate-500">(1 = Croissante, 2 = Décroissante)</span>
+            <button onclick="checkInvQ4()" class="cma-btn px-4 bg-[#A50F23] text-white text-xs sm:text-sm">Valider</button>
+          </div>
+          <div id="fb-inv-q4" class="text-xs pt-1"></div>
+        </div>
+
+        <!-- Q6 : Interprétation comptable de f(5) -->
+        <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-2">
+          <span class="text-xs font-bold text-[#A50F23] bg-red-100 px-2 py-0.5 rounded">C4 - Communiquer</span>
+          <p class="text-xs sm:text-sm text-slate-800 font-medium">
+            6. Quelle est la valeur résiduelle comptable au terme des 5 ans : $f(5)$ (€) ?
+          </p>
+          <div class="flex items-center space-x-2">
+            <input type="text" inputmode="decimal" id="inv-q6" class="cma-input max-w-[160px]" placeholder="Votre résultat...">
+            <span class="text-xs sm:text-sm font-semibold text-slate-600">€</span>
+            <button onclick="checkInvQ6()" class="cma-btn px-4 bg-[#A50F23] text-white text-xs sm:text-sm">Valider</button>
+          </div>
+          <div id="fb-inv-q6" class="text-xs pt-1"></div>
+        </div>
+
+        <div class="pt-2 flex justify-end">
+          <button onclick="switchTab(2)" class="cma-btn px-5 py-2.5 bg-[#A50F23] text-white text-xs sm:text-sm shadow-md">
+            Passer à l'Étape 2 : Cours & Simulateur →
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================== -->
+    <!-- ÉTAPE 2 : COURS & SIMULATEUR INTERACTIF                       -->
+    <!-- ============================================================== -->
+    <section id="stage-2" class="stage-container space-y-5 hidden">
+      <!-- Synthèse de cours accordéons -->
+      <div class="bg-white p-4 sm:p-5 rounded-xl shadow-sm border border-slate-200 space-y-3">
+        <h2 class="text-base sm:text-lg font-bold text-[#A50F23] flex items-center">
+          <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.onerror=null; this.style.display='none';">
+          Synthèse de Cours : Fonctions Affines $f(x) = ax + b$
+        </h2>
+
+        <!-- Accordéon 1 -->
+        <details class="group bg-slate-50 border border-slate-200 rounded-lg p-3" open>
+          <summary class="font-bold text-xs sm:text-sm text-slate-800 cursor-pointer flex justify-between items-center">
+            <span>1. Définition générale & cas particuliers</span>
+            <span class="text-xs text-slate-400 group-open:rotate-180 transition-transform">▼</span>
+          </summary>
+          <div class="mt-2 text-xs sm:text-sm text-slate-600 space-y-2">
+            <p>Une fonction affine $f$ associe à tout réel $x$ le nombre :</p>
+            <div class="text-center font-bold text-[#A50F23] bg-white py-1.5 rounded border border-slate-200">
+              $f(x) = ax + b$
+            </div>
+            <ul class="list-disc ml-5 space-y-1">
+              <li><strong>Si $b = 0$ :</strong> $f(x) = ax$ est une <em>fonction linéaire</em> (proportionnalité, droite passant par l'origine $(0;0)$).</li>
+              <li><strong>Si $a = 0$ :</strong> $f(x) = b$ est une <em>fonction constante</em> (droite horizontale parallèle à l'axe des abscisses).</li>
+            </ul>
+          </div>
+        </details>
+
+        <!-- Accordéon 2 -->
+        <details class="group bg-slate-50 border border-slate-200 rounded-lg p-3" open>
+          <summary class="font-bold text-xs sm:text-sm text-slate-800 cursor-pointer flex justify-between items-center">
+            <span>2. Rôle du coefficient directeur $a$ et de l'ordonnée à l'origine $b$</span>
+            <span class="text-xs text-slate-400 group-open:rotate-180 transition-transform">▼</span>
+          </summary>
+          <div class="mt-2 text-xs sm:text-sm text-slate-600 space-y-2">
+            <div class="p-2.5 bg-white rounded border border-slate-200">
+              <strong class="text-slate-900 block">Coefficient directeur $a$ (pente ou taux de variation) :</strong>
+              Indique la variation de $f(x)$ quand $x$ augmente de 1 unité :
+              <div class="text-center my-1 font-semibold text-slate-800">$a = \dfrac{y_2 - y_1}{x_2 - x_1}$</div>
+            </div>
+            <div class="p-2.5 bg-white rounded border border-slate-200">
+              <strong class="text-slate-900 block">Ordonnée à l'origine $b$ :</strong>
+              C'est la valeur initiale $f(0)$ où la droite coupe l'axe vertical des ordonnées $(0 ; b)$.
+            </div>
+          </div>
+        </details>
+
+        <!-- Accordéon 3 -->
+        <details class="group bg-slate-50 border border-slate-200 rounded-lg p-3">
+          <summary class="font-bold text-xs sm:text-sm text-slate-800 cursor-pointer flex justify-between items-center">
+            <span>3. Sens de variation selon le signe de la pente $a$</span>
+            <span class="text-xs text-slate-400 group-open:rotate-180 transition-transform">▼</span>
+          </summary>
+          <div class="mt-2 text-xs sm:text-sm text-slate-600 space-y-1">
+            <p>• <strong>Si $a &gt; 0$ :</strong> la fonction est <em>strictement croissante</em> (la droite monte de gauche à droite).</p>
+            <p>• <strong>Si $a &lt; 0$ :</strong> la fonction est <em>strictement décroissante</em> (la droite descend de gauche à droite).</p>
+            <p>• <strong>Si $a = 0$ :</strong> la fonction est <em>constante</em> (droite horizontale).</p>
+          </div>
+        </details>
+      </div>
+
+      <!-- Simulateur Graphique Canvas 2D Interactif -->
+      <div class="bg-white p-4 sm:p-5 rounded-xl shadow-sm border border-slate-200 space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="text-sm sm:text-base font-bold text-slate-800 flex items-center">
+            <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.onerror=null; this.style.display='none';">
+            Simulateur Graphique : $f(x) = ax + b$ en Temps Réel
+          </h3>
+          <span class="text-[11px] bg-red-100 text-[#A50F23] font-bold px-2 py-0.5 rounded">Grapheur dynamique</span>
+        </div>
+        <p class="text-xs text-slate-600">
+          Ajustez la pente $a$ et l'ordonnée $b$ pour observer le tracé de la droite et son tableau de valeurs, ou appliquez le cas professionnel :
+        </p>
+
+        <!-- Commandes & Sliders -->
+        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-4">
+          <div class="flex flex-wrap gap-2">
+            <button onclick="presetAmortissement()" class="cma-btn px-3 py-1.5 text-xs bg-[#A50F23] text-white rounded-lg shadow">
+              ⚙️ Préréglage : Amortissement Poste (a = −700, b = 3500)
+            </button>
+            <button onclick="presetStandard()" class="cma-btn px-3 py-1.5 text-xs border border-slate-300 text-slate-700 bg-white rounded-lg">
+              Standard : a = 2, b = 1
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+                <label for="sim-a">Coefficient directeur ($a$) :</label>
+                <span id="disp-a" class="text-sm font-bold text-[#A50F23]">−700</span>
+              </div>
+              <input type="range" id="sim-a" min="-1000" max="1000" step="50" value="-700" class="w-full accent-[#A50F23] h-2 bg-slate-200 rounded cursor-pointer" oninput="drawSimulation()">
+            </div>
+
+            <div>
+              <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+                <label for="sim-b">Ordonnée à l'origine ($b$) :</label>
+                <span id="disp-b" class="text-sm font-bold text-[#A50F23]">3500</span>
+              </div>
+              <input type="range" id="sim-b" min="-2000" max="5000" step="100" value="3500" class="w-full accent-[#A50F23] h-2 bg-slate-200 rounded cursor-pointer" oninput="drawSimulation()">
+            </div>
+          </div>
+
+          <!-- Équation active et état -->
+          <div class="p-3 bg-white rounded-lg border border-slate-200 flex flex-col sm:flex-row items-center justify-between text-xs gap-2">
+            <div>
+              <span class="text-slate-500 font-medium">Équation de la droite :</span>
+              <span id="sim-eq" class="text-sm font-extrabold text-[#A50F23] ml-2">f(x) = −700x + 3500</span>
+            </div>
+            <div id="sim-nature-badge" class="px-2.5 py-1 rounded font-bold bg-amber-50 text-amber-800 border border-amber-200">
+              Décroissante (a &lt; 0)
+            </div>
+          </div>
+        </div>
+
+        <!-- Canvas interactif -->
+        <div class="relative bg-white rounded-xl border border-slate-200 overflow-hidden shadow-inner">
+          <canvas id="sim-canvas" width="600" height="320" class="w-full h-auto block"></canvas>
+        </div>
+
+        <!-- Tableau dynamique et calculateur d'image instantané -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+          <!-- Calculateur f(x) -->
+          <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-2">
+            <span class="font-bold text-slate-800 block">Calculateur d'image $f(x)$ :</span>
+            <div class="flex items-center space-x-2">
+              <span class="text-slate-600 font-semibold">Pour $x = $</span>
+              <input type="number" id="calc-x" value="3" class="cma-input text-xs max-w-[80px]" oninput="updateCalculatedImage()">
+              <span class="font-bold text-[#A50F23]">=</span>
+              <span id="calc-res" class="font-extrabold text-sm text-slate-900">1 400 €</span>
+            </div>
+          </div>
+
+          <!-- Points clés -->
+          <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1">
+            <span class="font-bold text-slate-800 block">Points caractéristiques :</span>
+            <div id="sim-key-pts" class="text-slate-600 space-y-0.5">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-2 flex justify-between">
+          <button onclick="switchTab(1)" class="cma-btn px-4 py-2 border border-slate-300 text-slate-700 text-xs sm:text-sm">
+            ← Étape 1 : Découverte
+          </button>
+          <button onclick="switchTab(3)" class="cma-btn px-5 py-2.5 bg-[#A50F23] text-white text-xs sm:text-sm shadow-md">
+            Passer à l'Étape 3 : Entraînement Gamifié →
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================== -->
+    <!-- ÉTAPE 3 : ENTRAÎNEMENT GAMIFIÉ                                -->
+    <!-- ============================================================== -->
+    <section id="stage-3" class="stage-container space-y-6 hidden">
+      <!-- En-tête de gamification et badges de paliers -->
+      <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-3">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <div>
+            <h2 class="text-base sm:text-lg font-bold text-[#A50F23] flex items-center">
+              <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.onerror=null; this.style.display='none';">
+              Parcours d'Exercices Différenciés
+            </h2>
+            <p class="text-xs text-slate-500">Validation séquentielle : N1 valide le socle, N2 & N3 débloquent les bonus d'excellence.</p>
+          </div>
+          <!-- Compteurs de scores -->
+          <div class="flex items-center space-x-2">
+            <div class="bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-lg text-center">
+              <span class="text-[10px] uppercase font-bold text-emerald-700 block">Socle CAP (N1)</span>
+              <span id="score-n1-display" class="text-sm font-bold text-emerald-800">0 / 5</span>
+            </div>
+            <div class="bg-amber-50 border border-amber-200 px-3 py-1.5 rounded-lg text-center">
+              <span class="text-[10px] uppercase font-bold text-amber-700 block">Bonus N2</span>
+              <span id="score-n2-display" class="text-sm font-bold text-amber-800">0 / 3</span>
+            </div>
+            <div class="bg-red-50 border border-red-200 px-3 py-1.5 rounded-lg text-center">
+              <span class="text-[10px] uppercase font-bold text-red-700 block">Bonus N3</span>
+              <span id="score-n3-display" class="text-sm font-bold text-red-800">0 / 3</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Paliers de niveaux -->
+        <div class="flex items-center space-x-2 pt-2 border-t border-slate-100">
+          <button onclick="switchLevel(1)" id="lvl-btn-1" class="cma-btn px-3 py-1.5 text-xs font-bold rounded-lg bg-emerald-700 text-white">
+            <span>🟢 Niveau 1 : Débutant (Socle CAP)</span>
+          </button>
+          <button onclick="switchLevel(2)" id="lvl-btn-2" class="cma-btn px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-100 text-slate-400 cursor-not-allowed" disabled>
+            <span>🔒 Niveau 2 : Avancé</span>
+          </button>
+          <button onclick="switchLevel(3)" id="lvl-btn-3" class="cma-btn px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-100 text-slate-400 cursor-not-allowed" disabled>
+            <span>🔒 Niveau 3 : Expert</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- PALLIER 1 : DÉBUTANT (SOCLE CAP)                             -->
+      <!-- ============================================================ -->
+      <div id="level-container-1" class="space-y-4">
+        <div class="bg-emerald-50 border-l-4 border-emerald-600 p-3 rounded-r-lg text-xs text-emerald-800">
+          <strong>Objectif Socle CAP :</strong> Réussir l'ensemble des 5 exercices du Niveau 1 pour valider à 100 % le socle fondamental et débloquer l'Attestation Numérique !
+        </div>
+
+        <!-- Exercice 1.1 -->
+        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-3" id="card-ex1-1">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-xs sm:text-sm text-slate-800 flex items-center">
+              <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.onerror=null; this.style.display='none';">
+              Exercice 1.1 : Identification des coefficients $a$ et $b$
+            </h4>
+            <span id="badge-ex1-1" class="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-600">En attente</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-600">
+            Pour chaque fonction, indiquez la pente $a$ (coefficient directeur) et l'ordonnée à l'origine $b$ :
+          </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <span class="font-bold text-slate-700 block">a) $f(x) = 3x + 5$</span>
+              <div class="flex items-center space-x-2">
+                <span>$a = $</span><input type="text" inputmode="decimal" id="ex1-1-a" class="cma-input" placeholder="Votre résultat...">
+                <span>$b = $</span><input type="text" inputmode="decimal" id="ex1-1-b" class="cma-input" placeholder="Votre résultat...">
+              </div>
+            </div>
+
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <span class="font-bold text-slate-700 block">b) $g(x) = -200x + 1500$</span>
+              <div class="flex items-center space-x-2">
+                <span>$a = $</span><input type="text" inputmode="decimal" id="ex1-1-c" class="cma-input" placeholder="Votre résultat...">
+                <span>$b = $</span><input type="text" inputmode="decimal" id="ex1-1-d" class="cma-input" placeholder="Votre résultat...">
+              </div>
+            </div>
+
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <span class="font-bold text-slate-700 block">c) $h(x) = 45x$ (linéaire)</span>
+              <div class="flex items-center space-x-2">
+                <span>$a = $</span><input type="text" inputmode="decimal" id="ex1-1-e" class="cma-input" placeholder="Votre résultat...">
+                <span>$b = $</span><input type="text" inputmode="decimal" id="ex1-1-f" class="cma-input" placeholder="Votre résultat...">
+              </div>
+            </div>
+
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <span class="font-bold text-slate-700 block">d) $k(x) = 80$ (constante)</span>
+              <div class="flex items-center space-x-2">
+                <span>$a = $</span><input type="text" inputmode="decimal" id="ex1-1-g" class="cma-input" placeholder="Votre résultat...">
+                <span>$b = $</span><input type="text" inputmode="decimal" id="ex1-1-h" class="cma-input" placeholder="Votre résultat...">
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between pt-1">
+            <button onclick="checkEx1_1()" class="cma-btn px-4 bg-emerald-700 text-white text-xs sm:text-sm">Vérifier l'Exercice 1.1</button>
+            <div id="fb-ex1-1" class="text-xs font-medium"></div>
+          </div>
+        </div>
+
+        <!-- Exercice 1.2 -->
+        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-3" id="card-ex1-2">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-xs sm:text-sm text-slate-800 flex items-center">
+              <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.onerror=null; this.style.display='none';">
+              Exercice 1.2 : Calcul d'images simples
+            </h4>
+            <span id="badge-ex1-2" class="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-600">En attente</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-600">
+            Soit la fonction $f(x) = -150x + 900$ modélisant la valeur résiduelle d'un casque séchant en salon. Calculez les images :
+          </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <label class="font-semibold text-slate-700 block">1. Image de 0 : $f(0) = $</label>
+              <input type="text" inputmode="decimal" id="ex1-2-a" class="cma-input" placeholder="Votre résultat...">
+            </div>
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <label class="font-semibold text-slate-700 block">2. Image de 2 : $f(2) = $</label>
+              <input type="text" inputmode="decimal" id="ex1-2-b" class="cma-input" placeholder="Votre résultat...">
+            </div>
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <label class="font-semibold text-slate-700 block">3. Image de 4 : $f(4) = $</label>
+              <input type="text" inputmode="decimal" id="ex1-2-c" class="cma-input" placeholder="Votre résultat...">
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between pt-1">
+            <button onclick="checkEx1_2()" class="cma-btn px-4 bg-emerald-700 text-white text-xs sm:text-sm">Vérifier l'Exercice 1.2</button>
+            <div id="fb-ex1-2" class="text-xs font-medium"></div>
+          </div>
+        </div>
+
+        <!-- Exercice 1.3 -->
+        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-3" id="card-ex1-3">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-xs sm:text-sm text-slate-800 flex items-center">
+              <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.onerror=null; this.style.display='none';">
+              Exercice 1.3 : Sens de variation selon le signe de la pente
+            </h4>
+            <span id="badge-ex1-3" class="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-600">En attente</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-600">
+            Indiquez pour chaque fonction si elle est croissante (taper 1) ou décroissante (taper 2) selon le signe de sa pente $a$ :
+          </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <span class="font-semibold text-slate-700 block">a) $f_1(x) = 2{,}5x + 10$ ($a = 2{,}5$)</span>
+              <input type="text" inputmode="numeric" id="ex1-3-a" class="cma-input" placeholder="1 = Croissante, 2 = Décroissante">
+            </div>
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <span class="font-semibold text-slate-700 block">b) $f_2(x) = -50x + 400$ ($a = -50$)</span>
+              <input type="text" inputmode="numeric" id="ex1-3-b" class="cma-input" placeholder="1 = Croissante, 2 = Décroissante">
+            </div>
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <span class="font-semibold text-slate-700 block">c) $f_3(x) = -0{,}8x + 12$ ($a = -0{,}8$)</span>
+              <input type="text" inputmode="numeric" id="ex1-3-c" class="cma-input" placeholder="1 = Croissante, 2 = Décroissante">
+            </div>
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <span class="font-semibold text-slate-700 block">d) $f_4(x) = 15x - 30$ ($a = 15$)</span>
+              <input type="text" inputmode="numeric" id="ex1-3-d" class="cma-input" placeholder="1 = Croissante, 2 = Décroissante">
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between pt-1">
+            <button onclick="checkEx1_3()" class="cma-btn px-4 bg-emerald-700 text-white text-xs sm:text-sm">Vérifier l'Exercice 1.3</button>
+            <div id="fb-ex1-3" class="text-xs font-medium"></div>
+          </div>
+        </div>
+
+        <!-- Exercice 1.4 -->
+        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-3" id="card-ex1-4">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-xs sm:text-sm text-slate-800 flex items-center">
+              <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.onerror=null; this.style.display='none';">
+              Exercice 1.4 : Tableau de valeurs pour $f(x) = -2x + 10$
+            </h4>
+            <span id="badge-ex1-4" class="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-600">En attente</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-600">
+            Complétez les valeurs de la fonction $f(x) = -2x + 10$ pour $x = 0$, $x = 2$ et $x = 5$ :
+          </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <label class="font-semibold text-slate-700 block">Pour $x = 0$ : $f(0) = $</label>
+              <input type="text" inputmode="decimal" id="ex1-4-a" class="cma-input" placeholder="Votre résultat...">
+            </div>
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <label class="font-semibold text-slate-700 block">Pour $x = 2$ : $f(2) = $</label>
+              <input type="text" inputmode="decimal" id="ex1-4-b" class="cma-input" placeholder="Votre résultat...">
+            </div>
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <label class="font-semibold text-slate-700 block">Pour $x = 5$ : $f(5) = $</label>
+              <input type="text" inputmode="decimal" id="ex1-4-c" class="cma-input" placeholder="Votre résultat...">
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between pt-1">
+            <button onclick="checkEx1_4()" class="cma-btn px-4 bg-emerald-700 text-white text-xs sm:text-sm">Vérifier l'Exercice 1.4</button>
+            <div id="fb-ex1-4" class="text-xs font-medium"></div>
+          </div>
+        </div>
+
+        <!-- Exercice 1.5 -->
+        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-3" id="card-ex1-5">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-xs sm:text-sm text-slate-800 flex items-center">
+              <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.onerror=null; this.style.display='none';">
+              Exercice 1.5 : Tarification d'un coiffeur à domicile à Saint-Denis
+            </h4>
+            <span id="badge-ex1-5" class="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-600">En attente</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-600">
+            Un coiffeur à domicile facture un forfait fixe de 15 € plus 25 € par heure $x$ : $T(x) = 25x + 15$.
+          </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <label class="font-semibold text-slate-700 block">1. Ordonnée à l'origine $b$ (€) :</label>
+              <input type="text" inputmode="decimal" id="ex1-5-a" class="cma-input" placeholder="Votre résultat...">
+            </div>
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <label class="font-semibold text-slate-700 block">2. Pente horaire $a$ (€/h) :</label>
+              <input type="text" inputmode="decimal" id="ex1-5-b" class="cma-input" placeholder="Votre résultat...">
+            </div>
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <label class="font-semibold text-slate-700 block">3. Total pour 2h : $T(2)$ (€) :</label>
+              <input type="text" inputmode="decimal" id="ex1-5-c" class="cma-input" placeholder="Votre résultat...">
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between pt-1">
+            <button onclick="checkEx1_5()" class="cma-btn px-4 bg-emerald-700 text-white text-xs sm:text-sm">Vérifier l'Exercice 1.5</button>
+            <div id="fb-ex1-5" class="text-xs font-medium"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- PALLIER 2 : AVANCÉ / DÉPASSEMENT                             -->
+      <!-- ============================================================ -->
+      <div id="level-container-2" class="space-y-4 hidden">
+        <div class="bg-amber-50 border-l-4 border-amber-600 p-3 rounded-r-lg text-xs text-amber-800">
+          <strong>Niveau 2 (Dépassement) :</strong> Problèmes concrets appliqués aux équipements et stocks du salon à La Réunion.
+        </div>
+
+        <!-- Exercice 2.1 -->
+        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-3" id="card-ex2-1">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-xs sm:text-sm text-slate-800 flex items-center">
+              <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.onerror=null; this.style.display='none';">
+              Exercice 2.1 : Amortissement d'un bac massant à Saint-Paul
+            </h4>
+            <span id="badge-ex2-1" class="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-600">En attente</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-600">
+            Un bac de 2 400 € est amorti sur 4 ans : $V(x) = -600x + 2400$ pour $x \in [0 ; 4]$.
+          </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <label class="font-semibold text-slate-700 block">1. Valeur initiale $V(0)$ (€) :</label>
+              <input type="text" inputmode="decimal" id="ex2-1-a" class="cma-input" placeholder="Votre résultat...">
+            </div>
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <label class="font-semibold text-slate-700 block">2. Montant annuel amorti (€) :</label>
+              <input type="text" inputmode="decimal" id="ex2-1-b" class="cma-input" placeholder="Votre résultat...">
+            </div>
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <label class="font-semibold text-slate-700 block">3. Valeur à 3 ans : $V(3)$ (€) :</label>
+              <input type="text" inputmode="decimal" id="ex2-1-c" class="cma-input" placeholder="Votre résultat...">
+            </div>
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <label class="font-semibold text-slate-700 block">4. Année $x$ où $V(x) = 0$ (ans) :</label>
+              <input type="text" inputmode="decimal" id="ex2-1-d" class="cma-input" placeholder="Votre résultat...">
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between pt-1">
+            <button onclick="checkEx2_1()" class="cma-btn px-4 bg-amber-700 text-white text-xs sm:text-sm">Vérifier l'Exercice 2.1</button>
+            <div id="fb-ex2-1" class="text-xs font-medium"></div>
+          </div>
+        </div>
+
+        <!-- Exercice 2.2 -->
+        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-3" id="card-ex2-2">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-xs sm:text-sm text-slate-800 flex items-center">
+              <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.onerror=null; this.style.display='none';">
+              Exercice 2.2 : Entretien du matériel (A : $15x + 80$ et B : $25x$)
+            </h4>
+            <span id="badge-ex2-2" class="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-600">En attente</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-600">
+            Comparatif pour $x$ appareils : Prestataire A : $f(x) = 15x + 80$ ; Prestataire B : $g(x) = 25x$.
+          </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <label class="font-semibold text-slate-700 block">1. Résoudre $15x + 80 = 25x$ ($x$) :</label>
+              <input type="text" inputmode="decimal" id="ex2-2-a" class="cma-input" placeholder="Nombre d'appareils...">
+            </div>
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <label class="font-semibold text-slate-700 block">2. Coût prestataire A pour 12 app. (€) :</label>
+              <input type="text" inputmode="decimal" id="ex2-2-b" class="cma-input" placeholder="Votre résultat...">
+            </div>
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <label class="font-semibold text-slate-700 block">3. Économie avec A pour 12 app. (€) :</label>
+              <input type="text" inputmode="decimal" id="ex2-2-c" class="cma-input" placeholder="Votre résultat...">
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between pt-1">
+            <button onclick="checkEx2_2()" class="cma-btn px-4 bg-amber-700 text-white text-xs sm:text-sm">Vérifier l'Exercice 2.2</button>
+            <div id="fb-ex2-2" class="text-xs font-medium"></div>
+          </div>
+        </div>
+
+        <!-- Exercice 2.3 -->
+        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-3" id="card-ex2-3">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-xs sm:text-sm text-slate-800 flex items-center">
+              <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.onerror=null; this.style.display='none';">
+              Exercice 2.3 : Décroissance de stock sous climat tropical
+            </h4>
+            <span id="badge-ex2-3" class="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-600">En attente</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-600">
+            Le stock de sprays UV à Sainte-Clotilde est $S(x) = -15x + 180$ pour la semaine $x$.
+          </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <label class="font-semibold text-slate-700 block">1. Stock restant au bout de 6 sem. : $S(6)$ :</label>
+              <input type="text" inputmode="decimal" id="ex2-3-a" class="cma-input" placeholder="Votre résultat...">
+            </div>
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <label class="font-semibold text-slate-700 block">2. Semaine $x$ d'alerte quand $S(x) = 30$ :</label>
+              <input type="text" inputmode="decimal" id="ex2-3-b" class="cma-input" placeholder="Votre résultat...">
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between pt-1">
+            <button onclick="checkEx2_3()" class="cma-btn px-4 bg-amber-700 text-white text-xs sm:text-sm">Vérifier l'Exercice 2.3</button>
+            <div id="fb-ex2-3" class="text-xs font-medium"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- PALLIER 3 : EXPERT / EXCELLENCE                              -->
+      <!-- ============================================================ -->
+      <div id="level-container-3" class="space-y-4 hidden">
+        <div class="bg-red-50 border-l-4 border-red-600 p-3 rounded-r-lg text-xs text-red-800">
+          <strong>Niveau 3 (Excellence) :</strong> Stratégie de revente, modélisation de seuil et capteur thermique.
+        </div>
+
+        <!-- Exercice 3.1 -->
+        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-3" id="card-ex3-1">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-xs sm:text-sm text-slate-800 flex items-center">
+              <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.onerror=null; this.style.display='none';">
+              Exercice 3.1 : Stratégie de renouvellement et revente d'occasion
+            </h4>
+            <span id="badge-ex3-1" class="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-600">En attente</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-600">
+            Mobilier acheté 7 200 € avec $V(x) = -1200x + 7200$. Revente effective à 4 ans au prix de 3 000 €.
+          </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <label class="font-semibold text-slate-700 block">1. Valeur comptable théorique $V(4)$ (€) :</label>
+              <input type="text" inputmode="decimal" id="ex3-1-a" class="cma-input" placeholder="Votre résultat...">
+            </div>
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <label class="font-semibold text-slate-700 block">2. Plus-value réalisée (3 000 − $V(4)$) (€) :</label>
+              <input type="text" inputmode="decimal" id="ex3-1-b" class="cma-input" placeholder="Votre résultat...">
+            </div>
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <label class="font-semibold text-slate-700 block">3. Pente $a$ de dépréciation $R(x)$ (€/an) :</label>
+              <input type="text" inputmode="decimal" id="ex3-1-c" class="cma-input" placeholder="(3000-7200)/4 = ...">
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between pt-1">
+            <button onclick="checkEx3_1()" class="cma-btn px-4 bg-red-800 text-white text-xs sm:text-sm">Vérifier l'Exercice 3.1</button>
+            <div id="fb-ex3-1" class="text-xs font-medium"></div>
+          </div>
+        </div>
+
+        <!-- Exercice 3.2 -->
+        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-3" id="card-ex3-2">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-xs sm:text-sm text-slate-800 flex items-center">
+              <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.onerror=null; this.style.display='none';">
+              Exercice 3.2 : Bar à coloration : Coûts, Recettes & Bénéfice
+            </h4>
+            <span id="badge-ex3-2" class="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-600">En attente</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-600">
+            Coûts totaux : $C(x) = 10x + 1800$. Recettes : $R(x) = 40x$.
+          </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <label class="font-semibold text-slate-700 block">1. Seuil de rentabilité $R(x) = C(x)$ ($x_0$) :</label>
+              <input type="text" inputmode="decimal" id="ex3-2-a" class="cma-input" placeholder="Nombre de clientes...">
+            </div>
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <label class="font-semibold text-slate-700 block">2. Pente de la fonction bénéfice $B(x)$ :</label>
+              <input type="text" inputmode="decimal" id="ex3-2-b" class="cma-input" placeholder="Marge par cliente...">
+            </div>
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <label class="font-semibold text-slate-700 block">3. Bénéfice net pour 90 clientes $B(90)$ (€) :</label>
+              <input type="text" inputmode="decimal" id="ex3-2-c" class="cma-input" placeholder="Votre résultat...">
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between pt-1">
+            <button onclick="checkEx3_2()" class="cma-btn px-4 bg-red-800 text-white text-xs sm:text-sm">Vérifier l'Exercice 3.2</button>
+            <div id="fb-ex3-2" class="text-xs font-medium"></div>
+          </div>
+        </div>
+
+        <!-- Exercice 3.3 -->
+        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-3" id="card-ex3-3">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-xs sm:text-sm text-slate-800 flex items-center">
+              <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.onerror=null; this.style.display='none';">
+              Exercice 3.3 : Capteur thermique d'un casque séchant
+            </h4>
+            <span id="badge-ex3-3" class="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-600">En attente</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-600">
+            Tension délivrée : $U(T) = 0{,}05T + 1{,}2$ en fonction de la température $T$ en °C (seuil max toléré = 65 °C).
+          </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <label class="font-semibold text-slate-700 block">1. Tension à $T = 28\text{ °C}$ ambiant : $U(28)$ (V) :</label>
+              <input type="text" inputmode="decimal" id="ex3-3-a" class="cma-input" placeholder="Votre résultat...">
+            </div>
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <label class="font-semibold text-slate-700 block">2. Température $T$ quand le voltmètre affiche $4{,}2\text{ V}$ (°C) :</label>
+              <input type="text" inputmode="decimal" id="ex3-3-b" class="cma-input" placeholder="Votre résultat...">
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between pt-1">
+            <button onclick="checkEx3_3()" class="cma-btn px-4 bg-red-800 text-white text-xs sm:text-sm">Vérifier l'Exercice 3.3</button>
+            <div id="fb-ex3-3" class="text-xs font-medium"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-3 flex justify-between">
+        <button onclick="switchTab(2)" class="cma-btn px-4 py-2 border border-slate-300 text-slate-700 text-xs sm:text-sm">
+          ← Étape 2 : Cours
+        </button>
+        <button onclick="switchTab(4)" class="cma-btn px-5 py-2.5 bg-[#A50F23] text-white text-xs sm:text-sm shadow-md">
+          Passer à l'Étape 4 : Bilan & Attestation →
+        </button>
+      </div>
+    </section>
+
+    <!-- ============================================================== -->
+    <!-- ÉTAPE 4 : BILAN & ATTESTATION NUMÉRIQUE                       -->
+    <!-- ============================================================== -->
+    <section id="stage-4" class="stage-container space-y-6 hidden">
+      <!-- Synthèse Bilan -->
+      <div class="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-slate-200 space-y-4 no-print">
+        <h2 class="text-base sm:text-lg font-bold text-[#A50F23] flex items-center">
+          <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.onerror=null; this.style.display='none';">
+          Bilan de la Séance & Badges Pédagogiques
+        </h2>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-xl text-center">
+            <span class="text-3xl block mb-1">🎓</span>
+            <span class="text-xs font-bold text-emerald-800 uppercase block">Socle CAP (Niveau 1)</span>
+            <span id="bilan-socle-status" class="text-sm font-extrabold text-emerald-700">0% complété</span>
+            <span class="text-[11px] text-slate-500 block mt-1">Requis pour délivrer l'attestation</span>
+          </div>
+
+          <div class="bg-amber-50 border border-amber-200 p-4 rounded-xl text-center">
+            <span class="text-3xl block mb-1">⚡</span>
+            <span class="text-xs font-bold text-amber-800 uppercase block">Bonus Avancé (N2)</span>
+            <span id="bilan-bonus-n2" class="text-sm font-extrabold text-amber-700">0 / 3 exercices</span>
+            <span class="text-[11px] text-slate-500 block mt-1">Dépassement de compétences</span>
+          </div>
+
+          <div class="bg-red-50 border border-red-200 p-4 rounded-xl text-center">
+            <span class="text-3xl block mb-1">🏆</span>
+            <span class="text-xs font-bold text-red-800 uppercase block">Bonus Expert (N3)</span>
+            <span id="bilan-bonus-n3" class="text-sm font-extrabold text-red-700">0 / 3 exercices</span>
+            <span class="text-[11px] text-slate-500 block mt-1">Analyse critique & gestion</span>
+          </div>
+        </div>
+
+        <!-- Saisie du Nom de l'apprenant -->
+        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+          <label for="student-name-input" class="text-xs sm:text-sm font-bold text-slate-800 block">
+            Nom et Prénom de l'apprenant(e) pour l'Attestation :
+          </label>
+          <div class="flex flex-col sm:flex-row gap-2">
+            <input type="text" id="student-name-input" class="cma-input" placeholder="Ex: Jean DUPONT" oninput="updateStudentName(this.value)">
+            <button onclick="window.print()" id="btn-print" class="cma-btn px-6 bg-[#A50F23] text-white text-xs sm:text-sm whitespace-nowrap shadow" disabled>
+              🖨️ Imprimer / Enregistrer en PDF
+            </button>
+          </div>
+          <p id="attestation-lock-notice" class="text-xs text-red-600 font-medium">
+            ⚠️ L'attestation est réservée aux apprenants ayant validé les 5 exercices du Niveau 1 (Socle CAP).
+          </p>
+        </div>
+      </div>
+
+      <!-- ATTESTATION OFFICIELLE IMPRIMABLE -->
+      <div id="print-area" class="bg-white p-6 sm:p-8 rounded-2xl shadow-lg border-2 border-[#A50F23] space-y-6">
+        <!-- En-tête officiel -->
+        <div class="flex items-center justify-between border-b-2 border-red-100 pb-4">
+          <img src="logo.png" alt="Logo CMA Formation" style="max-height: 48px; width: auto; object-fit: contain;" onerror="this.onerror=null; this.src='https://placehold.co/120x48/A50F23/FFFFFF?text=CMA+Formation';">
+          <div class="text-right">
+            <span class="text-[11px] text-slate-400 uppercase tracking-widest block font-bold">CMA FORMATION SAINTE-CLOTILDE</span>
+            <span class="text-xs text-slate-600 font-semibold">Île de La Réunion</span>
+          </div>
+        </div>
+
+        <!-- Titre de l'attestation -->
+        <div class="text-center space-y-2 pt-1">
+          <span class="text-xs uppercase tracking-widest text-[#EE3C3D] font-extrabold">Attestation Pédagogique de Réussite</span>
+          <h3 class="text-xl sm:text-2xl font-bold text-[#A50F23]">Fonctions Affines : Étude complète & Amortissement</h3>
+          <p class="text-xs text-slate-500">Module de Mathématiques appliquées • CAP Métiers de la Coiffure</p>
+        </div>
+
+        <!-- Nom apprenant et date -->
+        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 text-center space-y-2">
+          <p class="text-xs sm:text-sm text-slate-600">Attestation décernée avec succès à :</p>
+          <div id="cert-student-name" class="text-lg sm:text-xl font-extrabold text-slate-900 tracking-wide uppercase">
+            [Nom de l'apprenant(e)]
+          </div>
+          <p class="text-xs text-slate-500">
+            pour avoir validé les compétences de la séance pédagogique du <span id="cert-date" class="font-bold text-slate-700"></span>.
+          </p>
+        </div>
+
+        <!-- Grille des compétences C1 à C4 -->
+        <div class="space-y-2">
+          <span class="text-xs font-bold text-slate-800 uppercase block tracking-wide">Compétences du Référentiel Évaluées :</span>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+            <div class="p-2.5 bg-emerald-50 rounded border border-emerald-200 flex items-center justify-between">
+              <span><strong>C1 - S'informer :</strong> Lire un tableau et identifier les coefficients $a$ et $b$</span>
+              <span class="text-emerald-700 font-bold">✓ Validé</span>
+            </div>
+            <div class="p-2.5 bg-emerald-50 rounded border border-emerald-200 flex items-center justify-between">
+              <span><strong>C2 - Exécuter :</strong> Calculer des images et le taux de variation $\Delta y$</span>
+              <span class="text-emerald-700 font-bold">✓ Validé</span>
+            </div>
+            <div class="p-2.5 bg-emerald-50 rounded border border-emerald-200 flex items-center justify-between">
+              <span><strong>C3 - Raisonner :</strong> Déterminer le sens de variation et modéliser l'amortissement</span>
+              <span class="text-emerald-700 font-bold">✓ Validé</span>
+            </div>
+            <div class="p-2.5 bg-emerald-50 rounded border border-emerald-200 flex items-center justify-between">
+              <span><strong>C4 - Communiquer :</strong> Interpréter la valeur résiduelle pour l'entreprise</span>
+              <span class="text-emerald-700 font-bold">✓ Validé</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Scores Breakdown -->
+        <div class="p-3 bg-red-50/50 rounded-lg border border-red-100 flex items-center justify-between text-xs">
+          <div>
+            <span class="text-slate-600 font-medium">Socle fondamental CAP : </span>
+            <strong id="cert-socle-perc" class="text-emerald-700 font-bold">0 %</strong>
+          </div>
+          <div>
+            <span class="text-slate-600 font-medium">Défis Bonus accomplis : </span>
+            <strong id="cert-bonus-pts" class="text-amber-800 font-bold">0 / 6</strong>
+          </div>
+        </div>
+
+        <!-- Signatures -->
+        <div class="pt-6 flex items-center justify-between text-xs text-slate-600 border-t border-slate-200">
+          <div>
+            <p class="font-bold text-slate-800">Formatrice référente</p>
+            <p>Rachel Lamberet-Lezais</p>
+            <p class="text-[10px] text-slate-400">CMA Formation Sainte-Clotilde</p>
+          </div>
+          <div class="text-right">
+            <p class="font-bold text-slate-800">Sceau Pédagogique</p>
+            <div class="inline-block px-3 py-1 bg-red-100 text-[#A50F23] font-bold rounded text-[11px] mt-1">
+              CONFORME CAP
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Pied de page -->
+  <footer class="bg-white border-t border-slate-200 py-3 mt-8 no-print">
+    <div class="max-w-4xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-1">
+      <div>CMA Formation Sainte-Clotilde • Mathématiques CAP Coiffure</div>
+      <div>Auteur : Rachel Lamberet-Lezais • Année 2 - S4 M2</div>
+    </div>
+  </footer>
+
+  <!-- LOGIQUE JAVASCRIPT ET SIMULATION DYNAMIQUE -->
+  <script>
+    /* État global de l'application */
+    const appState = {
+      currentTab: 1,
+      currentLevel: 1,
+      studentName: '',
+      investigation: { table: false, q2: false, q3: false, q4: false, q6: false },
+      n1: { ex1: false, ex2: false, ex3: false, ex4: false, ex5: false },
+      n2: { ex1: false, ex2: false, ex3: false },
+      n3: { ex1: false, ex2: false, ex3: false }
+    };
+
+    /* Parser numérique tolérant (virgules et points) */
+    function parseNum(val) {
+      if (val === null || val === undefined) return NaN;
+      const clean = String(val).trim().replace(',', '.');
+      if (clean === '') return NaN;
+      return parseFloat(clean);
+    }
+
+    /* Comparaison avec tolérance aux arrondis */
+    function near(val, target, tol = 0.1) {
+      return Math.abs(val - target) <= tol;
+    }
+
+    /* Gestion des onglets */
+    function switchTab(tabIndex) {
+      appState.currentTab = tabIndex;
+      document.querySelectorAll('.stage-container').forEach((el, idx) => {
+        el.classList.toggle('hidden', idx + 1 !== tabIndex);
+      });
+
+      for (let i = 1; i <= 4; i++) {
+        const btn = document.getElementById(`tab-btn-${i}`);
+        if (i === tabIndex) {
+          btn.className = "cma-btn flex-shrink-0 px-3.5 py-2 text-xs sm:text-sm rounded-full bg-[#A50F23] text-white shadow";
+        } else {
+          btn.className = "cma-btn flex-shrink-0 px-3.5 py-2 text-xs sm:text-sm rounded-full bg-slate-100 text-slate-700 hover:bg-slate-200";
+        }
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      if (tabIndex === 2) {
+        setTimeout(drawSimulation, 60);
+      }
+
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise().catch(() => {});
+      }
+    }
+
+    /* Gestion des paliers de l'étape 3 */
+    function switchLevel(lvl) {
+      appState.currentLevel = lvl;
+      document.getElementById('level-container-1').classList.toggle('hidden', lvl !== 1);
+      document.getElementById('level-container-2').classList.toggle('hidden', lvl !== 2);
+      document.getElementById('level-container-3').classList.toggle('hidden', lvl !== 3);
+
+      const b1 = document.getElementById('lvl-btn-1');
+      const b2 = document.getElementById('lvl-btn-2');
+      const b3 = document.getElementById('lvl-btn-3');
+
+      b1.className = (lvl === 1) ? 'cma-btn px-3 py-1.5 text-xs font-bold rounded-lg bg-emerald-700 text-white' : 'cma-btn px-3 py-1.5 text-xs font-bold rounded-lg bg-emerald-100 text-emerald-800';
+      if (!b2.disabled) {
+        b2.className = (lvl === 2) ? 'cma-btn px-3 py-1.5 text-xs font-bold rounded-lg bg-amber-700 text-white' : 'cma-btn px-3 py-1.5 text-xs font-bold rounded-lg bg-amber-100 text-amber-800';
+      }
+      if (!b3.disabled) {
+        b3.className = (lvl === 3) ? 'cma-btn px-3 py-1.5 text-xs font-bold rounded-lg bg-red-700 text-white' : 'cma-btn px-3 py-1.5 text-xs font-bold rounded-lg bg-red-100 text-red-800';
+      }
+
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise().catch(() => {});
+      }
+    }
+
+    /* ============================================================== */
+    /* ÉTAPE 1 : VÉRIFICATIONS D'INVESTIGATION                        */
+    /* ============================================================== */
+    function checkInvestigationTable() {
+      const v3 = parseNum(document.getElementById('tab-val-3').value);
+      const v4 = parseNum(document.getElementById('tab-val-4').value);
+      const v5 = parseNum(document.getElementById('tab-val-5').value);
+      const fb = document.getElementById('fb-inv-table');
+
+      if (isNaN(v3) || isNaN(v4) || isNaN(v5)) {
+        fb.innerHTML = '<span class="text-amber-600">Complétez les 3 valeurs manquantes.</span>';
+        return;
+      }
+
+      if (near(v3, 1400) && near(v4, 700) && near(v5, 0)) {
+        fb.innerHTML = '<span class="text-emerald-700 font-bold">✓ Bravo ! Les valeurs sont 1 400 €, 700 € et 0 €.</span>';
+        document.getElementById('tab-val-3').classList.add('valid');
+        document.getElementById('tab-val-4').classList.add('valid');
+        document.getElementById('tab-val-5').classList.add('valid');
+        appState.investigation.table = true;
+      } else {
+        fb.innerHTML = '<span class="text-red-600">Calcul à revoir : retranchez 700 € à chaque année.</span>';
+      }
+      updateGlobalProgress();
+    }
+
+    function checkInvQ2() {
+      const v = parseNum(document.getElementById('inv-q2').value);
+      const fb = document.getElementById('fb-inv-q2');
+      if (isNaN(v)) {
+        fb.innerHTML = '<span class="text-amber-600">Saisissez une valeur numérique.</span>';
+        return;
+      }
+      if (near(v, -700)) {
+        fb.innerHTML = '<span class="text-emerald-700 font-bold">✓ Exact ! 2 800 − 3 500 = −700 €. Chaque année fait perdre 700 €.</span>';
+        document.getElementById('inv-q2').classList.add('valid');
+        appState.investigation.q2 = true;
+      } else {
+        fb.innerHTML = '<span class="text-red-600">Rappel : Delta y = f(1) − f(0) = 2800 − 3500. N\'oubliez pas le signe négatif (−700).</span>';
+      }
+      updateGlobalProgress();
+    }
+
+    function checkInvQ3() {
+      const a = parseNum(document.getElementById('inv-q3-a').value);
+      const b = parseNum(document.getElementById('inv-q3-b').value);
+      const fb = document.getElementById('fb-inv-q3');
+      if (isNaN(a) || isNaN(b)) {
+        fb.innerHTML = '<span class="text-amber-600">Renseignez a et b.</span>';
+        return;
+      }
+      if (near(a, -700) && near(b, 3500)) {
+        fb.innerHTML = '<span class="text-emerald-700 font-bold">✓ Parfait ! f(x) = −700x + 3500.</span>';
+        document.getElementById('inv-q3-a').classList.add('valid');
+        document.getElementById('inv-q3-b').classList.add('valid');
+        appState.investigation.q3 = true;
+      } else {
+        fb.innerHTML = '<span class="text-red-600">La pente est la diminution annuelle (−700) et b est l\'achat initial (3 500).</span>';
+      }
+      updateGlobalProgress();
+    }
+
+    function checkInvQ4() {
+      const v = parseNum(document.getElementById('inv-q4').value);
+      const fb = document.getElementById('fb-inv-q4');
+      if (v === 2) {
+        fb.innerHTML = '<span class="text-emerald-700 font-bold">✓ Exact ! Puisque a &lt; 0, la fonction est strictement décroissante.</span>';
+        document.getElementById('inv-q4').classList.add('valid');
+        appState.investigation.q4 = true;
+      } else {
+        fb.innerHTML = '<span class="text-red-600">Une valeur qui diminue régulièrement correspond à une fonction décroissante (taper 2).</span>';
+      }
+      updateGlobalProgress();
+    }
+
+    function checkInvQ6() {
+      const v = parseNum(document.getElementById('inv-q6').value);
+      const fb = document.getElementById('fb-inv-q6');
+      if (near(v, 0)) {
+        fb.innerHTML = '<span class="text-emerald-700 font-bold">✓ Exact ! f(5) = 0 €. Le poste est totalement amorti au bout de 5 ans.</span>';
+        document.getElementById('inv-q6').classList.add('valid');
+        appState.investigation.q6 = true;
+      } else {
+        fb.innerHTML = '<span class="text-red-600">Calculez 3500 − 5 × 700. La valeur résiduelle finale est 0.</span>';
+      }
+      updateGlobalProgress();
+    }
+
+    /* ============================================================== */
+    /* ÉTAPE 2 : SIMULATEUR GRAPHIQUE CANVAS                          */
+    /* ============================================================== */
+    function presetAmortissement() {
+      document.getElementById('sim-a').value = -700;
+      document.getElementById('sim-b').value = 3500;
+      drawSimulation();
+    }
+
+    function presetStandard() {
+      document.getElementById('sim-a').value = 2;
+      document.getElementById('sim-b').value = 1;
+      drawSimulation();
+    }
+
+    function drawSimulation() {
+      const a = parseFloat(document.getElementById('sim-a').value);
+      const b = parseFloat(document.getElementById('sim-b').value);
+
+      document.getElementById('disp-a').textContent = a;
+      document.getElementById('disp-b').textContent = b;
+
+      // Équation formatée
+      let eqStr = `f(x) = ${a}x `;
+      if (b >= 0) eqStr += `+ ${b}`;
+      else eqStr += `− ${Math.abs(b)}`;
+      document.getElementById('sim-eq').textContent = eqStr;
+
+      // Badge de nature
+      const badge = document.getElementById('sim-nature-badge');
+      if (a > 0) {
+        badge.className = "px-2.5 py-1 rounded font-bold bg-emerald-50 text-emerald-800 border border-emerald-200";
+        badge.textContent = "Croissante (a > 0)";
+      } else if (a < 0) {
+        badge.className = "px-2.5 py-1 rounded font-bold bg-amber-50 text-amber-800 border border-amber-200";
+        badge.textContent = "Décroissante (a < 0)";
+      } else {
+        badge.className = "px-2.5 py-1 rounded font-bold bg-slate-100 text-slate-800 border border-slate-200";
+        badge.textContent = "Constante (a = 0)";
+      }
+
+      // Tracé Canvas
+      const canvas = document.getElementById('sim-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width;
+      const h = canvas.height;
+
+      ctx.clearRect(0, 0, w, h);
+
+      // Repère adapté selon plage
+      const isAmort = Math.abs(a) > 50 || Math.abs(b) > 50;
+      const xMin = isAmort ? -1 : -5;
+      const xMax = isAmort ? 6 : 5;
+      const yMin = isAmort ? -500 : -5;
+      const yMax = isAmort ? 4500 : 15;
+
+      function toPxX(x) { return ((x - xMin) / (xMax - xMin)) * w; }
+      function toPxY(y) { return h - ((y - yMin) / (yMax - yMin)) * h; }
+
+      // Grille de fond
+      ctx.strokeStyle = "#F1F5F9";
+      ctx.lineWidth = 1;
+      const stepX = isAmort ? 1 : 1;
+      for (let gx = Math.ceil(xMin); gx <= xMax; gx += stepX) {
+        ctx.beginPath();
+        ctx.moveTo(toPxX(gx), 0);
+        ctx.lineTo(toPxX(gx), h);
+        ctx.stroke();
+      }
+
+      // Axes principaux
+      ctx.strokeStyle = "#94A3B8";
+      ctx.lineWidth = 1.5;
+
+      // Axe X
+      const py0 = toPxY(0);
+      ctx.beginPath();
+      ctx.moveTo(0, py0);
+      ctx.lineTo(w, py0);
+      ctx.stroke();
+
+      // Axe Y
+      const px0 = toPxX(0);
+      ctx.beginPath();
+      ctx.moveTo(px0, 0);
+      ctx.lineTo(px0, h);
+      ctx.stroke();
+
+      // Graduations
+      ctx.fillStyle = "#64748B";
+      ctx.font = "11px Arial";
+      ctx.textAlign = "center";
+      for (let gx = Math.ceil(xMin); gx <= xMax; gx += (isAmort ? 1 : 2)) {
+        if (gx !== 0) ctx.fillText(gx, toPxX(gx), Math.min(h - 5, Math.max(15, py0 + 14)));
+      }
+
+      // Tracé de la droite f(x) = ax + b
+      ctx.strokeStyle = "#A50F23";
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      const yStart = a * xMin + b;
+      const yEnd = a * xMax + b;
+      ctx.moveTo(toPxX(xMin), toPxY(yStart));
+      ctx.lineTo(toPxX(xMax), toPxY(yEnd));
+      ctx.stroke();
+
+      // Point (0, b)
+      ctx.fillStyle = "#EE3C3D";
+      ctx.beginPath();
+      ctx.arc(px0, toPxY(b), 5, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Point racine si dans le repère : x0 = -b/a
+      if (a !== 0) {
+        const xRacine = -b / a;
+        if (xRacine >= xMin && xRacine <= xMax) {
+          ctx.fillStyle = "#10B981";
+          ctx.beginPath();
+          ctx.arc(toPxX(xRacine), py0, 5, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      // Légende des points clés
+      const racineStr = a !== 0 ? (-b / a).toFixed(2) : "Aucune";
+      document.getElementById('sim-key-pts').innerHTML = `
+        <div>• <strong>Ordonnée à l'origine (x = 0) :</strong> f(0) = ${b}</div>
+        <div>• <strong>Intersection axe des abscisses (f(x) = 0) :</strong> x = ${racineStr}</div>
+      `;
+
+      updateCalculatedImage();
+    }
+
+    function updateCalculatedImage() {
+      const a = parseFloat(document.getElementById('sim-a').value);
+      const b = parseFloat(document.getElementById('sim-b').value);
+      const xInput = parseFloat(document.getElementById('calc-x').value);
+      const res = a * xInput + b;
+      document.getElementById('calc-res').textContent = `${isNaN(res) ? '...' : res.toLocaleString('fr-FR')} €`;
+    }
+
+    /* ============================================================== */
+    /* ÉTAPE 3 : VÉRIFICATION DES EXERCICES NIVEAU 1                  */
+    /* ============================================================== */
+    function checkEx1_1() {
+      const a = parseNum(document.getElementById('ex1-1-a').value);
+      const b = parseNum(document.getElementById('ex1-1-b').value);
+      const c = parseNum(document.getElementById('ex1-1-c').value);
+      const d = parseNum(document.getElementById('ex1-1-d').value);
+      const e = parseNum(document.getElementById('ex1-1-e').value);
+      const f = parseNum(document.getElementById('ex1-1-f').value);
+      const g = parseNum(document.getElementById('ex1-1-g').value);
+      const h = parseNum(document.getElementById('ex1-1-h').value);
+      const fb = document.getElementById('fb-ex1-1');
+
+      if ([a,b,c,d,e,f,g,h].some(isNaN)) {
+        fb.innerHTML = '<span class="text-amber-600">Renseignez l\'ensemble des 8 valeurs.</span>';
+        return;
+      }
+
+      if (a === 3 && b === 5 && c === -200 && d === 1500 && e === 45 && f === 0 && g === 0 && h === 80) {
+        fb.innerHTML = '<span class="text-emerald-700 font-bold">✓ Bravo ! Tous les coefficients a et b sont parfaitement identifiés.</span>';
+        document.getElementById('badge-ex1-1').textContent = 'Validé';
+        document.getElementById('badge-ex1-1').className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800';
+        appState.n1.ex1 = true;
+      } else {
+        fb.innerHTML = '<span class="text-red-600">Erreur : pour 45x, b = 0. Pour 80, a = 0 et b = 80.</span>';
+      }
+      updateScores();
+    }
+
+    function checkEx1_2() {
+      const a = parseNum(document.getElementById('ex1-2-a').value);
+      const b = parseNum(document.getElementById('ex1-2-b').value);
+      const c = parseNum(document.getElementById('ex1-2-c').value);
+      const fb = document.getElementById('fb-ex1-2');
+
+      if (isNaN(a) || isNaN(b) || isNaN(c)) {
+        fb.innerHTML = '<span class="text-amber-600">Complétez les 3 images.</span>';
+        return;
+      }
+
+      if (near(a, 900) && near(b, 600) && near(c, 300)) {
+        fb.innerHTML = '<span class="text-emerald-700 font-bold">✓ Exact ! f(0) = 900 €, f(2) = 600 €, f(4) = 300 €.</span>';
+        document.getElementById('badge-ex1-2').textContent = 'Validé';
+        document.getElementById('badge-ex1-2').className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800';
+        appState.n1.ex2 = true;
+      } else {
+        fb.innerHTML = '<span class="text-red-600">Calcul : remplacez x par 0, 2 et 4 dans −150x + 900.</span>';
+      }
+      updateScores();
+    }
+
+    function checkEx1_3() {
+      const a = parseNum(document.getElementById('ex1-3-a').value);
+      const b = parseNum(document.getElementById('ex1-3-b').value);
+      const c = parseNum(document.getElementById('ex1-3-c').value);
+      const d = parseNum(document.getElementById('ex1-3-d').value);
+      const fb = document.getElementById('fb-ex1-3');
+
+      if (isNaN(a) || isNaN(b) || isNaN(c) || isNaN(d)) {
+        fb.innerHTML = '<span class="text-amber-600">Renseignez les 4 cas.</span>';
+        return;
+      }
+
+      if (a === 1 && b === 2 && c === 2 && d === 1) {
+        fb.innerHTML = '<span class="text-emerald-700 font-bold">✓ Très bien ! a&gt;0 donne croissante (1) et a&lt;0 donne décroissante (2).</span>';
+        document.getElementById('badge-ex1-3').textContent = 'Validé';
+        document.getElementById('badge-ex1-3').className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800';
+        appState.n1.ex3 = true;
+      } else {
+        fb.innerHTML = '<span class="text-red-600">Vérifiez le signe de la pente a devant x.</span>';
+      }
+      updateScores();
+    }
+
+    function checkEx1_4() {
+      const a = parseNum(document.getElementById('ex1-4-a').value);
+      const b = parseNum(document.getElementById('ex1-4-b').value);
+      const c = parseNum(document.getElementById('ex1-4-c').value);
+      const fb = document.getElementById('fb-ex1-4');
+
+      if (isNaN(a) || isNaN(b) || isNaN(c)) {
+        fb.innerHTML = '<span class="text-amber-600">Complétez le tableau.</span>';
+        return;
+      }
+
+      if (near(a, 10) && near(b, 6) && near(c, 0)) {
+        fb.innerHTML = '<span class="text-emerald-700 font-bold">✓ Parfait ! f(0) = 10, f(2) = 6, f(5) = 0.</span>';
+        document.getElementById('badge-ex1-4').textContent = 'Validé';
+        document.getElementById('badge-ex1-4').className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800';
+        appState.n1.ex4 = true;
+      } else {
+        fb.innerHTML = '<span class="text-red-600">Calcul : f(x) = −2x + 10. f(2) = −4 + 10 = 6.</span>';
+      }
+      updateScores();
+    }
+
+    function checkEx1_5() {
+      const a = parseNum(document.getElementById('ex1-5-a').value);
+      const b = parseNum(document.getElementById('ex1-5-b').value);
+      const c = parseNum(document.getElementById('ex1-5-c').value);
+      const fb = document.getElementById('fb-ex1-5');
+
+      if (isNaN(a) || isNaN(b) || isNaN(c)) {
+        fb.innerHTML = '<span class="text-amber-600">Complétez les 3 questions.</span>';
+        return;
+      }
+
+      if (near(a, 15) && near(b, 25) && near(c, 65)) {
+        fb.innerHTML = '<span class="text-emerald-700 font-bold">✓ Excellent ! b = 15 € fixes, a = 25 €/h et T(2) = 25×2 + 15 = 65 €.</span>';
+        document.getElementById('badge-ex1-5').textContent = 'Validé';
+        document.getElementById('badge-ex1-5').className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800';
+        appState.n1.ex5 = true;
+      } else {
+        fb.innerHTML = '<span class="text-red-600">Le forfait fixe est 15, le taux horaire est 25, et 2h coûtent 25×2 + 15 = 65.</span>';
+      }
+      updateScores();
+    }
+
+    /* ============================================================== */
+    /* ÉTAPE 3 : VÉRIFICATION DES EXERCICES NIVEAU 2                  */
+    /* ============================================================== */
+    function checkEx2_1() {
+      const a = parseNum(document.getElementById('ex2-1-a').value);
+      const b = parseNum(document.getElementById('ex2-1-b').value);
+      const c = parseNum(document.getElementById('ex2-1-c').value);
+      const d = parseNum(document.getElementById('ex2-1-d').value);
+      const fb = document.getElementById('fb-ex2-1');
+
+      if (isNaN(a) || isNaN(b) || isNaN(c) || isNaN(d)) {
+        fb.innerHTML = '<span class="text-amber-600">Renseignez les 4 réponses.</span>';
+        return;
+      }
+
+      if (near(a, 2400) && near(b, 600) && near(c, 600) && near(d, 4)) {
+        fb.innerHTML = '<span class="text-amber-800 font-bold">✓ Très bien ! Achat = 2 400 €, amortissement = 600 €/an, V(3) = 600 € et V(x)=0 à 4 ans.</span>';
+        document.getElementById('badge-ex2-1').textContent = 'Validé';
+        document.getElementById('badge-ex2-1').className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-800';
+        appState.n2.ex1 = true;
+      } else {
+        fb.innerHTML = '<span class="text-red-600">Vérifiez vos calculs pour le bac massant.</span>';
+      }
+      updateScores();
+    }
+
+    function checkEx2_2() {
+      const a = parseNum(document.getElementById('ex2-2-a').value);
+      const b = parseNum(document.getElementById('ex2-2-b').value);
+      const c = parseNum(document.getElementById('ex2-2-c').value);
+      const fb = document.getElementById('fb-ex2-2');
+
+      if (isNaN(a) || isNaN(b) || isNaN(c)) {
+        fb.innerHTML = '<span class="text-amber-600">Renseignez les 3 réponses.</span>';
+        return;
+      }
+
+      if (near(a, 8) && near(b, 260) && near(c, 40)) {
+        fb.innerHTML = '<span class="text-amber-800 font-bold">✓ Bravo ! Égalité à 8 appareils. Pour 12 appareils : A = 260 € contre B = 300 € (économie de 40 €).</span>';
+        document.getElementById('badge-ex2-2').textContent = 'Validé';
+        document.getElementById('badge-ex2-2').className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-800';
+        appState.n2.ex2 = true;
+      } else {
+        fb.innerHTML = '<span class="text-red-600">15x + 80 = 25x donne 10x = 80 donc x = 8. Pour 12 app : A = 15×12 + 80 = 260. B = 25×12 = 300.</span>';
+      }
+      updateScores();
+    }
+
+    function checkEx2_3() {
+      const a = parseNum(document.getElementById('ex2-3-a').value);
+      const b = parseNum(document.getElementById('ex2-3-b').value);
+      const fb = document.getElementById('fb-ex2-3');
+
+      if (isNaN(a) || isNaN(b)) {
+        fb.innerHTML = '<span class="text-amber-600">Complétez les 2 champs.</span>';
+        return;
+      }
+
+      if (near(a, 90) && near(b, 10)) {
+        fb.innerHTML = '<span class="text-amber-800 font-bold">✓ Parfait ! S(6) = −15×6 + 180 = 90 flacons. Seuil d\'alerte de 30 atteint à la semaine 10.</span>';
+        document.getElementById('badge-ex2-3').textContent = 'Validé';
+        document.getElementById('badge-ex2-3').className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-800';
+        appState.n2.ex3 = true;
+      } else {
+        fb.innerHTML = '<span class="text-red-600">Calcul : S(6) = 180 − 90 = 90. −15x + 180 = 30 implique −15x = −150 donc x = 10.</span>';
+      }
+      updateScores();
+    }
+
+    /* ============================================================== */
+    /* ÉTAPE 3 : VÉRIFICATION DES EXERCICES NIVEAU 3                  */
+    /* ============================================================== */
+    function checkEx3_1() {
+      const a = parseNum(document.getElementById('ex3-1-a').value);
+      const b = parseNum(document.getElementById('ex3-1-b').value);
+      const c = parseNum(document.getElementById('ex3-1-c').value);
+      const fb = document.getElementById('fb-ex3-1');
+
+      if (isNaN(a) || isNaN(b) || isNaN(c)) {
+        fb.innerHTML = '<span class="text-amber-600">Répondez aux 3 questions.</span>';
+        return;
+      }
+
+      if (near(a, 2400) && near(b, 600) && (near(c, -1050) || near(c, 1050))) {
+        fb.innerHTML = '<span class="text-red-800 font-bold">✓ Superbe ! V(4) = 2 400 €, plus-value de 600 € et dépréciation ajustée a = −1 050 €/an.</span>';
+        document.getElementById('badge-ex3-1').textContent = 'Validé';
+        document.getElementById('badge-ex3-1').className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-red-100 text-red-800';
+        appState.n3.ex1 = true;
+      } else {
+        fb.innerHTML = '<span class="text-red-600">V(4) = −1200×4 + 7200 = 2400. Plus-value = 3000 − 2400 = 600. Pente = (3000 − 7200)/4 = −1050.</span>';
+      }
+      updateScores();
+    }
+
+    function checkEx3_2() {
+      const a = parseNum(document.getElementById('ex3-2-a').value);
+      const b = parseNum(document.getElementById('ex3-2-b').value);
+      const c = parseNum(document.getElementById('ex3-2-c').value);
+      const fb = document.getElementById('fb-ex3-2');
+
+      if (isNaN(a) || isNaN(b) || isNaN(c)) {
+        fb.innerHTML = '<span class="text-amber-600">Répondez aux 3 questions.</span>';
+        return;
+      }
+
+      if (near(a, 60) && near(b, 30) && near(c, 900)) {
+        fb.innerHTML = '<span class="text-red-800 font-bold">✓ Exact ! 40x = 10x + 1800 donne x = 60 clientes. B(x) = 30x − 1800. Pour 90 clientes, B(90) = 900 €.</span>';
+        document.getElementById('badge-ex3-2').textContent = 'Validé';
+        document.getElementById('badge-ex3-2').className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-red-100 text-red-800';
+        appState.n3.ex2 = true;
+      } else {
+        fb.innerHTML = '<span class="text-red-600">30x = 1800 donne x = 60. Marge = 40 − 10 = 30 €. Pour 90 clientes : 30×90 − 1800 = 2700 − 1800 = 900 €.</span>';
+      }
+      updateScores();
+    }
+
+    function checkEx3_3() {
+      const a = parseNum(document.getElementById('ex3-3-a').value);
+      const b = parseNum(document.getElementById('ex3-3-b').value);
+      const fb = document.getElementById('fb-ex3-3');
+
+      if (isNaN(a) || isNaN(b)) {
+        fb.innerHTML = '<span class="text-amber-600">Complétez les 2 calculs.</span>';
+        return;
+      }
+
+      if (near(a, 2.6) && near(b, 60)) {
+        fb.innerHTML = '<span class="text-red-800 font-bold">✓ Bravo ! U(28) = 0,05×28 + 1,2 = 2,6 V. Et (4,2 − 1,2)/0,05 = 60 °C (conforme car 60 ≤ 65 °C).</span>';
+        document.getElementById('badge-ex3-3').textContent = 'Validé';
+        document.getElementById('badge-ex3-3').className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-red-100 text-red-800';
+        appState.n3.ex3 = true;
+      } else {
+        fb.innerHTML = '<span class="text-red-600">Calcul : 0,05×28 + 1,2 = 2,6 V. Puis (4,2 − 1,2)/0,05 = 3 / 0,05 = 60 °C.</span>';
+      }
+      updateScores();
+    }
+
+    /* ============================================================== */
+    /* GESTION DES SCORES, ATTESTATION & PROGRESSION                  */
+    /* ============================================================== */
+    function updateScores() {
+      const n1Count = Object.values(appState.n1).filter(Boolean).length;
+      document.getElementById('score-n1-display').textContent = `${n1Count} / 5`;
+      const percN1 = Math.round((n1Count / 5) * 100);
+      document.getElementById('bilan-socle-status').textContent = `${percN1}% complété`;
+      document.getElementById('cert-socle-perc').textContent = `${percN1} %`;
+
+      // Déblocage Niveau 2 et Attestation à 100% de N1
+      if (n1Count === 5) {
+        const b2 = document.getElementById('lvl-btn-2');
+        if (b2.disabled) {
+          b2.disabled = false;
+          b2.classList.remove('cursor-not-allowed', 'text-slate-400');
+          b2.classList.add('bg-amber-100', 'text-amber-800');
+          b2.innerHTML = '<span>🟡 Niveau 2 : Avancé</span>';
+        }
+        document.getElementById('btn-print').disabled = false;
+        document.getElementById('attestation-lock-notice').className = 'text-xs text-emerald-600 font-bold';
+        document.getElementById('attestation-lock-notice').innerHTML = '✓ Félicitations ! Votre socle CAP est validé à 100 %. Vous pouvez imprimer votre attestation.';
+      }
+
+      const n2Count = Object.values(appState.n2).filter(Boolean).length;
+      document.getElementById('score-n2-display').textContent = `${n2Count} / 3`;
+      document.getElementById('bilan-bonus-n2').textContent = `${n2Count} / 3 exercices`;
+
+      // Déblocage Niveau 3 à 100% de N2
+      if (n2Count === 3) {
+        const b3 = document.getElementById('lvl-btn-3');
+        if (b3.disabled) {
+          b3.disabled = false;
+          b3.classList.remove('cursor-not-allowed', 'text-slate-400');
+          b3.classList.add('bg-red-100', 'text-red-800');
+          b3.innerHTML = '<span>🔴 Niveau 3 : Expert</span>';
+        }
+      }
+
+      const n3Count = Object.values(appState.n3).filter(Boolean).length;
+      document.getElementById('score-n3-display').textContent = `${n3Count} / 3`;
+      document.getElementById('bilan-bonus-n3').textContent = `${n3Count} / 3 exercices`;
+
+      document.getElementById('cert-bonus-pts').textContent = `${n2Count + n3Count} / 6`;
+
+      updateGlobalProgress();
+    }
+
+    function updateGlobalProgress() {
+      const invCount = Object.values(appState.investigation).filter(Boolean).length;
+      const n1Count = Object.values(appState.n1).filter(Boolean).length;
+      const n2Count = Object.values(appState.n2).filter(Boolean).length;
+      const n3Count = Object.values(appState.n3).filter(Boolean).length;
+
+      // 5 inv + 5 N1 + 3 N2 + 3 N3 = 16 jalons
+      const total = invCount + n1Count + n2Count + n3Count;
+      const perc = Math.round((total / 16) * 100);
+      document.getElementById('global-progress').style.width = `${perc}%`;
+    }
+
+    function updateStudentName(val) {
+      appState.studentName = val.trim();
+      const display = document.getElementById('cert-student-name');
+      display.textContent = appState.studentName ? appState.studentName : "[Nom de l'apprenant(e)]";
+    }
+
+    function initDate() {
+      const today = new Date();
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById('cert-date').textContent = today.toLocaleDateString('fr-FR', options);
+    }
+
+    window.addEventListener('load', function() {
+      initDate();
+      presetAmortissement();
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise().catch(() => {});
+      }
+    });
+
+    window.addEventListener('resize', function() {
+      if (appState.currentTab === 2) drawSimulation();
+    });
+  </script>
+</body>
+</html>
+```
