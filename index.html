@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#A50F23">
+  <meta name="description" content="L’espace pédagogique CAP Métiers de la Coiffure – Année 2 : activités de Mathématiques et de Physique-Chimie, CMA Formation Sainte-Clotilde.">
+  <title>CAP Métiers de la Coiffure – Année 2 · Mathématiques & Physique-Chimie</title>
+  <link rel="stylesheet" href="./assets/styles.css">
+  <script src="./applications.js" defer></script>
+  <script src="./assets/catalogue.js" defer></script>
+  <script src="./portail.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#contenu">Aller au contenu</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <img class="logo" src="./assets/logo.png" alt="CMA Formation" width="120" height="90">
+      <div class="identity"><span class="badge">COURS DIGITALISÉ</span><h1>CAP Métiers de la Coiffure – Année 2</h1><p>2e année · Mathématiques &amp; Physique-Chimie</p></div>
+    </div>
+  <div class="ribbon" aria-hidden="true"></div></header>
+  <main id="contenu">
+    <section id="acces" class="access-panel" aria-labelledby="access-title">
+      <span class="eyebrow">TON ESPACE DE FORMATION</span>
+      <h2 id="access-title">Prêt à commencer ?</h2>
+      <p id="access-help">Saisis le code communiqué par ton formateur pour retrouver tes activités.</p>
+      <form id="access-form">
+        <label for="access-code">Code d’accès</label>
+        <input id="access-code" type="password" required autocomplete="off" autocapitalize="none" spellcheck="false" aria-describedby="access-help access-error">
+        <p id="access-error" role="alert"></p>
+        <button class="primary" type="submit">Entrer dans mon espace <span aria-hidden="true">→</span></button>
+      </form>
+      <p class="access-note">Un code partagé. Aucun compte à créer.</p>
+    </section>
+    <noscript><p class="notice">Active JavaScript pour saisir le code et afficher les activités.</p></noscript>
+    <div id="portail" hidden>
+      <section id="matieres" aria-labelledby="welcome-title">
+        <div class="intro"><span class="eyebrow">APPRENDRE · COMPRENDRE · PRATIQUER</span><h2 id="welcome-title" tabindex="-1">Bienvenue dans ton espace</h2><p>Choisis une matière pour retrouver tes activités.</p></div>
+        <div class="subjects">
+          <button class="subject maths" data-discipline="M"><span class="subject-top"><span class="subject-icon" aria-hidden="true"><img src="./assets/fleche_rouge.png" alt="" width="42" height="42"></span><span class="subject-number" aria-hidden="true">01</span></span><span class="subject-title">MATHÉMATIQUES</span><span class="subject-description">Calculer, comparer et raisonner dans les situations du salon.</span><span class="subject-action">Accéder aux activités <span aria-hidden="true">→</span></span></button>
+          <button class="subject sciences" data-discipline="P"><span class="subject-top"><span class="subject-icon" aria-hidden="true"><img src="./assets/fleche_rouge.png" alt="" width="42" height="42"></span><span class="subject-number" aria-hidden="true">02</span></span><span class="subject-title">PHYSIQUE-CHIMIE</span><span class="subject-description">Comprendre les produits, la lumière et les gestes professionnels.</span><span class="subject-action">Accéder aux activités <span aria-hidden="true">→</span></span></button>
+        </div>
+        <p class="tip">À ton rythme, une activité après l’autre.</p>
+      </section>
+      <section id="discipline" hidden aria-labelledby="discipline-title">
+        <button id="retour" class="back">← Retour aux matières</button>
+        <div class="intro"><span class="eyebrow">MES ACTIVITÉS</span><h2 id="discipline-title" tabindex="-1"></h2><p id="discipline-description"></p></div>
+        <div id="catalogue" class="cards"></div>
+      </section>
+    </div>
+  </main>
+  <footer>
+    <strong>CMA Formation Sainte-Clotilde</strong>
+    <span>Rachel Lamberet-Lezais</span>
+    <span>CAP Métiers de la Coiffure – Année 2 · Maths &amp; Sciences</span>
+  </footer>
+</body>
+</html>
+
