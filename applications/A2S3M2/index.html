@@ -1,0 +1,1639 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CMA Formation - Inéquations & Seuils de Rentabilité</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- MathJax v3 for static LaTeX rendering -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <style>
+    /* CMA Formation Color Palette & Fonts */
+    :root {
+      --cma-bordeaux: #A50F23;
+      --cma-corail: #EE3C3D;
+      --cma-bg: #F8FAFC;
+      --cma-text: #1E293B;
+    }
+
+    body {
+      font-family: Arial, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--cma-bg);
+      color: var(--cma-text);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Required Visual Asset classes */
+    .app-header {
+      position: relative;
+      overflow: hidden;
+      padding-bottom: 20px;
+      background: linear-gradient(135deg, #8B0B1D 0%, #A50F23 50%, #B81329 100%);
+    }
+
+    .app-logo {
+      height: 48px;
+      width: auto;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+
+    .icon-bullet {
+      height: 18px;
+      width: 18px;
+      object-fit: contain;
+      display: inline-block;
+      vertical-align: middle;
+      flex-shrink: 0;
+      margin-right: 8px;
+    }
+
+    .cma-wave-border {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: auto;
+      height: 14px;
+      margin: 0;
+      border: 0;
+      background-image: url("ruban_vague.png");
+      background-repeat: repeat-x;
+      background-size: 102.941176px 102.941176px;
+      background-position: left -46.941176px;
+    }
+
+    /* Input styles respecting mobile touch targets >= 44px and font >= 16px */
+    .cma-input {
+      min-height: 46px;
+      font-size: 16px;
+      border: 2px solid #E2E8F0;
+      border-radius: 0.5rem;
+      padding: 0.5rem 0.85rem;
+      width: 100%;
+      outline: none;
+      transition: all 0.2s ease;
+      background-color: #FFFFFF;
+      color: #0F172A;
+    }
+    .cma-input:focus {
+      border-color: var(--cma-corail);
+      box-shadow: 0 0 0 3px rgba(238, 60, 61, 0.2);
+    }
+    .cma-input.valid {
+      border-color: #10B981;
+      background-color: #F0FDF4;
+    }
+    .cma-input.invalid {
+      border-color: #EF4444;
+      background-color: #FEF2F2;
+    }
+
+    /* Buttons minimum touch target size */
+    .cma-btn {
+      min-height: 44px;
+      min-width: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      border-radius: 0.5rem;
+      transition: background-color 0.15s ease, transform 0.05s ease;
+      user-select: none;
+      touch-action: manipulation;
+    }
+    .cma-btn:active {
+      transform: scale(0.98);
+    }
+
+    /* Custom scrollbar for horizontal tabs on mobile */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* Print rules for official Attestation */
+    @media print {
+      body {
+        background: #FFFFFF !important;
+        color: #000000 !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      #print-area {
+        display: block !important;
+        position: static !important;
+        border: 2px solid #A50F23 !important;
+        padding: 24px !important;
+        margin: 0 !important;
+        box-shadow: none !important;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+  <header class="app-header text-white shadow-md">
+    <div class="max-w-4xl mx-auto px-4 pt-3 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <img src="logo.png" alt="Logo CMA Formation" class="app-logo" onerror="this.onerror=null; this.src='https://placehold.co/120x48/A50F23/FFFFFF?text=CMA+Formation';">
+        <div>
+          <span class="inline-block bg-white/20 text-xs px-2 py-0.5 rounded font-bold tracking-wide uppercase">CMA Sainte-Clotilde</span>
+          <h1 class="text-sm sm:text-base font-bold leading-tight">CAP Métiers de la Coiffure</h1>
+        </div>
+      </div>
+      <div class="text-right hidden sm:block">
+        <span class="text-xs text-red-100 block">Année 2 - S3 M2</span>
+        <span class="text-xs font-semibold text-white">Mathématiques & Gestion</span>
+      </div>
+    </div>
+
+    <!-- Subtitle bar -->
+    <div class="max-w-4xl mx-auto px-4 mt-2 mb-1">
+      <div class="flex items-center text-xs sm:text-sm text-red-100 font-medium">
+        <span>Inéquations du 1<sup>er</sup> degré & Seuils de rentabilité</span>
+      </div>
+    </div>
+
+    <!-- Wave Ribbon Border (14px) -->
+    <div class="cma-wave-border"></div>
+  </header>
+
+  <div class="bg-slate-200 w-full h-2 sticky top-0 z-40">
+    <div id="global-progress" class="h-2 bg-gradient-to-r from-[#EE3C3D] to-[#A50F23] transition-all duration-500 ease-out" style="width: 0%;"></div>
+  </div>
+
+  <nav class="bg-white border-b border-slate-200 sticky top-2 z-30 shadow-sm no-print">
+    <div class="max-w-4xl mx-auto px-2 py-2 flex items-center space-x-2 overflow-x-auto no-scrollbar">
+      <button onclick="switchTab(1)" id="tab-btn-1" class="cma-btn flex-shrink-0 px-3 py-2 text-xs sm:text-sm rounded-full bg-[#A50F23] text-white shadow">
+        1. Découverte
+      </button>
+      <button onclick="switchTab(2)" id="tab-btn-2" class="cma-btn flex-shrink-0 px-3 py-2 text-xs sm:text-sm rounded-full bg-slate-100 text-slate-700 hover:bg-slate-200">
+        2. Cours & Simulateur
+      </button>
+      <button onclick="switchTab(3)" id="tab-btn-3" class="cma-btn flex-shrink-0 px-3 py-2 text-xs sm:text-sm rounded-full bg-slate-100 text-slate-700 hover:bg-slate-200">
+        3. Entraînement
+      </button>
+      <button onclick="switchTab(4)" id="tab-btn-4" class="cma-btn flex-shrink-0 px-3 py-2 text-xs sm:text-sm rounded-full bg-slate-100 text-slate-700 hover:bg-slate-200">
+        4. Bilan & Attestation
+      </button>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTAINER (Mobile-First 360px centered) -->
+  <main class="flex-grow max-w-4xl w-full mx-auto p-3 sm:p-6 space-y-6">
+
+    <section id="stage-1" class="stage-container space-y-5">
+      <!-- Title -->
+      <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+        <h2 class="text-base sm:text-lg font-bold text-[#A50F23] flex items-center mb-2">
+          <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.onerror=null; this.style.display='none';">
+          Mise en situation : Salon « L'Atelier Kréol » à Sainte-Clotilde
+        </h2>
+        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+          À Sainte-Clotilde (La Réunion), la gérante du salon <em>L'Atelier Kréol</em> analyse ses comptes d'exploitation journaliers afin d'assurer l'équilibre financier de son entreprise.
+        </p>
+
+        <!-- Données clés -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 my-4">
+          <div class="bg-red-50 p-3 rounded-lg border border-red-200">
+            <span class="text-xs text-[#A50F23] uppercase font-bold block">Charges fixes journalières</span>
+            <span class="text-xl font-bold text-slate-900">180,00 €</span>
+            <span class="text-[11px] text-slate-500 block">Loyer, clim sous climat tropical, électricité, matériel.</span>
+          </div>
+          <div class="bg-amber-50 p-3 rounded-lg border border-amber-200">
+            <span class="text-xs text-amber-800 uppercase font-bold block">Forfait Coupe & Coiffage</span>
+            <span class="text-xl font-bold text-slate-900">25,00 € TTC</span>
+            <span class="text-[11px] text-slate-500 block">Prix facturé au client.</span>
+          </div>
+          <div class="bg-emerald-50 p-3 rounded-lg border border-emerald-200">
+            <span class="text-xs text-emerald-800 uppercase font-bold block">Consommables directs</span>
+            <span class="text-xl font-bold text-slate-900">3,00 €</span>
+            <span class="text-[11px] text-slate-500 block">Shampooing technique, serviette jetable, produit coiffant.</span>
+          </div>
+        </div>
+
+        <div class="p-3 bg-slate-50 rounded-lg text-xs sm:text-sm text-slate-700 border-l-4 border-[#A50F23]">
+          <strong>Marge nette sur coût variable par coupe :</strong> $25{,}00 - 3{,}00 = 22{,}00\text{ €}$.<br>
+          Chaque coupe rapporte donc <strong>22 € nets</strong> pour couvrir les 180 € de frais fixes.
+        </div>
+      </div>
+
+      <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+        <h3 class="text-sm sm:text-base font-bold text-slate-800 flex items-center mb-3">
+          <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.onerror=null; this.style.display='none';">
+          Tableau d'exploration interactive des coupes journalières
+        </h3>
+        <p class="text-xs text-slate-500 mb-3">Cliquez sur les valeurs de coupes $x$ pour observer l'évolution de la recette nette et du statut d'équilibre financier :</p>
+        
+        <div class="overflow-x-auto pb-1">
+          <table class="min-w-full text-xs sm:text-sm text-center border-collapse">
+            <thead>
+              <tr class="bg-slate-100 text-slate-700">
+                <th class="p-2 border border-slate-200 text-left font-semibold">Nombre de coupes ($x$)</th>
+                <th class="p-2 border border-slate-200 font-semibold cursor-pointer hover:bg-slate-200" onclick="showColCalc(5)">5</th>
+                <th class="p-2 border border-slate-200 font-semibold cursor-pointer hover:bg-slate-200" onclick="showColCalc(7)">7</th>
+                <th class="p-2 border border-slate-200 font-semibold cursor-pointer hover:bg-slate-200" onclick="showColCalc(8)">8</th>
+                <th class="p-2 border border-slate-200 font-bold bg-amber-100 cursor-pointer text-amber-900" onclick="showColCalc(9)">9 (Seuil)</th>
+                <th class="p-2 border border-slate-200 font-semibold cursor-pointer hover:bg-slate-200" onclick="showColCalc(10)">10</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="p-2 border border-slate-200 text-left font-medium text-slate-600">Recette nette : $22 \times x$ (€)</td>
+                <td class="p-2 border border-slate-200 font-semibold text-slate-700">110,00 €</td>
+                <td class="p-2 border border-slate-200 font-semibold text-slate-700">154,00 €</td>
+                <td class="p-2 border border-slate-200 font-semibold text-slate-700">176,00 €</td>
+                <td class="p-2 border border-slate-200 font-bold text-emerald-700 bg-emerald-50">198,00 €</td>
+                <td class="p-2 border border-slate-200 font-semibold text-slate-700">220,00 €</td>
+              </tr>
+              <tr>
+                <td class="p-2 border border-slate-200 text-left font-medium text-slate-600">Charges couvertes ? ($\ge 180\text{ €}$)</td>
+                <td class="p-2 border border-slate-200 text-red-600 font-medium">Non<br><span class="text-[10px] text-red-500 font-normal">Déficit 70 €</span></td>
+                <td class="p-2 border border-slate-200 text-red-600 font-medium">Non<br><span class="text-[10px] text-red-500 font-normal">Déficit 26 €</span></td>
+                <td class="p-2 border border-slate-200 text-red-600 font-medium">Non<br><span class="text-[10px] text-red-500 font-normal">Déficit 4 €</span></td>
+                <td class="p-2 border border-slate-200 text-emerald-700 font-bold bg-emerald-50">OUI<br><span class="text-[10px] text-emerald-600 font-normal">Bénéfice +18 €</span></td>
+                <td class="p-2 border border-slate-200 text-emerald-700 font-bold">OUI<br><span class="text-[10px] text-emerald-600 font-normal">Bénéfice +40 €</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div id="table-dynamic-calc" class="mt-2 text-xs text-slate-600 bg-slate-50 p-2 rounded border border-slate-200 hidden"></div>
+      </div>
+
+      <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-4">
+        <h3 class="text-sm sm:text-base font-bold text-slate-800 flex items-center">
+          <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.onerror=null; this.style.display='none';">
+          Questions d'investigation guidée
+        </h3>
+
+        <!-- Q1 -->
+        <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-2">
+          <div class="flex items-start justify-between">
+            <span class="text-xs font-bold text-[#A50F23] bg-red-100 px-2 py-0.5 rounded">C1 - S'informer</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-800 font-medium">
+            1. Quelle est la marge nette journalière dégagée pour $x$ coupes réalisées dans la journée ? (Saisir le coefficient numérique de $x$)
+          </p>
+          <div class="flex items-center space-x-2">
+            <input type="text" inputmode="decimal" id="inv-q1" class="cma-input max-w-[160px]" placeholder="Votre résultat...">
+            <span class="text-xs sm:text-sm font-semibold text-slate-600">€ par coupe ($x$)</span>
+            <button onclick="checkInvQ1()" class="cma-btn px-4 bg-[#A50F23] text-white text-xs sm:text-sm">Valider</button>
+          </div>
+          <div id="fb-inv-q1" class="text-xs pt-1"></div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-2">
+          <div class="flex items-start justify-between">
+            <span class="text-xs font-bold text-[#A50F23] bg-red-100 px-2 py-0.5 rounded">C1 - S'informer</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-800 font-medium">
+            2. Écrire le montant des charges fixes journalières incompressibles à couvrir (€) :
+          </p>
+          <div class="flex items-center space-x-2">
+            <input type="text" inputmode="decimal" id="inv-q2" class="cma-input max-w-[160px]" placeholder="Votre résultat...">
+            <span class="text-xs sm:text-sm font-semibold text-slate-600">€</span>
+            <button onclick="checkInvQ2()" class="cma-btn px-4 bg-[#A50F23] text-white text-xs sm:text-sm">Valider</button>
+          </div>
+          <div id="fb-inv-q2" class="text-xs pt-1"></div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-2">
+          <div class="flex items-start justify-between">
+            <span class="text-xs font-bold text-[#A50F23] bg-red-100 px-2 py-0.5 rounded">C2 - Exécuter</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-800 font-medium">
+            3. Résoudre l'inéquation $22x \ge 180$ en isolant $x$. Saisir la valeur exacte ou arrondie au centième ($x \ge \dots$) :
+          </p>
+          <div class="flex items-center space-x-2">
+            <input type="text" inputmode="decimal" id="inv-q3" class="cma-input max-w-[160px]" placeholder="Votre résultat...">
+            <button onclick="checkInvQ3()" class="cma-btn px-4 bg-[#A50F23] text-white text-xs sm:text-sm">Valider</button>
+          </div>
+          <div id="fb-inv-q3" class="text-xs pt-1"></div>
+        </div>
+
+        <!-- Q4 & Q5 -->
+        <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-2">
+          <div class="flex items-start justify-between">
+            <span class="text-xs font-bold text-[#A50F23] bg-red-100 px-2 py-0.5 rounded">C3 & C4 - Appliquer & Conclure</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-800 font-medium">
+            4. Le nombre de coupes $x$ étant un nombre entier positif, quelle est la <strong>plus petite valeur entière</strong> de $x$ qui vérifie cette condition de rentabilité ?
+          </p>
+          <div class="flex items-center space-x-2">
+            <input type="text" inputmode="decimal" id="inv-q4" class="cma-input max-w-[160px]" placeholder="Votre résultat...">
+            <span class="text-xs sm:text-sm font-semibold text-slate-600">coupes</span>
+            <button onclick="checkInvQ4()" class="cma-btn px-4 bg-[#A50F23] text-white text-xs sm:text-sm">Valider</button>
+          </div>
+          <div id="fb-inv-q4" class="text-xs pt-1"></div>
+        </div>
+
+        <div class="pt-2 flex justify-end">
+          <button onclick="switchTab(2)" class="cma-btn px-5 py-2.5 bg-[#A50F23] text-white text-xs sm:text-sm shadow-md">
+            Passer à l'Étape 2 : Cours & Simulateur →
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section id="stage-2" class="stage-container space-y-5 hidden">
+      <!-- Fiche de cours accordéons -->
+      <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-3">
+        <h2 class="text-base sm:text-lg font-bold text-[#A50F23] flex items-center">
+          <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.onerror=null; this.style.display='none';">
+          Synthèse de Cours : Inéquations du 1<sup>er</sup> degré
+        </h2>
+
+        <!-- Accordion 1 -->
+        <details class="group bg-slate-50 border border-slate-200 rounded-lg p-3" open>
+          <summary class="font-bold text-xs sm:text-sm text-slate-800 cursor-pointer flex justify-between items-center">
+            <span>1. Définition d'une inéquation</span>
+            <span class="text-xs text-slate-400 group-open:rotate-180 transition-transform">▼</span>
+          </summary>
+          <div class="mt-2 text-xs sm:text-sm text-slate-600 space-y-1">
+            <p>Une inéquation à une inconnue $x$ est une comparaison utilisant l'un des 4 symboles :</p>
+            <ul class="list-disc ml-5 space-y-0.5">
+              <li>$&lt;$ : strictement inférieur à</li>
+              <li>$\le$ : inférieur ou égal à</li>
+              <li>$&gt;$ : strictement supérieur à</li>
+              <li>$\ge$ : supérieur ou égal à</li>
+            </ul>
+            <p class="pt-1">Résoudre une inéquation consiste à déterminer tous les nombres réels $x$ qui rendent l'inégalité vraie.</p>
+          </div>
+        </details>
+
+        <!-- Accordion 2 -->
+        <details class="group bg-slate-50 border border-slate-200 rounded-lg p-3" open>
+          <summary class="font-bold text-xs sm:text-sm text-slate-800 cursor-pointer flex justify-between items-center">
+            <span>2. Règles de transformation fondamentales</span>
+            <span class="text-xs text-slate-400 group-open:rotate-180 transition-transform">▼</span>
+          </summary>
+          <div class="mt-2 text-xs sm:text-sm text-slate-600 space-y-2">
+            <div class="p-2 bg-white rounded border border-slate-200">
+              <strong class="text-slate-900 block">Règle 1 (Addition / Soustraction) :</strong>
+              On peut ajouter ou soustraire un même nombre aux deux membres sans changer le sens :
+              <div class="text-center my-1 font-semibold text-slate-800">Si $ax + b \ge c$ alors $ax \ge c - b$.</div>
+            </div>
+            <div class="p-2 bg-white rounded border border-slate-200">
+              <strong class="text-emerald-800 block">Règle 2 (Multiplication / Division par un nombre POSITIF $a &gt; 0$) :</strong>
+              On <strong>conserve</strong> le sens de l'inégalité :
+              <div class="text-center my-1 font-semibold text-emerald-700">Si $ax \ge d$ (avec $a &gt; 0$), alors $x \ge \dfrac{d}{a}$.</div>
+            </div>
+            <div class="p-2 bg-red-50 rounded border border-red-200">
+              <strong class="text-red-800 block">⚠️ Règle 3 (Multiplication / Division par un nombre NÉGATIF $a &lt; 0$) :</strong>
+              ATTENTION : On <strong>INVERSE OBLIGATOIREMENT</strong> le sens de l'inégalité !
+              <div class="text-center my-1 font-semibold text-red-700">Si $-a x \ge d$ (avec $a &gt; 0$), alors $x \le \dfrac{d}{-a}$.</div>
+            </div>
+          </div>
+        </details>
+
+        <!-- Accordion 3 -->
+        <details class="group bg-slate-50 border border-slate-200 rounded-lg p-3">
+          <summary class="font-bold text-xs sm:text-sm text-slate-800 cursor-pointer flex justify-between items-center">
+            <span>3. Représentation graphique & Droite graduée</span>
+            <span class="text-xs text-slate-400 group-open:rotate-180 transition-transform">▼</span>
+          </summary>
+          <div class="mt-2 text-xs sm:text-sm text-slate-600 space-y-1">
+            <p>• Les solutions sont représentées par une zone surlignée ou coloriée en rouge sur la droite.</p>
+            <p>• Le crochet est <strong>fermé / tourné vers les solutions</strong> si la valeur est incluse ($\le$ ou $\ge$). Exemple : $[$ ou $]$.</p>
+            <p>• Le crochet est <strong>ouvert / tourne le dos aux solutions</strong> si la valeur est exclue ($&lt;$ ou $&gt;$).</p>
+          </div>
+        </details>
+      </div>
+
+      <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="text-sm sm:text-base font-bold text-slate-800 flex items-center">
+            <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.onerror=null; this.style.display='none';">
+            Simulateur Dynamique de Rentabilité Coiffure
+          </h3>
+          <span class="text-[11px] bg-red-100 text-[#A50F23] font-bold px-2 py-0.5 rounded">Temps Réel</span>
+        </div>
+        <p class="text-xs text-slate-600">
+          Ajustez les paramètres du salon d'application pour observer le seuil critique d'équilibre :
+        </p>
+
+        <!-- Sliders -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-lg border border-slate-200">
+          <div>
+            <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+              <label for="sim-coupes">Nombre de coupes par jour ($x$) :</label>
+              <span id="val-coupes" class="text-sm font-bold text-[#A50F23]">8</span>
+            </div>
+            <input type="range" id="sim-coupes" min="0" max="25" value="8" step="1" class="w-full accent-[#A50F23] h-2 bg-slate-200 rounded cursor-pointer" oninput="updateSim()">
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+              <label for="sim-prix">Prix facturé TTC par coupe (€) :</label>
+              <span id="val-prix" class="text-sm font-bold text-[#A50F23]">25 €</span>
+            </div>
+            <input type="range" id="sim-prix" min="15" max="50" value="25" step="1" class="w-full accent-[#A50F23] h-2 bg-slate-200 rounded cursor-pointer" oninput="updateSim()">
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+              <label for="sim-cout">Consommables directs par coupe (€) :</label>
+              <span id="val-cout" class="text-sm font-bold text-[#A50F23]">3 €</span>
+            </div>
+            <input type="range" id="sim-cout" min="1" max="10" value="3" step="0.5" class="w-full accent-[#A50F23] h-2 bg-slate-200 rounded cursor-pointer" oninput="updateSim()">
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+              <label for="sim-charges">Charges fixes journalières (€) :</label>
+              <span id="val-charges" class="text-sm font-bold text-[#A50F23]">180 €</span>
+            </div>
+            <input type="range" id="sim-charges" min="50" max="350" value="180" step="5" class="w-full accent-[#A50F23] h-2 bg-slate-200 rounded cursor-pointer" oninput="updateSim()">
+          </div>
+        </div>
+
+        <!-- Simulation results and dynamic visual gauge -->
+        <div id="sim-results-box" class="p-4 rounded-xl border transition-colors duration-200 text-center space-y-2">
+          <!-- Dynamically populated via updateSim() -->
+        </div>
+
+        <!-- Canvas Visual Graph -->
+        <div class="bg-white p-2 rounded-lg border border-slate-200">
+          <div class="text-xs font-semibold text-slate-600 mb-1 flex items-center justify-between">
+            <span>Visualisation du seuil critique sur la journée :</span>
+            <span id="sim-threshold-badge" class="text-[11px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-700"></span>
+          </div>
+          <div class="w-full h-20 bg-slate-50 relative flex items-center px-4 rounded border border-slate-200">
+            <div class="w-full h-3 bg-slate-200 rounded-full relative overflow-hidden">
+              <div id="sim-bar-progress" class="h-full bg-emerald-500 rounded-full transition-all duration-300" style="width: 50%;"></div>
+            </div>
+            <div id="sim-seuil-marker" class="absolute top-2 bottom-2 w-1 bg-red-600 transform -translate-x-1/2 z-10" style="left: 36%;">
+              <div class="text-[10px] font-bold bg-red-600 text-white px-1 rounded -translate-y-4 whitespace-nowrap">Seuil</div>
+            </div>
+          </div>
+          <div class="flex justify-between text-[11px] text-slate-500 mt-1 px-1">
+            <span>0 coupe</span>
+            <span id="sim-seuil-text">Seuil : 9 coupes</span>
+            <span>25 coupes</span>
+          </div>
+        </div>
+
+        <div class="pt-2 flex justify-between">
+          <button onclick="switchTab(1)" class="cma-btn px-4 py-2 border border-slate-300 text-slate-700 text-xs sm:text-sm">
+            ← Étape 1 : Découverte
+          </button>
+          <button onclick="switchTab(3)" class="cma-btn px-5 py-2.5 bg-[#A50F23] text-white text-xs sm:text-sm shadow-md">
+            Passer à l'Étape 3 : Entraînement Gamifié →
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section id="stage-3" class="stage-container space-y-6 hidden">
+      <!-- En-tête de gamification et badges de paliers -->
+      <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-3">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <div>
+            <h2 class="text-base sm:text-lg font-bold text-[#A50F23] flex items-center">
+              <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.onerror=null; this.style.display='none';">
+              Parcours d'Exercices Différenciés
+            </h2>
+            <p class="text-xs text-slate-500">Validation séquentielle avec rétroaction pédagogique immédiate.</p>
+          </div>
+          <!-- Score Counters -->
+          <div class="flex items-center space-x-2">
+            <div class="bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-lg text-center">
+              <span class="text-[10px] uppercase font-bold text-emerald-700 block">Socle CAP (N1)</span>
+              <span id="score-n1-display" class="text-sm font-bold text-emerald-800">0 / 5</span>
+            </div>
+            <div class="bg-amber-50 border border-amber-200 px-3 py-1.5 rounded-lg text-center">
+              <span class="text-[10px] uppercase font-bold text-amber-700 block">Bonus N2</span>
+              <span id="score-n2-display" class="text-sm font-bold text-amber-800">0 / 3</span>
+            </div>
+            <div class="bg-red-50 border border-red-200 px-3 py-1.5 rounded-lg text-center">
+              <span class="text-[10px] uppercase font-bold text-red-700 block">Bonus N3</span>
+              <span id="score-n3-display" class="text-sm font-bold text-red-800">0 / 3</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Level selection tabs / buttons -->
+        <div class="flex items-center space-x-2 pt-2 border-t border-slate-100">
+          <button onclick="switchLevel(1)" id="lvl-btn-1" class="cma-btn px-3 py-1.5 text-xs font-bold rounded-lg bg-emerald-700 text-white flex items-center space-x-1">
+            <span>🟢 Niveau 1 : Débutant (Socle CAP)</span>
+          </button>
+          <button onclick="switchLevel(2)" id="lvl-btn-2" class="cma-btn px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-100 text-slate-400 flex items-center space-x-1 cursor-not-allowed" disabled>
+            <span>🔒 Niveau 2 : Avancé</span>
+          </button>
+          <button onclick="switchLevel(3)" id="lvl-btn-3" class="cma-btn px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-100 text-slate-400 flex items-center space-x-1 cursor-not-allowed" disabled>
+            <span>🔒 Niveau 3 : Expert</span>
+          </button>
+        </div>
+      </div>
+
+      <div id="level-container-1" class="space-y-4">
+        <div class="bg-emerald-50 border-l-4 border-emerald-600 p-3 rounded-r-lg text-xs text-emerald-800">
+          <strong>Objectif Socle CAP :</strong> Réussir l'intégralité des 5 exercices du Niveau 1 pour valider à 100 % le socle de la séance, obtenir le badge officiel et débloquer l'Attestation Numérique !
+        </div>
+
+        <!-- EXERCICE 1.1 -->
+        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-3" id="card-ex1-1">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-xs sm:text-sm text-slate-800 flex items-center">
+              <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.onerror=null; this.style.display='none';">
+              Exercice 1.1 : Test de valeurs numériques dans une inégalité
+            </h4>
+            <span id="badge-ex1-1" class="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-600">En attente</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-600">
+            On considère l'inéquation : $3x + 5 \ge 20$ modélisant un gain en salon. Calculez la valeur de $3x + 5$ pour tester chaque cas :
+          </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <span class="text-xs font-medium text-slate-700 block">1. Pour $x = 4$ : $3 \times 4 + 5 = $</span>
+              <input type="text" inputmode="decimal" id="ex1-1-a" class="cma-input text-xs" placeholder="Votre résultat...">
+            </div>
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <span class="text-xs font-medium text-slate-700 block">2. Pour $x = 5$ : $3 \times 5 + 5 = $</span>
+              <input type="text" inputmode="decimal" id="ex1-1-b" class="cma-input text-xs" placeholder="Votre résultat...">
+            </div>
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <span class="text-xs font-medium text-slate-700 block">3. Pour $x = 6$ : $3 \times 6 + 5 = $</span>
+              <input type="text" inputmode="decimal" id="ex1-1-c" class="cma-input text-xs" placeholder="Votre résultat...">
+            </div>
+          </div>
+          <div class="flex items-center justify-between pt-1">
+            <button onclick="checkEx1_1()" class="cma-btn px-4 bg-emerald-700 text-white text-xs sm:text-sm">Vérifier l'Exercice 1.1</button>
+            <div id="fb-ex1-1" class="text-xs font-medium"></div>
+          </div>
+        </div>
+
+        <!-- EXERCICE 1.2 -->
+        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-3" id="card-ex1-2">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-xs sm:text-sm text-slate-800 flex items-center">
+              <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.onerror=null; this.style.display='none';">
+              Exercice 1.2 : Résolution d'inéquations simples du type $ax \ge b$ ($a &gt; 0$)
+            </h4>
+            <span id="badge-ex1-2" class="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-600">En attente</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-600">
+            Résoudre dans l'ensemble des réels et indiquer la borne numérique attendue :
+          </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <span class="text-xs font-medium text-slate-700 block">a) $4x \ge 28 \implies x \ge $</span>
+              <input type="text" inputmode="decimal" id="ex1-2-a" class="cma-input text-xs" placeholder="Votre résultat...">
+            </div>
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <span class="text-xs font-medium text-slate-700 block">b) $5x &gt; 45 \implies x &gt; $</span>
+              <input type="text" inputmode="decimal" id="ex1-2-b" class="cma-input text-xs" placeholder="Votre résultat...">
+            </div>
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <span class="text-xs font-medium text-slate-700 block">c) $2x \le 18 \implies x \le $</span>
+              <input type="text" inputmode="decimal" id="ex1-2-c" class="cma-input text-xs" placeholder="Votre résultat...">
+            </div>
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <span class="text-xs font-medium text-slate-700 block">d) $10x &lt; 75 \implies x &lt; $</span>
+              <input type="text" inputmode="decimal" id="ex1-2-d" class="cma-input text-xs" placeholder="Votre résultat...">
+            </div>
+          </div>
+          <div class="flex items-center justify-between pt-1">
+            <button onclick="checkEx1_2()" class="cma-btn px-4 bg-emerald-700 text-white text-xs sm:text-sm">Vérifier l'Exercice 1.2</button>
+            <div id="fb-ex1-2" class="text-xs font-medium"></div>
+          </div>
+        </div>
+
+        <!-- EXERCICE 1.3 -->
+        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-3" id="card-ex1-3">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-xs sm:text-sm text-slate-800 flex items-center">
+              <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.onerror=null; this.style.display='none';">
+              Exercice 1.3 : Résolution d'inéquations du type $ax + b \ge c$ (par étapes)
+            </h4>
+            <span id="badge-ex1-3" class="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-600">En attente</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-600">
+            Résoudre l'inéquation $6x - 12 \ge 30$ en suivant scrupuleusement les étapes :
+          </p>
+
+          <div class="space-y-2">
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200">
+              <label class="text-xs font-medium text-slate-700 block mb-1">
+                1. Ajouter 12 aux deux membres : $6x \ge 30 + 12 = $
+              </label>
+              <input type="text" inputmode="decimal" id="ex1-3-a" class="cma-input max-w-[200px]" placeholder="Votre résultat...">
+            </div>
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200">
+              <label class="text-xs font-medium text-slate-700 block mb-1">
+                2. Diviser par 6 les deux membres : $x \ge $
+              </label>
+              <input type="text" inputmode="decimal" id="ex1-3-b" class="cma-input max-w-[200px]" placeholder="Votre résultat...">
+            </div>
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200">
+              <label class="text-xs font-medium text-slate-700 block mb-1">
+                3. Donner la plus petite valeur entière de $x$ solution :
+              </label>
+              <input type="text" inputmode="decimal" id="ex1-3-c" class="cma-input max-w-[200px]" placeholder="Votre résultat...">
+            </div>
+          </div>
+          <div class="flex items-center justify-between pt-1">
+            <button onclick="checkEx1_3()" class="cma-btn px-4 bg-emerald-700 text-white text-xs sm:text-sm">Vérifier l'Exercice 1.3</button>
+            <div id="fb-ex1-3" class="text-xs font-medium"></div>
+          </div>
+        </div>
+
+        <!-- EXERCICE 1.4 -->
+        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-3" id="card-ex1-4">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-xs sm:text-sm text-slate-800 flex items-center">
+              <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.onerror=null; this.style.display='none';">
+              Exercice 1.4 : Vente de sprays protecteurs solaires à Sainte-Clotilde
+            </h4>
+            <span id="badge-ex1-4" class="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-600">En attente</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-600">
+            Un salon vend des sprays protecteurs anti-UV à <strong>14,00 € l'unité</strong>. L'apprenti a pour consigne de réaliser <strong>au moins 70,00 €</strong> de CA sur cette gamme dans la matinée.
+          </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <label class="text-xs font-medium text-slate-700 block">1. Coefficient de l'inéquation $... \times x \ge 70$ :</label>
+              <input type="text" inputmode="decimal" id="ex1-4-a" class="cma-input" placeholder="Votre résultat...">
+            </div>
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <label class="text-xs font-medium text-slate-700 block">2. Nombre minimal de flacons entiers à vendre :</label>
+              <input type="text" inputmode="decimal" id="ex1-4-b" class="cma-input" placeholder="Votre résultat...">
+            </div>
+          </div>
+          <div class="flex items-center justify-between pt-1">
+            <button onclick="checkEx1_4()" class="cma-btn px-4 bg-emerald-700 text-white text-xs sm:text-sm">Vérifier l'Exercice 1.4</button>
+            <div id="fb-ex1-4" class="text-xs font-medium"></div>
+          </div>
+        </div>
+
+        <!-- EXERCICE 1.5 -->
+        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-3" id="card-ex1-5">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-xs sm:text-sm text-slate-800 flex items-center">
+              <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.onerror=null; this.style.display='none';">
+              Exercice 1.5 : Représentation graphique sur une droite graduée
+            </h4>
+            <span id="badge-ex1-5" class="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-600">En attente</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-600">
+            On donne l'inéquation résolue : $x \ge 4$.
+          </p>
+
+          <!-- Interactive canvas drawing of the graded line -->
+          <div class="bg-slate-50 p-3 rounded border border-slate-200 space-y-2">
+            <div class="text-xs font-medium text-slate-700">Droite graduée de 0 à 8 (zone rouge = solutions $x \ge 4$) :</div>
+            <div class="w-full overflow-x-auto">
+              <svg viewBox="0 0 450 70" class="w-full max-w-[450px] mx-auto text-xs font-sans">
+                <!-- Main axis -->
+                <line x1="25" y1="40" x2="425" y2="40" stroke="#64748B" stroke-width="2" />
+                <polygon points="425,36 435,40 425,44" fill="#64748B" />
+                
+                <!-- Red solutions segment for x >= 4 -->
+                <line x1="225" y1="40" x2="425" y2="40" stroke="#EE3C3D" stroke-width="6" />
+
+                <!-- Graduation marks 0 to 8 -->
+                <line x1="25" y1="35" x2="25" y2="45" stroke="#64748B" stroke-width="2" /><text x="25" y="60" text-anchor="middle" fill="#64748B">0</text>
+                <line x1="75" y1="35" x2="75" y2="45" stroke="#64748B" stroke-width="2" /><text x="75" y="60" text-anchor="middle" fill="#64748B">1</text>
+                <line x1="125" y1="35" x2="125" y2="45" stroke="#64748B" stroke-width="2" /><text x="125" y="60" text-anchor="middle" fill="#64748B">2</text>
+                <line x1="175" y1="35" x2="175" y2="45" stroke="#64748B" stroke-width="2" /><text x="175" y="60" text-anchor="middle" fill="#64748B">3</text>
+                
+                <!-- Seuil x = 4 with bracket [ -->
+                <line x1="225" y1="32" x2="225" y2="48" stroke="#A50F23" stroke-width="3" />
+                <text x="225" y="60" text-anchor="middle" fill="#A50F23" font-weight="bold">4</text>
+                <text x="225" y="26" text-anchor="middle" fill="#A50F23" font-weight="bold" font-size="16">[</text>
+
+                <line x1="275" y1="35" x2="275" y2="45" stroke="#EE3C3D" stroke-width="2" /><text x="275" y="60" text-anchor="middle" fill="#EE3C3D">5</text>
+                <line x1="325" y1="35" x2="325" y2="45" stroke="#EE3C3D" stroke-width="2" /><text x="325" y="60" text-anchor="middle" fill="#EE3C3D">6</text>
+                <line x1="375" y1="35" x2="375" y2="45" stroke="#EE3C3D" stroke-width="2" /><text x="375" y="60" text-anchor="middle" fill="#EE3C3D">7</text>
+                <line x1="420" y1="35" x2="420" y2="45" stroke="#EE3C3D" stroke-width="2" /><text x="420" y="60" text-anchor="middle" fill="#EE3C3D">8</text>
+              </svg>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <label class="text-xs font-medium text-slate-700 block">1. Valeur de la borne numérique ($x$) :</label>
+              <input type="text" inputmode="decimal" id="ex1-5-a" class="cma-input" placeholder="Votre résultat...">
+            </div>
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <label class="text-xs font-medium text-slate-700 block">2. Le crochet en 4 est-il tourné vers les solutions (fermé) ? (1 pour Oui / 0 pour Non) :</label>
+              <input type="text" inputmode="decimal" id="ex1-5-b" class="cma-input" placeholder="1 = Oui, 0 = Non">
+            </div>
+          </div>
+          <div class="flex items-center justify-between pt-1">
+            <button onclick="checkEx1_5()" class="cma-btn px-4 bg-emerald-700 text-white text-xs sm:text-sm">Vérifier l'Exercice 1.5</button>
+            <div id="fb-ex1-5" class="text-xs font-medium"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="level-container-2" class="space-y-4 hidden">
+        <div class="bg-amber-50 border-l-4 border-amber-600 p-3 rounded-r-lg text-xs text-amber-800">
+          <strong>Niveau 2 (Dépassement) :</strong> Résolution de problèmes réels contextualisés à La Réunion.
+        </div>
+
+        <!-- EXERCICE 2.1 -->
+        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-3" id="card-ex2-1">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-xs sm:text-sm text-slate-800 flex items-center">
+              <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.onerror=null; this.style.display='none';">
+              Exercice 2.1 : Seuil de rentabilité journalier d'un bac de lavage à Saint-Denis
+            </h4>
+            <span id="badge-ex2-1" class="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-600">En attente</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-600">
+            Charges fixes journalières = <strong>210,00 €</strong>. Forfait « Shampooing + Coupe + Brushing » = <strong>32,00 €</strong>, produits consommés = <strong>4,00 €</strong> par cliente.
+          </p>
+
+          <div class="space-y-2">
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200">
+              <label class="text-xs font-medium text-slate-700 block mb-1">1. Marge nette unitaire par cliente (€) :</label>
+              <input type="text" inputmode="decimal" id="ex2-1-a" class="cma-input max-w-[200px]" placeholder="Votre résultat...">
+            </div>
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200">
+              <label class="text-xs font-medium text-slate-700 block mb-1">2. Résoudre $28x \ge 210$ ($x \ge \dots$) :</label>
+              <input type="text" inputmode="decimal" id="ex2-1-b" class="cma-input max-w-[200px]" placeholder="Votre résultat...">
+            </div>
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200">
+              <label class="text-xs font-medium text-slate-700 block mb-1">3. Nombre minimal de clientes entières à coiffer par jour :</label>
+              <input type="text" inputmode="decimal" id="ex2-1-c" class="cma-input max-w-[200px]" placeholder="Votre résultat...">
+            </div>
+          </div>
+          <div class="flex items-center justify-between pt-1">
+            <button onclick="checkEx2_1()" class="cma-btn px-4 bg-amber-700 text-white text-xs sm:text-sm">Vérifier l'Exercice 2.1</button>
+            <div id="fb-ex2-1" class="text-xs font-medium"></div>
+          </div>
+        </div>
+
+        <!-- EXERCICE 2.2 -->
+        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-3" id="card-ex2-2">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-xs sm:text-sm text-slate-800 flex items-center">
+              <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.onerror=null; this.style.display='none';">
+              Exercice 2.2 : Choix d'un forfait pro pour la prise de rendez-vous en ligne
+            </h4>
+            <span id="badge-ex2-2" class="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-600">En attente</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-600">
+            Formule A : $15{,}00\text{ €} + 0{,}10\text{ €}$ par SMS. Formule B : $25{,}00\text{ €}$ avec SMS illimités gratuits. On cherche quand A devient strictement plus chère que B : $15 + 0{,}10x &gt; 25$.
+          </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <label class="text-xs font-medium text-slate-700 block">1. Résoudre $0{,}10x &gt; 10 \implies x &gt; $</label>
+              <input type="text" inputmode="decimal" id="ex2-2-a" class="cma-input" placeholder="Votre résultat...">
+            </div>
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <label class="text-xs font-medium text-slate-700 block">2. À partir de combien de SMS entiers la formule B est-elle plus avantageuse ?</label>
+              <input type="text" inputmode="decimal" id="ex2-2-b" class="cma-input" placeholder="Votre résultat...">
+            </div>
+          </div>
+          <div class="flex items-center justify-between pt-1">
+            <button onclick="checkEx2_2()" class="cma-btn px-4 bg-amber-700 text-white text-xs sm:text-sm">Vérifier l'Exercice 2.2</button>
+            <div id="fb-ex2-2" class="text-xs font-medium"></div>
+          </div>
+        </div>
+
+        <!-- EXERCICE 2.3 -->
+        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-3" id="card-ex2-3">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-xs sm:text-sm text-slate-800 flex items-center">
+              <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.onerror=null; this.style.display='none';">
+              Exercice 2.3 : Gestion de stock d'oxydants face aux risques sous climat tropical
+            </h4>
+            <span id="badge-ex2-3" class="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-600">En attente</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-600">
+            Réserve initiale = 120 flacons. Consommation = 8 flacons/semaine ($x$). Stock de sécurité minimal = 24 flacons. Inéquation : $120 - 8x \ge 24$.
+          </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <label class="text-xs font-medium text-slate-700 block">1. Résolution pas à pas (borne $x \le \dots$) :</label>
+              <input type="text" inputmode="decimal" id="ex2-3-a" class="cma-input" placeholder="Votre résultat...">
+            </div>
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <label class="text-xs font-medium text-slate-700 block">2. Nombre maximal de semaines entières d'autonomie :</label>
+              <input type="text" inputmode="decimal" id="ex2-3-b" class="cma-input" placeholder="Votre résultat...">
+            </div>
+          </div>
+          <div class="flex items-center justify-between pt-1">
+            <button onclick="checkEx2_3()" class="cma-btn px-4 bg-amber-700 text-white text-xs sm:text-sm">Vérifier l'Exercice 2.3</button>
+            <div id="fb-ex2-3" class="text-xs font-medium"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="level-container-3" class="space-y-4 hidden">
+        <div class="bg-red-50 border-l-4 border-red-600 p-3 rounded-r-lg text-xs text-red-800">
+          <strong>Niveau 3 (Excellence) :</strong> Situations complexes, audit d'investissement et analyse algébrique.
+        </div>
+
+        <!-- EXERCICE 3.1 -->
+        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-3" id="card-ex3-1">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-xs sm:text-sm text-slate-800 flex items-center">
+              <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.onerror=null; this.style.display='none';">
+              Exercice 3.1 : Audit de rentabilité d'une cabine « Mariage & Cérémonies »
+            </h4>
+            <span id="badge-ex3-1" class="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-600">En attente</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-600">
+            Amortissement cabine = 350 €/mois, frais fixes fonctionnement = 150 €/mois (total charges fixes = 500 €). Forfait facturé = 120 €, consommables = 20 €. Objectif bénéfice net $\ge 400\text{ €/mois}$. Inéquation : $100x - 500 \ge 400$.
+          </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <label class="text-xs font-medium text-slate-700 block">1. Marge nette par mariée (€) :</label>
+              <input type="text" inputmode="decimal" id="ex3-1-a" class="cma-input" placeholder="Votre résultat...">
+            </div>
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <label class="text-xs font-medium text-slate-700 block">2. Nombre min de mariées ($x$) :</label>
+              <input type="text" inputmode="decimal" id="ex3-1-b" class="cma-input" placeholder="Votre résultat...">
+            </div>
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <label class="text-xs font-medium text-slate-700 block">3. Bénéfice max si capacité = 12 (€) :</label>
+              <input type="text" inputmode="decimal" id="ex3-1-c" class="cma-input" placeholder="Votre résultat...">
+            </div>
+          </div>
+          <div class="flex items-center justify-between pt-1">
+            <button onclick="checkEx3_1()" class="cma-btn px-4 bg-red-800 text-white text-xs sm:text-sm">Vérifier l'Exercice 3.1</button>
+            <div id="fb-ex3-1" class="text-xs font-medium"></div>
+          </div>
+        </div>
+
+        <!-- EXERCICE 3.2 -->
+        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-3" id="card-ex3-2">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-xs sm:text-sm text-slate-800 flex items-center">
+              <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.onerror=null; this.style.display='none';">
+              Exercice 3.2 : Résolution graphique d'inéquation & seuil critique
+            </h4>
+            <span id="badge-ex3-2" class="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-600">En attente</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-600">
+            On considère les fonctions de recettes $R(x) = 35x$ et de coûts $C(x) = 15x + 160$ pour $x \in [0 ; 20]$. Résolvez algébriquement $35x \ge 15x + 160$.
+          </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <label class="text-xs font-medium text-slate-700 block">1. Abscisse $x$ du point d'intersection :</label>
+              <input type="text" inputmode="decimal" id="ex3-2-a" class="cma-input" placeholder="Votre résultat...">
+            </div>
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <label class="text-xs font-medium text-slate-700 block">2. Ordonnée $y = R(x)$ à l'intersection (€) :</label>
+              <input type="text" inputmode="decimal" id="ex3-2-b" class="cma-input" placeholder="Votre résultat...">
+            </div>
+          </div>
+          <div class="flex items-center justify-between pt-1">
+            <button onclick="checkEx3_2()" class="cma-btn px-4 bg-red-800 text-white text-xs sm:text-sm">Vérifier l'Exercice 3.2</button>
+            <div id="fb-ex3-2" class="text-xs font-medium"></div>
+          </div>
+        </div>
+
+        <!-- EXERCICE 3.3 -->
+        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-3" id="card-ex3-3">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-xs sm:text-sm text-slate-800 flex items-center">
+              <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.onerror=null; this.style.display='none';">
+              Exercice 3.3 : Inéquation avec pourcentages et charges sociales à La Réunion
+            </h4>
+            <span id="badge-ex3-3" class="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-600">En attente</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-600">
+            Un coiffeur artisan verse 22 % de cotisations sociales sur son CA. Charges fixes mensuelles = 1 560,00 €. Facturation = 40,00 € par cliente, soit $40 \times 0{,}78 = 31{,}20\text{ €}$ nets par coupe. Inéquation : $31{,}20x \ge 1560$.
+          </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <label class="text-xs font-medium text-slate-700 block">1. Nombre total de clientes $x$ sur le mois :</label>
+              <input type="text" inputmode="decimal" id="ex3-3-a" class="cma-input" placeholder="Votre résultat...">
+            </div>
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 space-y-1">
+              <label class="text-xs font-medium text-slate-700 block">2. Nombre moyen de clientes par jour (pour 22 jours ouvrés) :</label>
+              <input type="text" inputmode="decimal" id="ex3-3-b" class="cma-input" placeholder="Arrondi à 2,27...">
+            </div>
+          </div>
+          <div class="flex items-center justify-between pt-1">
+            <button onclick="checkEx3_3()" class="cma-btn px-4 bg-red-800 text-white text-xs sm:text-sm">Vérifier l'Exercice 3.3</button>
+            <div id="fb-ex3-3" class="text-xs font-medium"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-3 flex justify-between">
+        <button onclick="switchTab(2)" class="cma-btn px-4 py-2 border border-slate-300 text-slate-700 text-xs sm:text-sm">
+          ← Étape 2 : Cours
+        </button>
+        <button onclick="switchTab(4)" class="cma-btn px-5 py-2.5 bg-[#A50F23] text-white text-xs sm:text-sm shadow-md">
+          Passer à l'Étape 4 : Bilan & Attestation →
+        </button>
+      </div>
+    </section>
+
+    <section id="stage-4" class="stage-container space-y-6 hidden">
+      <!-- Synthèse Bilan -->
+      <div class="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-slate-200 space-y-4 no-print">
+        <h2 class="text-base sm:text-lg font-bold text-[#A50F23] flex items-center">
+          <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.onerror=null; this.style.display='none';">
+          Bilan de la Séance & Badges de Compétences
+        </h2>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-xl text-center">
+            <span class="text-3xl block mb-1">🎓</span>
+            <span class="text-xs font-bold text-emerald-800 uppercase block">Socle CAP (Niveau 1)</span>
+            <span id="bilan-socle-status" class="text-sm font-extrabold text-emerald-700">0% complété</span>
+            <span class="text-[11px] text-slate-500 block mt-1">Requis pour débloquer l'attestation</span>
+          </div>
+
+          <div class="bg-amber-50 border border-amber-200 p-4 rounded-xl text-center">
+            <span class="text-3xl block mb-1">⚡</span>
+            <span class="text-xs font-bold text-amber-800 uppercase block">Bonus Avancé (N2)</span>
+            <span id="bilan-bonus-n2" class="text-sm font-extrabold text-amber-700">0 / 3 exercices</span>
+            <span class="text-[11px] text-slate-500 block mt-1">Dépassement de compétences</span>
+          </div>
+
+          <div class="bg-red-50 border border-red-200 p-4 rounded-xl text-center">
+            <span class="text-3xl block mb-1">🏆</span>
+            <span class="text-xs font-bold text-red-800 uppercase block">Bonus Expert (N3)</span>
+            <span id="bilan-bonus-n3" class="text-sm font-extrabold text-red-700">0 / 3 exercices</span>
+            <span class="text-[11px] text-slate-500 block mt-1">Audit financier & GeoGebra</span>
+          </div>
+        </div>
+
+        <!-- Saisie du Nom de l'apprenant -->
+        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+          <label for="student-name-input" class="text-xs sm:text-sm font-bold text-slate-800 block">
+            Nom et Prénom de l'apprenant(e) pour l'Attestation :
+          </label>
+          <div class="flex flex-col sm:flex-row gap-2">
+            <input type="text" id="student-name-input" class="cma-input" placeholder="Ex: Jean DUPONT" oninput="updateStudentName(this.value)">
+            <button onclick="window.print()" id="btn-print" class="cma-btn px-6 bg-[#A50F23] text-white text-xs sm:text-sm whitespace-nowrap shadow" disabled>
+              🖨️ Imprimer / Enregistrer en PDF
+            </button>
+          </div>
+          <p id="attestation-lock-notice" class="text-xs text-red-600 font-medium">
+            ⚠️ L'attestation est verrouillée tant que l'ensemble des exercices du Niveau 1 (Socle CAP) n'est pas validé.
+          </p>
+        </div>
+      </div>
+
+      <div id="print-area" class="bg-white p-6 sm:p-8 rounded-2xl shadow-lg border-2 border-[#A50F23] space-y-6">
+        <!-- Certificate Header -->
+        <div class="flex items-center justify-between border-b-2 border-red-100 pb-4">
+          <img src="logo.png" alt="Logo CMA Formation" style="max-height: 48px; width: auto; object-fit: contain;" onerror="this.onerror=null; this.src='https://placehold.co/120x48/A50F23/FFFFFF?text=CMA+Formation';">
+          <div class="text-right">
+            <span class="text-[11px] text-slate-400 uppercase tracking-widest block font-bold">CMA FORMATION SAINTE-CLOTILDE</span>
+            <span class="text-xs text-slate-600 font-semibold">Île de La Réunion</span>
+          </div>
+        </div>
+
+        <!-- Certificate Body -->
+        <div class="text-center space-y-2 pt-2">
+          <span class="text-xs uppercase tracking-widest text-[#EE3C3D] font-extrabold">Attestation Pédagogique de Réussite</span>
+          <h3 class="text-xl sm:text-2xl font-bold text-[#A50F23]">Algèbre : Inéquations & Rentabilité</h3>
+          <p class="text-xs text-slate-500">Module de formation du diplôme CAP Métiers de la Coiffure</p>
+        </div>
+
+        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 text-center space-y-2">
+          <p class="text-xs sm:text-sm text-slate-600">Attestation décernée à :</p>
+          <div id="cert-student-name" class="text-lg sm:text-xl font-extrabold text-slate-900 tracking-wide uppercase">
+            [Nom de l'apprenant(e)]
+          </div>
+          <p class="text-xs text-slate-500">
+            pour avoir suivi et validé les compétences de la séance pédagogique du <span id="cert-date" class="font-bold text-slate-700"></span>.
+          </p>
+        </div>
+
+        <!-- Validated Competencies grid -->
+        <div class="space-y-2">
+          <span class="text-xs font-bold text-slate-800 uppercase block tracking-wide">Compétences du Référentiel Évaluées :</span>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+            <div class="p-2.5 bg-emerald-50 rounded border border-emerald-200 flex items-center justify-between">
+              <span><strong>C1 - S'informer :</strong> Traduire un énoncé en inéquation</span>
+              <span class="text-emerald-700 font-bold">✓ Validé</span>
+            </div>
+            <div class="p-2.5 bg-emerald-50 rounded border border-emerald-200 flex items-center justify-between">
+              <span><strong>C2 - Exécuter :</strong> Résoudre $ax + b \ge c$</span>
+              <span class="text-emerald-700 font-bold">✓ Validé</span>
+            </div>
+            <div class="p-2.5 bg-emerald-50 rounded border border-emerald-200 flex items-center justify-between">
+              <span><strong>C3 - Raisonner :</strong> Interpréter la valeur seuil entière</span>
+              <span class="text-emerald-700 font-bold">✓ Validé</span>
+            </div>
+            <div class="p-2.5 bg-emerald-50 rounded border border-emerald-200 flex items-center justify-between">
+              <span><strong>C4 - Communiquer :</strong> Fixer l'objectif du salon réunionnais</span>
+              <span class="text-emerald-700 font-bold">✓ Validé</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Scores Breakdown -->
+        <div class="p-3 bg-red-50/50 rounded-lg border border-red-100 flex items-center justify-between text-xs">
+          <div>
+            <span class="text-slate-600 font-medium">Socle fondamental CAP : </span>
+            <strong id="cert-socle-perc" class="text-emerald-700">0 %</strong>
+          </div>
+          <div>
+            <span class="text-slate-600 font-medium">Défis Bonus accomplis : </span>
+            <strong id="cert-bonus-pts" class="text-amber-800">0 / 6</strong>
+          </div>
+        </div>
+
+        <!-- Certificate Signatures -->
+        <div class="pt-6 flex items-center justify-between text-xs text-slate-600 border-t border-slate-200">
+          <div>
+            <p class="font-bold text-slate-800">Formatrice référente</p>
+            <p>Rachel Lamberet-Lezais</p>
+            <p class="text-[10px] text-slate-400">CMA Formation Sainte-Clotilde</p>
+          </div>
+          <div class="text-right">
+            <p class="font-bold text-slate-800">Sceau Pédagogique</p>
+            <div class="inline-block px-3 py-1 bg-red-100 text-[#A50F23] font-bold rounded text-[11px] mt-1">
+              CONFORME CAP
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="bg-white border-t border-slate-200 py-3 mt-8 no-print">
+    <div class="max-w-4xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-1">
+      <div>CMA Formation Sainte-Clotilde • Mathématiques CAP Coiffure</div>
+      <div>Auteur : Rachel Lamberet-Lezais • Application interactive SPA</div>
+    </div>
+  </footer>
+
+  <script>
+    /* Global Application State */
+    const state = {
+      currentTab: 1,
+      currentLevel: 1,
+      studentName: '',
+      socleCompleted: false,
+      investigation: { q1: false, q2: false, q3: false, q4: false },
+      n1: { ex1: false, ex2: false, ex3: false, ex4: false, ex5: false },
+      n2: { ex1: false, ex2: false, ex3: false },
+      n3: { ex1: false, ex2: false, ex3: false }
+    };
+
+    /* Helper: parse localized numbers with commas/dots */
+    function parseInput(val) {
+      if (!val) return NaN;
+      const clean = String(val).trim().replace(',', '.');
+      return parseFloat(clean);
+    }
+
+    /* Helper: tolerant comparison */
+    function isNear(val, target, tolerance = 0.1) {
+      return Math.abs(val - target) <= tolerance;
+    }
+
+    /* Tab switcher */
+    function switchTab(tabIndex) {
+      state.currentTab = tabIndex;
+      document.querySelectorAll('.stage-container').forEach((el, idx) => {
+        if (idx + 1 === tabIndex) {
+          el.classList.remove('hidden');
+        } else {
+          el.classList.add('hidden');
+        }
+      });
+
+      for (let i = 1; i <= 4; i++) {
+        const btn = document.getElementById(`tab-btn-${i}`);
+        if (i === tabIndex) {
+          btn.className = "cma-btn flex-shrink-0 px-3 py-2 text-xs sm:text-sm rounded-full bg-[#A50F23] text-white shadow";
+        } else {
+          btn.className = "cma-btn flex-shrink-0 px-3 py-2 text-xs sm:text-sm rounded-full bg-slate-100 text-slate-700 hover:bg-slate-200";
+        }
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // Trigger MathJax re-render if available
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise().catch(() => {});
+      }
+    }
+
+    /* Level switcher inside Stage 3 */
+    function switchLevel(lvl) {
+      state.currentLevel = lvl;
+      document.getElementById('level-container-1').classList.toggle('hidden', lvl !== 1);
+      document.getElementById('level-container-2').classList.toggle('hidden', lvl !== 2);
+      document.getElementById('level-container-3').classList.toggle('hidden', lvl !== 3);
+
+      const b1 = document.getElementById('lvl-btn-1');
+      const b2 = document.getElementById('lvl-btn-2');
+      const b3 = document.getElementById('lvl-btn-3');
+
+      b1.className = (lvl === 1) ? 'cma-btn px-3 py-1.5 text-xs font-bold rounded-lg bg-emerald-700 text-white' : 'cma-btn px-3 py-1.5 text-xs font-bold rounded-lg bg-emerald-100 text-emerald-800';
+      if (!b2.disabled) {
+        b2.className = (lvl === 2) ? 'cma-btn px-3 py-1.5 text-xs font-bold rounded-lg bg-amber-700 text-white' : 'cma-btn px-3 py-1.5 text-xs font-bold rounded-lg bg-amber-100 text-amber-800';
+      }
+      if (!b3.disabled) {
+        b3.className = (lvl === 3) ? 'cma-btn px-3 py-1.5 text-xs font-bold rounded-lg bg-red-700 text-white' : 'cma-btn px-3 py-1.5 text-xs font-bold rounded-lg bg-red-100 text-red-800';
+      }
+
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise().catch(() => {});
+      }
+    }
+
+    function showColCalc(coupes) {
+      const box = document.getElementById('table-dynamic-calc');
+      const rec = coupes * 22;
+      const charges = 180;
+      const diff = rec - charges;
+      box.classList.remove('hidden');
+      if (diff >= 0) {
+        box.innerHTML = `<strong>Pour ${coupes} coupes :</strong> Recette nette = <em>${coupes} × 22 € = ${rec},00 €</em>. Les charges de 180 € sont couvertes avec un <strong>bénéfice de ${diff},00 €</strong>.`;
+      } else {
+        box.innerHTML = `<strong>Pour ${coupes} coupes :</strong> Recette nette = <em>${coupes} × 22 € = ${rec},00 €</em>. Le salon est à perte avec un <strong>déficit de ${Math.abs(diff)},00 €</strong>.`;
+      }
+    }
+
+    function checkInvQ1() {
+      const v = parseInput(document.getElementById('inv-q1').value);
+      const fb = document.getElementById('fb-inv-q1');
+      if (isNaN(v)) {
+        fb.innerHTML = '<span class="text-amber-600">Veuillez saisir un nombre.</span>';
+        return;
+      }
+      if (isNear(v, 22, 0.1)) {
+        fb.innerHTML = '<span class="text-emerald-600 font-bold">✓ Exact ! Chaque coupe rapporte 25 − 3 = 22 € nets.</span>';
+        document.getElementById('inv-q1').classList.add('valid');
+        state.investigation.q1 = true;
+      } else {
+        fb.innerHTML = '<span class="text-red-600">Calcul à revoir : Marge unitaire = Prix (25 €) − Consommables (3 €).</span>';
+      }
+      updateGlobalProgress();
+    }
+
+    function checkInvQ2() {
+      const v = parseInput(document.getElementById('inv-q2').value);
+      const fb = document.getElementById('fb-inv-q2');
+      if (isNaN(v)) {
+        fb.innerHTML = '<span class="text-amber-600">Veuillez saisir un nombre.</span>';
+        return;
+      }
+      if (isNear(v, 180, 0.1)) {
+        fb.innerHTML = '<span class="text-emerald-600 font-bold">✓ Exact ! Les charges fixes quotidiennes s\'élèvent à 180,00 €.</span>';
+        document.getElementById('inv-q2').classList.add('valid');
+        state.investigation.q2 = true;
+      } else {
+        fb.innerHTML = '<span class="text-red-600">Relisez les données : les charges fixes quotidiennes sont de 180,00 €.</span>';
+      }
+      updateGlobalProgress();
+    }
+
+    function checkInvQ3() {
+      const v = parseInput(document.getElementById('inv-q3').value);
+      const fb = document.getElementById('fb-inv-q3');
+      if (isNaN(v)) {
+        fb.innerHTML = '<span class="text-amber-600">Veuillez saisir un nombre.</span>';
+        return;
+      }
+      // 180 / 22 = 8.1818...
+      if (isNear(v, 8.18, 0.1) || isNear(v, 8.2, 0.1)) {
+        fb.innerHTML = '<span class="text-emerald-600 font-bold">✓ Très bien ! 180 / 22 ≈ 8,18. L\'inéquation donne x ≥ 8,18.</span>';
+        document.getElementById('inv-q3').classList.add('valid');
+        state.investigation.q3 = true;
+      } else {
+        fb.innerHTML = '<span class="text-red-600">Calcul : diviser 180 par 22. Le résultat est environ 8,18.</span>';
+      }
+      updateGlobalProgress();
+    }
+
+    function checkInvQ4() {
+      const v = parseInput(document.getElementById('inv-q4').value);
+      const fb = document.getElementById('fb-inv-q4');
+      if (isNaN(v)) {
+        fb.innerHTML = '<span class="text-amber-600">Veuillez saisir un nombre.</span>';
+        return;
+      }
+      if (v === 9) {
+        fb.innerHTML = '<span class="text-emerald-600 font-bold">✓ Bravo ! 8 coupes ne suffisent pas (176 € &lt; 180 €). Il faut donc 9 coupes au minimum.</span>';
+        document.getElementById('inv-q4').classList.add('valid');
+        state.investigation.q4 = true;
+      } else if (v === 8) {
+        fb.innerHTML = '<span class="text-red-600">Attention : avec 8 coupes, la recette est de 176 €, il manque 4 € pour couvrir les 180 €.</span>';
+      } else {
+        fb.innerHTML = '<span class="text-red-600">Déterminez le plus petit nombre entier strictement supérieur à 8,18.</span>';
+      }
+      updateGlobalProgress();
+    }
+
+    function updateSim() {
+      const coupes = parseInt(document.getElementById('sim-coupes').value, 10);
+      const prix = parseFloat(document.getElementById('sim-prix').value);
+      const cout = parseFloat(document.getElementById('sim-cout').value);
+      const charges = parseFloat(document.getElementById('sim-charges').value);
+
+      document.getElementById('val-coupes').textContent = coupes;
+      document.getElementById('val-prix').textContent = prix.toFixed(0) + ' €';
+      document.getElementById('val-cout').textContent = cout.toFixed(1) + ' €';
+      document.getElementById('val-charges').textContent = charges.toFixed(0) + ' €';
+
+      const marge = prix - cout;
+      const recetteTotale = coupes * marge;
+      const balance = recetteTotale - charges;
+
+      // Seuil critique : x >= charges / marge
+      const seuilReel = marge > 0 ? charges / marge : 999;
+      const seuilEntier = Math.ceil(seuilReel);
+
+      const resBox = document.getElementById('sim-results-box');
+      if (balance >= 0) {
+        resBox.className = "p-4 rounded-xl border border-emerald-300 bg-emerald-50 text-center space-y-1";
+        resBox.innerHTML = `
+          <div class="text-xs font-bold text-emerald-800 uppercase tracking-wide">✓ Salon à l'équilibre / Rentable</div>
+          <div class="text-2xl font-extrabold text-emerald-900">+${balance.toFixed(2)} €</div>
+          <div class="text-xs text-emerald-700">Marge nette totale : <strong>${recetteTotale.toFixed(2)} €</strong> pour <strong>${charges.toFixed(2)} €</strong> de charges.</div>
+        `;
+      } else {
+        resBox.className = "p-4 rounded-xl border border-red-300 bg-red-50 text-center space-y-1";
+        resBox.innerHTML = `
+          <div class="text-xs font-bold text-red-800 uppercase tracking-wide">⚠️ Déficit d'exploitation</div>
+          <div class="text-2xl font-extrabold text-red-900">${balance.toFixed(2)} €</div>
+          <div class="text-xs text-red-700">Il manque <strong>${Math.abs(balance).toFixed(2)} €</strong> pour équilibrer la journée.</div>
+        `;
+      }
+
+      // Graph bar & marker
+      const progressPerc = Math.min(100, Math.max(0, (coupes / 25) * 100));
+      const seuilPerc = Math.min(100, Math.max(0, (seuilEntier / 25) * 100));
+
+      const bar = document.getElementById('sim-bar-progress');
+      bar.style.width = progressPerc + '%';
+      bar.className = (coupes >= seuilEntier) ? 'h-full bg-emerald-500 rounded-full transition-all duration-300' : 'h-full bg-red-500 rounded-full transition-all duration-300';
+
+      const marker = document.getElementById('sim-seuil-marker');
+      marker.style.left = seuilPerc + '%';
+
+      document.getElementById('sim-threshold-badge').textContent = `Seuil critique : ${seuilEntier} coupes minimum`;
+      document.getElementById('sim-seuil-text').textContent = `Seuil : ${seuilEntier} coupes (${seuilReel.toFixed(2)})`;
+    }
+
+    function checkEx1_1() {
+      const a = parseInput(document.getElementById('ex1-1-a').value);
+      const b = parseInput(document.getElementById('ex1-1-b').value);
+      const c = parseInput(document.getElementById('ex1-1-c').value);
+      const fb = document.getElementById('fb-ex1-1');
+
+      if (isNaN(a) || isNaN(b) || isNaN(c)) {
+        fb.innerHTML = '<span class="text-amber-600">Veuillez compléter les 3 calculs.</span>';
+        return;
+      }
+
+      if (a === 17 && b === 20 && c === 23) {
+        fb.innerHTML = '<span class="text-emerald-700 font-bold">✓ Parfait ! 17 &lt; 20 (Non), 20 ≥ 20 (Oui), 23 ≥ 20 (Oui).</span>';
+        document.getElementById('badge-ex1-1').textContent = 'Validé';
+        document.getElementById('badge-ex1-1').className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800';
+        state.n1.ex1 = true;
+      } else {
+        fb.innerHTML = '<span class="text-red-600">Vérifiez vos calculs de multiplication et d\'addition.</span>';
+      }
+      updateScores();
+    }
+
+    function checkEx1_2() {
+      const a = parseInput(document.getElementById('ex1-2-a').value);
+      const b = parseInput(document.getElementById('ex1-2-b').value);
+      const c = parseInput(document.getElementById('ex1-2-c').value);
+      const d = parseInput(document.getElementById('ex1-2-d').value);
+      const fb = document.getElementById('fb-ex1-2');
+
+      if (isNaN(a) || isNaN(b) || isNaN(c) || isNaN(d)) {
+        fb.innerHTML = '<span class="text-amber-600">Veuillez remplir les 4 réponses.</span>';
+        return;
+      }
+
+      const okA = isNear(a, 7, 0.05);
+      const okB = isNear(b, 9, 0.05);
+      const okC = isNear(c, 9, 0.05);
+      const okD = isNear(d, 7.5, 0.05);
+
+      if (okA && okB && okC && okD) {
+        fb.innerHTML = '<span class="text-emerald-700 font-bold">✓ Excellent ! a) 7 ; b) 9 ; c) 9 ; d) 7,5.</span>';
+        document.getElementById('badge-ex1-2').textContent = 'Validé';
+        document.getElementById('badge-ex1-2').className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800';
+        state.n1.ex2 = true;
+      } else {
+        fb.innerHTML = '<span class="text-red-600">Certaines bornes sont inexactes. Vérifiez les divisions.</span>';
+      }
+      updateScores();
+    }
+
+    function checkEx1_3() {
+      const a = parseInput(document.getElementById('ex1-3-a').value);
+      const b = parseInput(document.getElementById('ex1-3-b').value);
+      const c = parseInput(document.getElementById('ex1-3-c').value);
+      const fb = document.getElementById('fb-ex1-3');
+
+      if (isNaN(a) || isNaN(b) || isNaN(c)) {
+        fb.innerHTML = '<span class="text-amber-600">Veuillez compléter toutes les étapes.</span>';
+        return;
+      }
+
+      if (a === 42 && isNear(b, 7, 0.05) && c === 7) {
+        fb.innerHTML = '<span class="text-emerald-700 font-bold">✓ Bravo ! 6x ≥ 42, donc x ≥ 7. La plus petite valeur entière est 7.</span>';
+        document.getElementById('badge-ex1-3').textContent = 'Validé';
+        document.getElementById('badge-ex1-3').className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800';
+        state.n1.ex3 = true;
+      } else {
+        fb.innerHTML = '<span class="text-red-600">Rappel : 30 + 12 = 42, puis 42 / 6 = 7.</span>';
+      }
+      updateScores();
+    }
+
+    function checkEx1_4() {
+      const a = parseInput(document.getElementById('ex1-4-a').value);
+      const b = parseInput(document.getElementById('ex1-4-b').value);
+      const fb = document.getElementById('fb-ex1-4');
+
+      if (isNaN(a) || isNaN(b)) {
+        fb.innerHTML = '<span class="text-amber-600">Veuillez répondre aux 2 questions.</span>';
+        return;
+      }
+
+      if (a === 14 && b === 5) {
+        fb.innerHTML = '<span class="text-emerald-700 font-bold">✓ Correct ! 14x ≥ 70 donne x ≥ 5 flacons solaires.</span>';
+        document.getElementById('badge-ex1-4').textContent = 'Validé';
+        document.getElementById('badge-ex1-4').className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800';
+        state.n1.ex4 = true;
+      } else {
+        fb.innerHTML = '<span class="text-red-600">Chaque flacon vaut 14 €. Divisez 70 par 14.</span>';
+      }
+      updateScores();
+    }
+
+    function checkEx1_5() {
+      const a = parseInput(document.getElementById('ex1-5-a').value);
+      const b = parseInput(document.getElementById('ex1-5-b').value);
+      const fb = document.getElementById('fb-ex1-5');
+
+      if (isNaN(a) || isNaN(b)) {
+        fb.innerHTML = '<span class="text-amber-600">Veuillez renseigner les 2 champs.</span>';
+        return;
+      }
+
+      if (a === 4 && b === 1) {
+        fb.innerHTML = '<span class="text-emerald-700 font-bold">✓ Parfait ! La borne est 4 et le crochet est fermé car x ≥ 4 inclut le 4.</span>';
+        document.getElementById('badge-ex1-5').textContent = 'Validé';
+        document.getElementById('badge-ex1-5').className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800';
+        state.n1.ex5 = true;
+      } else {
+        fb.innerHTML = '<span class="text-red-600">La borne est 4. Le symbole ≥ implique que 4 est inclus (crochet fermé, taper 1).</span>';
+      }
+      updateScores();
+    }
+
+    function checkEx2_1() {
+      const a = parseInput(document.getElementById('ex2-1-a').value);
+      const b = parseInput(document.getElementById('ex2-1-b').value);
+      const c = parseInput(document.getElementById('ex2-1-c').value);
+      const fb = document.getElementById('fb-ex2-1');
+
+      if (isNaN(a) || isNaN(b) || isNaN(c)) {
+        fb.innerHTML = '<span class="text-amber-600">Veuillez remplir les 3 champs.</span>';
+        return;
+      }
+
+      if (isNear(a, 28, 0.05) && isNear(b, 7.5, 0.05) && c === 8) {
+        fb.innerHTML = '<span class="text-amber-800 font-bold">✓ Très bien ! Marge = 32 − 4 = 28 €. 210 / 28 = 7,5, soit 8 clientes au minimum.</span>';
+        document.getElementById('badge-ex2-1').textContent = 'Validé';
+        document.getElementById('badge-ex2-1').className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-800';
+        state.n2.ex1 = true;
+      } else {
+        fb.innerHTML = '<span class="text-red-600">Marge = 32 − 4 = 28. Ensuite 210 / 28 = 7,5. La plus petite valeur entière est 8.</span>';
+      }
+      updateScores();
+    }
+
+    function checkEx2_2() {
+      const a = parseInput(document.getElementById('ex2-2-a').value);
+      const b = parseInput(document.getElementById('ex2-2-b').value);
+      const fb = document.getElementById('fb-ex2-2');
+
+      if (isNaN(a) || isNaN(b)) {
+        fb.innerHTML = '<span class="text-amber-600">Veuillez remplir les 2 champs.</span>';
+        return;
+      }
+
+      if (isNear(a, 100, 0.05) && b === 101) {
+        fb.innerHTML = '<span class="text-amber-800 font-bold">✓ Exact ! 0,10x &gt; 10 donne x &gt; 100. Donc rentable à partir de 101 SMS.</span>';
+        document.getElementById('badge-ex2-2').textContent = 'Validé';
+        document.getElementById('badge-ex2-2').className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-800';
+        state.n2.ex2 = true;
+      } else {
+        fb.innerHTML = '<span class="text-red-600">25 − 15 = 10. Puis 10 / 0,10 = 100. Pour x &gt; 100, le premier entier est 101.</span>';
+      }
+      updateScores();
+    }
+
+    function checkEx2_3() {
+      const a = parseInput(document.getElementById('ex2-3-a').value);
+      const b = parseInput(document.getElementById('ex2-3-b').value);
+      const fb = document.getElementById('fb-ex2-3');
+
+      if (isNaN(a) || isNaN(b)) {
+        fb.innerHTML = '<span class="text-amber-600">Veuillez renseigner les 2 champs.</span>';
+        return;
+      }
+
+      if (isNear(a, 12, 0.05) && b === 12) {
+        fb.innerHTML = '<span class="text-amber-800 font-bold">✓ Parfait ! −8x ≥ −96 implique x ≤ 12 (inversion de sens). Autonomie : 12 semaines max.</span>';
+        document.getElementById('badge-ex2-3').textContent = 'Validé';
+        document.getElementById('badge-ex2-3').className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-800';
+        state.n2.ex3 = true;
+      } else {
+        fb.innerHTML = '<span class="text-red-600">Attention à la division par −8 : le sens change ! 120 − 24 = 96, et 96 / 8 = 12.</span>';
+      }
+      updateScores();
+    }
+
+    function checkEx3_1() {
+      const a = parseInput(document.getElementById('ex3-1-a').value);
+      const b = parseInput(document.getElementById('ex3-1-b').value);
+      const c = parseInput(document.getElementById('ex3-1-c').value);
+      const fb = document.getElementById('fb-ex3-1');
+
+      if (isNaN(a) || isNaN(b) || isNaN(c)) {
+        fb.innerHTML = '<span class="text-amber-600">Veuillez répondre aux 3 questions.</span>';
+        return;
+      }
+
+      if (a === 100 && b === 9 && c === 700) {
+        fb.innerHTML = '<span class="text-red-800 font-bold">✓ Superbe ! 100x ≥ 900 donne x ≥ 9 mariées. Bénéfice max = 12 × 100 − 500 = 700 €.</span>';
+        document.getElementById('badge-ex3-1').textContent = 'Validé';
+        document.getElementById('badge-ex3-1').className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-red-100 text-red-800';
+        state.n3.ex1 = true;
+      } else {
+        fb.innerHTML = '<span class="text-red-600">Vérifications : 120 − 20 = 100. 100x ≥ 400 + 500 = 900. Bénéfice pour 12 : 12 × 100 − 500.</span>';
+      }
+      updateScores();
+    }
+
+    function checkEx3_2() {
+      const a = parseInput(document.getElementById('ex3-2-a').value);
+      const b = parseInput(document.getElementById('ex3-2-b').value);
+      const fb = document.getElementById('fb-ex3-2');
+
+      if (isNaN(a) || isNaN(b)) {
+        fb.innerHTML = '<span class="text-amber-600">Veuillez remplir les 2 coordonnées.</span>';
+        return;
+      }
+
+      if (isNear(a, 8, 0.05) && isNear(b, 280, 0.05)) {
+        fb.innerHTML = '<span class="text-red-800 font-bold">✓ Bravo ! 35x − 15x = 20x = 160 ⇒ x = 8. Et R(8) = 35 × 8 = 280 €.</span>';
+        document.getElementById('badge-ex3-2').textContent = 'Validé';
+        document.getElementById('badge-ex3-2').className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-red-100 text-red-800';
+        state.n3.ex2 = true;
+      } else {
+        fb.innerHTML = '<span class="text-red-600">Résolvez 35x − 15x = 160 ⇒ 20x = 160. Calculez ensuite 35 × x.</span>';
+      }
+      updateScores();
+    }
+
+    function checkEx3_3() {
+      const a = parseInput(document.getElementById('ex3-3-a').value);
+      const b = parseInput(document.getElementById('ex3-3-b').value);
+      const fb = document.getElementById('fb-ex3-3');
+
+      if (isNaN(a) || isNaN(b)) {
+        fb.innerHTML = '<span class="text-amber-600">Veuillez renseigner les 2 résultats.</span>';
+        return;
+      }
+
+      const okA = isNear(a, 50, 0.05);
+      const okB = isNear(b, 2.27, 0.1) || b === 3;
+
+      if (okA && okB) {
+        fb.innerHTML = '<span class="text-red-800 font-bold">✓ Remarquable ! 1560 / 31,20 = 50 clientes. 50 / 22 ≈ 2,27 clientes/jour (soit 3 au minimum).</span>';
+        document.getElementById('badge-ex3-3').textContent = 'Validé';
+        document.getElementById('badge-ex3-3').className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-red-100 text-red-800';
+        state.n3.ex3 = true;
+      } else {
+        fb.innerHTML = '<span class="text-red-600">Calcul : 1560 / 31,20 = 50. Puis diviser 50 par 22 jours ouvrés (≈ 2,27).</span>';
+      }
+      updateScores();
+    }
+
+    function updateScores() {
+      // Calculate N1 score
+      const countN1 = Object.values(state.n1).filter(Boolean).length;
+      document.getElementById('score-n1-display').textContent = `${countN1} / 5`;
+      const percN1 = Math.round((countN1 / 5) * 100);
+      document.getElementById('bilan-socle-status').textContent = `${percN1}% complété`;
+      document.getElementById('cert-socle-perc').textContent = `${percN1} %`;
+
+      // Level 1 complete unlocks Level 2 and the Attestation
+      if (countN1 === 5) {
+        state.socleCompleted = true;
+        const b2 = document.getElementById('lvl-btn-2');
+        if (b2.disabled) {
+          b2.disabled = false;
+          b2.classList.remove('cursor-not-allowed', 'text-slate-400');
+          b2.classList.add('bg-amber-100', 'text-amber-800');
+          b2.innerHTML = '<span>🟡 Niveau 2 : Avancé</span>';
+        }
+
+        // Unlock print button
+        document.getElementById('btn-print').disabled = false;
+        document.getElementById('attestation-lock-notice').className = 'text-xs text-emerald-600 font-bold';
+        document.getElementById('attestation-lock-notice').innerHTML = '✓ Félicitations ! Votre socle CAP est validé à 100 %. Vous pouvez imprimer votre attestation.';
+      }
+
+      // Calculate N2 score
+      const countN2 = Object.values(state.n2).filter(Boolean).length;
+      document.getElementById('score-n2-display').textContent = `${countN2} / 3`;
+      document.getElementById('bilan-bonus-n2').textContent = `${countN2} / 3 exercices`;
+
+      // Level 2 complete unlocks Level 3
+      if (countN2 === 3) {
+        const b3 = document.getElementById('lvl-btn-3');
+        if (b3.disabled) {
+          b3.disabled = false;
+          b3.classList.remove('cursor-not-allowed', 'text-slate-400');
+          b3.classList.add('bg-red-100', 'text-red-800');
+          b3.innerHTML = '<span>🔴 Niveau 3 : Expert</span>';
+        }
+      }
+
+      // Calculate N3 score
+      const countN3 = Object.values(state.n3).filter(Boolean).length;
+      document.getElementById('score-n3-display').textContent = `${countN3} / 3`;
+      document.getElementById('bilan-bonus-n3').textContent = `${countN3} / 3 exercices`;
+
+      // Total bonus points on Certificate
+      document.getElementById('cert-bonus-pts').textContent = `${countN2 + countN3} / 6`;
+
+      updateGlobalProgress();
+    }
+
+    function updateGlobalProgress() {
+      // 4 investigation + 5 N1 + 3 N2 + 3 N3 = 15 checkpoints
+      const invCount = Object.values(state.investigation).filter(Boolean).length;
+      const n1Count = Object.values(state.n1).filter(Boolean).length;
+      const n2Count = Object.values(state.n2).filter(Boolean).length;
+      const n3Count = Object.values(state.n3).filter(Boolean).length;
+
+      const total = invCount + n1Count + n2Count + n3Count;
+      const perc = Math.round((total / 15) * 100);
+      document.getElementById('global-progress').style.width = `${perc}%`;
+    }
+
+    function updateStudentName(val) {
+      state.studentName = val.trim();
+      const display = document.getElementById('cert-student-name');
+      display.textContent = state.studentName ? state.studentName : "[Nom de l'apprenant(e)]";
+    }
+
+    // Set today's date formatted in French
+    function initDate() {
+      const today = new Date();
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      const formatted = today.toLocaleDateString('fr-FR', options);
+      document.getElementById('cert-date').textContent = formatted;
+    }
+
+    window.addEventListener('load', function() {
+      initDate();
+      updateSim();
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise().catch(() => {});
+      }
+    });
+  </script>
+</body>
+</html>
