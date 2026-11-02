@@ -22,5 +22,38 @@ window.APPLICATIONS = [
   { code: 'A2S4P1', annee: 2, semaine: 4, discipline: 'P', activite: 1,
     titre: 'Physique-Chimie · Semaine 4 · Activité 1',
     description: 'Retrouve ton activité de physique-chimie de deuxième année.',
-    lien: './applications/A2S4P1/index.html' }
+    lien: './applications/A2S4P1/index.html' },
+{
+  "code": "A2S5M1",
+  "annee": 2,
+  "semaine": 5,
+  "discipline": "M",
+  "activite": 1,
+  "titre": "Fonctions : lecture graphique d’un optimum",
+  "description": "Lire un graphique pour déterminer un optimum.",
+  "lien": "./applications/A2S5M1/index.html",
+  "publication": "2026-11-03T07:45:00+04:00"
+},
+{
+  "code": "A2S5M2",
+  "annee": 2,
+  "semaine": 5,
+  "discipline": "M",
+  "activite": 2,
+  "titre": "Comparaison de deux tarifs",
+  "description": "Comparer deux offres et déterminer la plus avantageuse.",
+  "lien": "./applications/A2S5M2/index.html",
+  "publication": "2026-11-04T07:45:00+04:00"
+},
+{
+  "code": "A2S5P1",
+  "annee": 2,
+  "semaine": 5,
+  "discipline": "P",
+  "activite": 1,
+  "titre": "Optique : réfraction et lois de Snell-Descartes",
+  "description": "Étudier la déviation de la lumière entre deux milieux.",
+  "lien": "./applications/A2S5P1/index.html",
+  "publication": "2026-11-04T07:45:00+04:00"
+}
 ];

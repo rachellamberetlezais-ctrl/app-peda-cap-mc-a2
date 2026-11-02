@@ -1,0 +1,2813 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>S5 P1 - Optique : Réfraction & Lois de Snell-Descartes | CMA Formation</title>
+  
+  <!-- Configuration et chargement de MathJax v3 -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      },
+      options: {
+        enableMenu: false
+      }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <style>
+    /* Charte graphique officielle CMA Formation */
+    :root {
+      --cma-bordeaux: #A50F23;
+      --cma-bordeaux-dark: #7F0B1A;
+      --cma-corail: #EE3C3D;
+      --cma-corail-light: #FDE8E8;
+      --cma-bg: #F8FAFC;
+      --cma-card-bg: #FFFFFF;
+      --cma-text: #1E293B;
+      --cma-text-muted: #64748B;
+      --cma-border: #E2E8F0;
+      --cma-success: #16A34A;
+      --cma-success-bg: #DCFCE7;
+      --cma-warning: #D97706;
+      --cma-warning-bg: #FEF3C7;
+      --radius: 12px;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+      --shadow-md: 0 4px 12px rgba(165, 15, 35, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: var(--cma-bg);
+      color: var(--cma-text);
+      line-height: 1.5;
+      font-size: 15px;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* Puces officielles CMA */
+    .icon-bullet {
+      height: 18px;
+      width: 18px;
+      object-fit: contain;
+      display: inline-block;
+      vertical-align: middle;
+      flex-shrink: 0;
+      margin-right: 8px;
+    }
+
+    /* Header principal conforme au cahier des charges */
+    .app-header {
+      position: relative;
+      overflow: hidden;
+      padding-bottom: 20px;
+      padding-top: 14px;
+      padding-left: 16px;
+      padding-right: 16px;
+      background: linear-gradient(135deg, #FFFFFF 0%, #FFF5F5 100%);
+      border-bottom: 1px solid var(--cma-border);
+    }
+
+    .header-content {
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .app-logo {
+      height: 48px;
+      width: auto;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+
+    .header-titles {
+      flex: 1;
+    }
+
+    .header-titles h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--cma-bordeaux);
+      line-height: 1.25;
+    }
+
+    .header-titles p {
+      font-size: 0.82rem;
+      color: var(--cma-text-muted);
+      margin-top: 3px;
+    }
+
+    /* Ruban inférieur officiel répété sur toute la largeur */
+    .cma-wave-border {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: auto;
+      height: 14px;
+      margin: 0;
+      border: 0;
+      background-image: url("ruban_vague.png");
+      background-repeat: repeat-x;
+      background-size: 102.941176px 102.941176px;
+      background-position: left -46.941176px;
+    }
+
+    /* Barre de progression compacte de 8px */
+    .progress-track {
+      width: 100%;
+      height: 8px;
+      background-color: #E2E8F0;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--cma-corail) 0%, var(--cma-bordeaux) 100%);
+      transition: width 0.4s ease;
+    }
+
+    /* Onglets de navigation tactiles Mobile-First */
+    .nav-container {
+      max-width: 960px;
+      margin: 12px auto 6px auto;
+      padding: 0 12px;
+      width: 100%;
+    }
+
+    .nav-tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .nav-tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .nav-btn {
+      flex: 1 0 auto;
+      min-height: 44px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      border: 1.5px solid var(--cma-border);
+      background: #FFFFFF;
+      color: var(--cma-text);
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .nav-btn:hover {
+      border-color: var(--cma-corail);
+      color: var(--cma-bordeaux);
+    }
+
+    .nav-btn.active {
+      background: var(--cma-bordeaux);
+      color: #FFFFFF;
+      border-color: var(--cma-bordeaux);
+      box-shadow: 0 2px 8px rgba(165, 15, 35, 0.3);
+    }
+
+    /* Conteneur principal */
+    .main-container {
+      max-width: 960px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 12px 14px 40px 14px;
+      flex: 1;
+    }
+
+    .step-section {
+      display: none;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .step-section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Cartes & Composants */
+    .card {
+      background: var(--cma-card-bg);
+      border-radius: var(--radius);
+      border: 1px solid var(--cma-border);
+      padding: 18px 16px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .card-title {
+      font-size: 1.08rem;
+      font-weight: 700;
+      color: var(--cma-bordeaux);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+    }
+
+    .info-callout {
+      background: #F1F5F9;
+      border-left: 4px solid var(--cma-corail);
+      padding: 12px 14px;
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 14px;
+      font-size: 0.93rem;
+    }
+
+    .info-callout strong {
+      color: var(--cma-bordeaux);
+    }
+
+    /* Tableaux adaptatifs */
+    .table-scroll {
+      width: 100%;
+      overflow-x: auto;
+      margin: 12px 0;
+      border-radius: 8px;
+      border: 1px solid var(--cma-border);
+    }
+
+    .cma-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+      min-width: 480px;
+    }
+
+    .cma-table th {
+      background: #F8FAFC;
+      color: var(--cma-bordeaux);
+      font-weight: 700;
+      padding: 10px;
+      border-bottom: 2px solid var(--cma-border);
+    }
+
+    .cma-table td {
+      padding: 10px;
+      border-bottom: 1px solid var(--cma-border);
+      background: #FFFFFF;
+    }
+
+    /* Saisie Mobile-First */
+    .input-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+
+    .cma-input {
+      font-size: 16px; /* Évite le zoom auto iOS */
+      height: 44px;
+      padding: 8px 12px;
+      border: 1.5px solid var(--cma-border);
+      border-radius: 8px;
+      color: var(--cma-text);
+      background: #FFFFFF;
+      min-width: 120px;
+      flex: 1;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .cma-input:focus {
+      outline: none;
+      border-color: var(--cma-corail);
+      box-shadow: 0 0 0 3px rgba(238, 60, 61, 0.15);
+    }
+
+    .input-unit {
+      font-weight: 600;
+      color: var(--cma-text-muted);
+      font-size: 0.92rem;
+      white-space: nowrap;
+    }
+
+    .btn {
+      min-height: 44px;
+      min-width: 44px;
+      padding: 10px 18px;
+      border-radius: 8px;
+      border: none;
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--cma-bordeaux);
+      color: #FFFFFF;
+    }
+
+    .btn-primary:hover {
+      background: var(--cma-bordeaux-dark);
+    }
+
+    .btn-corail {
+      background: var(--cma-corail);
+      color: #FFFFFF;
+    }
+
+    .btn-corail:hover {
+      background: #D92B2C;
+    }
+
+    .btn-sm {
+      min-height: 38px;
+      padding: 6px 14px;
+      font-size: 0.88rem;
+    }
+
+    /* Retours pédagogiques */
+    .feedback-box {
+      margin-top: 10px;
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      display: none;
+      animation: fadeIn 0.25s ease;
+    }
+
+    .feedback-box.correct {
+      display: block;
+      background: var(--cma-success-bg);
+      border: 1px solid var(--cma-success);
+      color: #065F46;
+    }
+
+    .feedback-box.incorrect {
+      display: block;
+      background: #FEE2E2;
+      border: 1px solid #EF4444;
+      color: #991B1B;
+    }
+
+    .feedback-box.hint {
+      display: block;
+      background: var(--cma-warning-bg);
+      border: 1px solid var(--cma-warning);
+      color: #92400E;
+    }
+
+    /* Accordéons pour le cours */
+    .accordion-item {
+      border: 1px solid var(--cma-border);
+      border-radius: 8px;
+      margin-bottom: 10px;
+      overflow: hidden;
+      background: #FFFFFF;
+    }
+
+    .accordion-header {
+      padding: 14px 16px;
+      min-height: 48px;
+      background: #FFFFFF;
+      font-weight: 700;
+      color: var(--cma-bordeaux);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+    }
+
+    .accordion-header::after {
+      content: '+';
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: var(--cma-corail);
+    }
+
+    .accordion-item.open .accordion-header::after {
+      content: '−';
+    }
+
+    .accordion-body {
+      padding: 14px 16px;
+      border-top: 1px solid var(--cma-border);
+      background: #FDFDFE;
+      display: none;
+      font-size: 0.93rem;
+    }
+
+    .accordion-item.open .accordion-body {
+      display: block;
+    }
+
+    /* Simulateur interactif de réfraction PhET-like */
+    .sim-wrapper {
+      background: #FFFFFF;
+      border-radius: 12px;
+      border: 1px solid var(--cma-border);
+      padding: 14px;
+      margin-bottom: 16px;
+    }
+
+    .canvas-box {
+      position: relative;
+      width: 100%;
+      height: 310px;
+      background: #F8FAFC;
+      border-radius: 8px;
+      border: 1px solid #CBD5E1;
+      overflow: hidden;
+      margin-bottom: 14px;
+      touch-action: none;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .sim-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    @media (min-width: 640px) {
+      .sim-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .canvas-box {
+        height: 350px;
+      }
+    }
+
+    .sim-card {
+      background: #F8FAFC;
+      border: 1px solid var(--cma-border);
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+
+    .sim-card-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .sim-select {
+      width: 100%;
+      height: 40px;
+      font-size: 0.92rem;
+      border-radius: 6px;
+      border: 1.5px solid var(--cma-border);
+      padding: 4px 8px;
+      background: #FFFFFF;
+      color: var(--cma-text);
+      outline: none;
+    }
+
+    .sim-slider {
+      width: 100%;
+      height: 36px;
+      cursor: pointer;
+    }
+
+    .sim-metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    @media (min-width: 640px) {
+      .sim-metrics-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .metric-badge {
+      background: #FFF5F5;
+      border: 1px solid #FED7D7;
+      border-radius: 8px;
+      padding: 8px;
+      text-align: center;
+    }
+
+    .metric-badge.total-reflection {
+      background: #FEF3C7;
+      border-color: #F59E0B;
+    }
+
+    .metric-name {
+      font-size: 0.74rem;
+      color: var(--cma-text-muted);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .metric-val {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--cma-bordeaux);
+      margin-top: 2px;
+    }
+
+    /* Entraînement gamifié */
+    .level-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #FFFFFF;
+      border: 1.5px solid var(--cma-border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.2s;
+    }
+
+    .level-card.active-lvl {
+      border-color: var(--cma-bordeaux);
+      box-shadow: 0 0 0 2px rgba(165, 15, 35, 0.1);
+    }
+
+    .level-card.locked {
+      background: #F1F5F9;
+      opacity: 0.75;
+      cursor: not-allowed;
+    }
+
+    .level-pill {
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+
+    .pill-l1 { background: #DCFCE7; color: #15803D; }
+    .pill-l2 { background: #FEF3C7; color: #B45309; }
+    .pill-l3 { background: #EDE9FE; color: #6D28D9; }
+    .pill-eval { background: #FFE4E6; color: #BE123C; }
+
+    .exercise-box {
+      background: #FFFFFF;
+      border: 1.5px solid var(--cma-border);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .exercise-box.locked-exercise {
+      display: none;
+    }
+
+    .exercise-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--cma-text-muted);
+    }
+
+    .badge-tag {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 999px;
+    }
+
+    .tag-cap { background: var(--cma-corail-light); color: var(--cma-bordeaux); }
+    .tag-bonus { background: #FEF3C7; color: #B45309; }
+    .tag-expert { background: #EDE9FE; color: #6D28D9; }
+
+    .q-item {
+      padding: 12px;
+      border-radius: 8px;
+      background: #F8FAFC;
+      border: 1px solid var(--cma-border);
+      margin-bottom: 12px;
+    }
+
+    .q-item.completed {
+      background: #F0FDF4;
+      border-color: #BBF7D0;
+    }
+
+    .q-title {
+      font-weight: 600;
+      font-size: 0.94rem;
+      margin-bottom: 8px;
+      color: var(--cma-text);
+    }
+
+    /* Score banner */
+    .score-banner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .score-card {
+      background: #FFFFFF;
+      border: 1px solid var(--cma-border);
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .score-card.cap-highlight {
+      border-color: #86EFAC;
+      background: #F0FDF4;
+    }
+
+    .score-card-title {
+      font-size: 0.74rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--cma-text-muted);
+    }
+
+    .score-card-val {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--cma-bordeaux);
+      margin-top: 2px;
+    }
+
+    /* Badges */
+    .badge-shelf {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 14px 0;
+    }
+
+    .cma-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #FFFFFF;
+      border: 1.5px solid var(--cma-border);
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .cma-badge.unlocked {
+      border-color: #F59E0B;
+      background: #FFFBEB;
+      color: #92400E;
+    }
+
+    .cma-badge.locked {
+      opacity: 0.5;
+      background: #F1F5F9;
+      color: #94A3B8;
+    }
+
+    /* Attestation officielle */
+    .attestation-sheet {
+      background: #FFFFFF;
+      border: 3px double var(--cma-bordeaux);
+      border-radius: 14px;
+      padding: 24px 20px;
+      margin: 16px 0;
+      box-shadow: var(--shadow-md);
+      position: relative;
+    }
+
+    .att-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      border-bottom: 2px solid var(--cma-corail);
+      padding-bottom: 14px;
+      margin-bottom: 16px;
+      gap: 10px;
+    }
+
+    .att-logo {
+      max-height: 48px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .att-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--cma-bordeaux);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .att-sub {
+      font-size: 0.88rem;
+      color: var(--cma-text-muted);
+      font-weight: 600;
+    }
+
+    .att-learner {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--cma-bordeaux);
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    .att-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin: 16px 0;
+      background: #F8FAFC;
+      border-radius: 8px;
+      padding: 12px;
+      border: 1px solid var(--cma-border);
+    }
+
+    @media (min-width: 600px) {
+      .att-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .att-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-top: 20px;
+      padding-top: 14px;
+      border-top: 1px dashed var(--cma-border);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .att-sig-block {
+      text-align: right;
+      font-size: 0.85rem;
+    }
+
+    .att-sig-name {
+      font-weight: 700;
+      color: var(--cma-bordeaux);
+      margin-top: 4px;
+    }
+
+    /* Impression / Export PDF */
+    @media print {
+      body {
+        background: #FFFFFF;
+        color: #000000;
+      }
+      .app-header, .progress-track, .nav-container, .step-section:not(#step-4), .no-print, .btn, .input-row, input, select {
+        display: none !important;
+      }
+      #step-4 {
+        display: block !important;
+      }
+      .main-container {
+        padding: 0;
+        max-width: 100%;
+      }
+      .attestation-sheet {
+        border: 2px solid #A50F23;
+        box-shadow: none;
+        page-break-inside: avoid;
+        margin: 0;
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- En-tête principal officiel CMA Formation -->
+  <header class="app-header">
+    <div class="header-content">
+      <img src="logo.png" alt="Logo CMA Formation" class="app-logo" onerror="this.src='https://placehold.co/120x48/A50F23/ffffff?text=CMA+Formation'">
+      <div class="header-titles">
+        <h1>Optique : Réfraction de la lumière & Lois de Snell-Descartes</h1>
+        <p>Physique-Chimie | CAP Métiers de la Coiffure | S5 P1 | CMA Formation Sainte-Clotilde (Rachel Lamberet-Lezais)</p>
+      </div>
+    </div>
+    <!-- Ruban officiel répété sur toute la largeur -->
+    <div class="cma-wave-border"></div>
+  </header>
+
+  <!-- Barre de progression générale compacte (8px) -->
+  <div class="progress-track" aria-label="Progression de la séance">
+    <div class="progress-bar-fill" id="globalProgressBar"></div>
+  </div>
+
+  <!-- Barre d'onglets tactiles Mobile-First -->
+  <div class="nav-container">
+    <nav class="nav-tabs" role="tablist">
+      <button class="nav-btn active" onclick="switchStep(1)" id="tab-step-1" role="tab" aria-selected="true">
+        <span>1.</span> Découverte
+      </button>
+      <button class="nav-btn" onclick="switchStep(2)" id="tab-step-2" role="tab" aria-selected="false">
+        <span>2.</span> Cours & Simulateur
+      </button>
+      <button class="nav-btn" onclick="switchStep(3)" id="tab-step-3" role="tab" aria-selected="false">
+        <span>3.</span> Entraînement
+      </button>
+      <button class="nav-btn" onclick="switchStep(4)" id="tab-step-4" role="tab" aria-selected="false">
+        <span>4.</span> Bilan & Attestation
+      </button>
+    </nav>
+  </div>
+
+  <!-- Conteneur principal SPA -->
+  <main class="main-container">
+
+    <!-- ========================================== -->
+    <!-- ÉTAPE 1 — DÉCOUVERTE                      -->
+    <!-- ========================================== -->
+    <section id="step-1" class="step-section active">
+      <div class="card">
+        <h2 class="card-title">
+          <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+          Mise en situation : Déviation de la lumière dans les flacons de sérum et bacs d'eau
+        </h2>
+        <div class="info-callout">
+          <strong>Contexte professionnel réunionnais :</strong> Au salon « L'Atelier Kréol » à Sainte-Clotilde, Sarah, apprentie en 2e année de CAP Métiers de la Coiffure, prépare les postes de coiffage sous la verrière lumineuse du salon baignée par la lumière tropicale de l'île.<br>
+          En manipulant les produits sur la tablette de présentation, Sarah observe deux phénomènes d'optique intrigants :
+          <ul style="margin-top: 6px; padding-left: 20px;">
+            <li><strong>Phénomène 1 :</strong> Lorsqu'elle plonge une pipette transparente dans un flacon de sérum capillaire protecteur à base d'huiles végétales locales (sérum biphasé à haute viscosité), la tige de la pipette semble « brisée » et décalée au passage de la surface du liquide.</li>
+            <li><strong>Phénomène 2 :</strong> Au bac à shampooing, le fond de la cuve remplie d'eau semble anormalement surélevé, et le jet d'eau éclairé par le spot orientable dévie nettement le faisceau lumineux lorsqu'il pénètre dans l'eau.</li>
+          </ul>
+        </div>
+        <p style="margin-bottom: 6px;">
+          Ces déformations visuelles sont dues à la <strong>réfraction de la lumière</strong> : le changement de direction que subit un rayon lumineux lorsqu'il traverse la surface de séparation (le <em>dioptre</em>) entre deux milieux transparents d'indices de réfraction différents.
+        </p>
+      </div>
+
+      <!-- Données des milieux transparents du salon -->
+      <div class="card">
+        <h3 class="card-title">
+          <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+          Indices de réfraction et vitesse de la lumière
+        </h3>
+        <div class="table-scroll">
+          <table class="cma-table">
+            <thead>
+              <tr>
+                <th>Milieu transparent</th>
+                <th>Indice de réfraction ($n$)</th>
+                <th>Vitesse de la lumière ($v$)</th>
+                <th>Comportement du rayon lumineux</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Air</strong> (milieu 1)</td>
+                <td>$n_1 = 1,00$</td>
+                <td>$c \approx 300\,000\text{ km/s}$</td>
+                <td>Milieu de départ (incident)</td>
+              </tr>
+              <tr>
+                <td><strong>Eau du bac</strong> (milieu 2)</td>
+                <td>$n_2 = 1,33$</td>
+                <td>$v \approx 225\,000\text{ km/s}$</td>
+                <td>Le rayon se rapproche de la normale</td>
+              </tr>
+              <tr>
+                <td><strong>Verre du flacon</strong> (milieu 2)</td>
+                <td>$n_2 = 1,50$</td>
+                <td>$v = 200\,000\text{ km/s}$</td>
+                <td>Déviation plus prononcée</td>
+              </tr>
+              <tr>
+                <td><strong>Sérum huileux</strong> (milieu 2)</td>
+                <td>$n_2 = 1,47$</td>
+                <td>$v \approx 204\,000\text{ km/s}$</td>
+                <td>Réfraction marquée du faisceau</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Questions d'investigation -->
+      <div class="card">
+        <h3 class="card-title">
+          <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+          Questions d'investigation professionnelle
+        </h3>
+
+        <!-- Q1 -->
+        <div class="q-item" id="block-disc-1">
+          <div class="q-title">1. [C1 - S'informer] Quel est le nom de la surface séparant deux milieux transparents différents ?</div>
+          <div class="input-row">
+            <span class="input-unit">Surface de séparation :</span>
+            <input type="text" class="cma-input" id="disc_q1" placeholder="Votre résultat...">
+            <button class="btn btn-primary btn-sm" onclick="checkDisc1()">Valider</button>
+          </div>
+          <div class="feedback-box" id="fb-disc-1"></div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="q-item" id="block-disc-2">
+          <div class="q-title">2. [C1 - S'informer] Relever les indices de réfraction de l'air ($n_1$), de l'eau ($n_2$) et du sérum capillaire ($n_2$) :</div>
+          <div class="input-row">
+            <span class="input-unit">Air :</span>
+            <input type="text" inputmode="decimal" class="cma-input" id="disc_q2_air" placeholder="n1" style="max-width: 80px;">
+            <span class="input-unit">, Eau :</span>
+            <input type="text" inputmode="decimal" class="cma-input" id="disc_q2_eau" placeholder="n2" style="max-width: 80px;">
+            <span class="input-unit">, Sérum :</span>
+            <input type="text" inputmode="decimal" class="cma-input" id="disc_q2_serum" placeholder="n2" style="max-width: 80px;">
+            <button class="btn btn-primary btn-sm" onclick="checkDisc2()">Valider</button>
+          </div>
+          <div class="feedback-box" id="fb-disc-2"></div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="q-item" id="block-disc-3">
+          <div class="q-title">3. [C2 - Exécuter] Comment s'appelle la droite perpendiculaire au dioptre au point d'incidence $I$ ?</div>
+          <div class="input-row">
+            <input type="text" class="cma-input" id="disc_q3" placeholder="Votre résultat...">
+            <button class="btn btn-primary btn-sm" onclick="checkDisc3()">Valider</button>
+          </div>
+          <div class="feedback-box" id="fb-disc-3"></div>
+        </div>
+
+        <!-- Q4 -->
+        <div class="q-item" id="block-disc-4">
+          <div class="q-title">4. [C2 - Exécuter] Un rayon lumineux arrive dans l'air ($n_1 = 1,00$) avec un angle d'incidence $i_1 = 40^\circ$. Calculer $\sin(40^\circ)$ (arrondi à 3 décimales) :</div>
+          <div class="input-row">
+            <span class="input-unit">$\sin(40^\circ) =$</span>
+            <input type="text" inputmode="decimal" class="cma-input" id="disc_q4" placeholder="Votre résultat...">
+            <button class="btn btn-primary btn-sm" onclick="checkDisc4()">Valider</button>
+          </div>
+          <div class="feedback-box" id="fb-disc-4"></div>
+        </div>
+
+        <!-- Q5 -->
+        <div class="q-item" id="block-disc-5">
+          <div class="q-title">5. [C2 - Exécuter] En utilisant $n_1 \times \sin(i_1) = n_2 \times \sin(i_2)$ avec $n_2 = 1,33$, calculer $\sin(i_2)$ puis l'angle de réfraction $i_2$ en degrés (au dixième) :</div>
+          <div class="input-row">
+            <span class="input-unit">$\sin(i_2) =$</span>
+            <input type="text" inputmode="decimal" class="cma-input" id="disc_q5_sin" placeholder="sin(i2)" style="max-width: 100px;">
+            <span class="input-unit">, $i_2 =$</span>
+            <input type="text" inputmode="decimal" class="cma-input" id="disc_q5_deg" placeholder="Angle" style="max-width: 100px;">
+            <span class="input-unit">degrés (°)</span>
+            <button class="btn btn-primary btn-sm" onclick="checkDisc5()">Valider</button>
+          </div>
+          <div class="feedback-box" id="fb-disc-5"></div>
+        </div>
+
+        <!-- Q6 -->
+        <div class="q-item" id="block-disc-6">
+          <div class="q-title">6. [C3 - Appliquer] Comparer $i_1 = 40^\circ$ et $i_2 \approx 28,9^\circ$. Le rayon s'est-il rapproché ou éloigné de la normale ?</div>
+          <div class="input-row">
+            <input type="text" class="cma-input" id="disc_q6" placeholder="rapproché ou éloigné ?">
+            <button class="btn btn-primary btn-sm" onclick="checkDisc6()">Valider</button>
+          </div>
+          <div class="feedback-box" id="fb-disc-6"></div>
+        </div>
+
+        <!-- Q7 -->
+        <div class="q-item" id="block-disc-7">
+          <div class="q-title">7. [C4 - Communiquer] Pourquoi la pipette semble-t-elle brisée au passage de l'air au sérum ?</div>
+          <div class="input-row">
+            <input type="text" class="cma-input" id="disc_q7" placeholder="Cause physique : réfraction, déviation...">
+            <button class="btn btn-primary btn-sm" onclick="checkDisc7()">Valider</button>
+          </div>
+          <div class="feedback-box" id="fb-disc-7"></div>
+        </div>
+
+        <div style="text-align: right; margin-top: 14px;">
+          <button class="btn btn-corail" onclick="switchStep(2)">Passer au Cours & Simulateur PhET →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- ÉTAPE 2 — COURS ET SIMULATEUR INTERACTIF   -->
+    <!-- ========================================== -->
+    <section id="step-2" class="step-section">
+      <div class="card">
+        <h2 class="card-title">
+          <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+          Synthèse de cours : Réfraction de la lumière & Lois de Snell-Descartes
+        </h2>
+
+        <div class="accordion-item open">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            1. Définition et vocabulaire de la réfraction
+          </div>
+          <div class="accordion-body">
+            <p>La <strong>réfraction</strong> est le changement brusque de direction que subit un faisceau lumineux lorsqu'il traverse la surface de séparation (le <strong>dioptre</strong>) entre deux milieux transparents homogènes d'indices optiques différents.</p>
+            <ul style="padding-left: 20px; margin: 8px 0;">
+              <li><strong>Le dioptre :</strong> Surface séparant les deux milieux (ex : air / eau, air / sérum).</li>
+              <li><strong>Le point d'incidence $I$ :</strong> Point où le rayon incident frappe le dioptre.</li>
+              <li><strong>La normale ($N$) :</strong> Droite imaginaire perpendiculaire au dioptre au point $I$.</li>
+              <li><strong>L'angle d'incidence $i_1$ :</strong> Angle mesuré entre le rayon incident et la <em>normale</em>.</li>
+              <li><strong>L'angle de réfraction $i_2$ :</strong> Angle mesuré entre le rayon réfracté et la <em>normale</em>.</li>
+            </ul>
+            <div class="info-callout" style="margin-top: 8px;">
+              <strong>Règle essentielle :</strong> Les angles $i_1$ et $i_2$ se mesurent <strong>TOUJOURS</strong> par rapport à la normale, et <strong>JAMAIS</strong> par rapport à la surface du liquide ou du dioptre !
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            2. Lois de Snell-Descartes pour la réfraction
+          </div>
+          <div class="accordion-body">
+            <p><strong>Première loi :</strong> Le rayon incident, le rayon réfracté et la normale sont tous situés dans un même plan appelé <em>plan d'incidence</em>.</p>
+            <p style="margin-top: 8px;"><strong>Deuxième loi (relation quantitative fondamentale) :</strong></p>
+            <p style="text-align: center; font-weight: 700; color: var(--cma-bordeaux); font-size: 1.1rem; margin: 8px 0;">
+              $$n_1 \times \sin(i_1) = n_2 \times \sin(i_2)$$
+            </p>
+            <ul style="padding-left: 20px;">
+              <li>$n_1$ : Indice de réfraction du milieu d'incidence (ex : air $n_1 = 1,00$).</li>
+              <li>$i_1$ : Angle d'incidence dans le milieu 1 (en degrés).</li>
+              <li>$n_2$ : Indice de réfraction du milieu réfringent (ex : eau $n_2 = 1,33$ ; sérum $n_2 = 1,47$).</li>
+              <li>$i_2$ : Angle de réfraction dans le milieu 2 (en degrés).</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            3. Sens de déviation et phénomène de réflexion totale
+          </div>
+          <div class="accordion-body">
+            <ul style="padding-left: 20px; margin-bottom: 8px;">
+              <li><strong>Passage d'un milieu moins réfringent vers un milieu plus réfringent ($n_1 < n_2$) :</strong><br>
+                $\sin(i_2) < \sin(i_1) \implies i_2 < i_1$. Le rayon se <strong>rapproche</strong> de la normale.
+              </li>
+              <li style="margin-top: 6px;"><strong>Passage d'un milieu plus réfringent vers un milieu moins réfringent ($n_1 > n_2$) :</strong><br>
+                $\sin(i_2) > \sin(i_1) \implies i_2 > i_1$. Le rayon s'<strong>éloigne</strong> de la normale.
+              </li>
+            </ul>
+            <div class="info-callout">
+              <strong>Réflexion totale :</strong> Quand la lumière passe d'un milieu plus dense vers un milieu moins dense (ex : eau $\to$ air), au-delà de l'angle limite critique $i_{\text{lim}} = \arcsin\left(\frac{n_2}{n_1}\right)$, le rayon ne sort plus : il est <strong>intégralement réfléchi</strong> (principe de la fibre optique et de l'éclat des strass capillaires).
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Simulateur interactif complet Canvas type PhET "Bending Light" -->
+      <div class="card">
+        <h3 class="card-title">
+          <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+          Simulateur d'optique interactif PhET : Dioptre, Réfraction & Réflexion
+        </h3>
+        <p style="font-size: 0.9rem; color: var(--cma-text-muted); margin-bottom: 12px;">
+          Faites glisser le curseur d'angle d'incidence ou touchez directement la zone supérieure pour orienter le faisceau laser et observer la réfraction en temps réel.
+        </p>
+
+        <div class="sim-wrapper">
+          <div class="canvas-box">
+            <canvas id="opticsCanvas"></canvas>
+          </div>
+
+          <div class="sim-grid">
+            <div class="sim-card">
+              <div class="sim-card-title">
+                <span>Milieu 1 (Incident haut) :</span>
+                <span id="lbl-m1-idx" style="color: var(--cma-bordeaux); font-weight: bold;">n1 = 1.00</span>
+              </div>
+              <select class="sim-select" id="select-m1" onchange="onMaterialChange()">
+                <option value="1.00" selected>Air (n = 1.00)</option>
+                <option value="1.33">Eau claire du bac (n = 1.33)</option>
+                <option value="1.47">Sérum capillaire huileux (n = 1.47)</option>
+                <option value="1.50">Verre du flacon (n = 1.50)</option>
+              </select>
+            </div>
+
+            <div class="sim-card">
+              <div class="sim-card-title">
+                <span>Milieu 2 (Réfracté bas) :</span>
+                <span id="lbl-m2-idx" style="color: var(--cma-bordeaux); font-weight: bold;">n2 = 1.33</span>
+              </div>
+              <select class="sim-select" id="select-m2" onchange="onMaterialChange()">
+                <option value="1.00">Air (n = 1.00)</option>
+                <option value="1.33" selected>Eau claire du bac (n = 1.33)</option>
+                <option value="1.47">Sérum capillaire huileux (n = 1.47)</option>
+                <option value="1.50">Verre du flacon (n = 1.50)</option>
+              </select>
+            </div>
+
+            <div class="sim-card" style="grid-column: 1 / -1;">
+              <div class="sim-card-title">
+                <span>Angle d'incidence $i_1$ :</span>
+                <span id="lbl-i1-val" style="color: var(--cma-corail); font-weight: bold;">40.0°</span>
+              </div>
+              <input type="range" class="sim-slider" id="slider-i1" min="0" max="85" step="0.5" value="40" oninput="onAngleSlider(this.value)">
+            </div>
+          </div>
+
+          <div class="sim-metrics-grid">
+            <div class="metric-badge">
+              <div class="metric-name">$\sin(i_1)$</div>
+              <div class="metric-val" id="metric-sin-i1">0.643</div>
+            </div>
+            <div class="metric-badge">
+              <div class="metric-name">$\sin(i_2)$</div>
+              <div class="metric-val" id="metric-sin-i2">0.483</div>
+            </div>
+            <div class="metric-badge" id="box-metric-i2">
+              <div class="metric-name">Angle $i_2$</div>
+              <div class="metric-val" id="metric-i2-val">28.9°</div>
+            </div>
+            <div class="metric-badge">
+              <div class="metric-name">Déviation $D = |i_1 - i_2|$</div>
+              <div class="metric-val" id="metric-dev-val">11.1°</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="text-align: right; margin-top: 14px;">
+          <button class="btn btn-corail" onclick="switchStep(3)">Accéder aux Entraînements Différenciés →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- ÉTAPE 3 — ENTRAÎNEMENT GAMIFIÉ             -->
+    <!-- ========================================== -->
+    <section id="step-3" class="step-section">
+
+      <!-- Barre de score -->
+      <div class="score-banner">
+        <div class="score-card cap-highlight">
+          <div class="score-card-title">Socle CAP (Niveau 1)</div>
+          <div class="score-card-val" id="capProgressTxt">0%</div>
+        </div>
+        <div class="score-card">
+          <div class="score-card-title">Bonus Élite / Dépassement</div>
+          <div class="score-card-val" id="bonusScoreTxt">+0 pts</div>
+        </div>
+      </div>
+
+      <!-- Onglets de sélection des niveaux -->
+      <div class="level-card active-lvl" id="hdr-lvl-1" onclick="switchLvlTab(1)">
+        <div>
+          <span class="level-pill pill-l1">NIVEAU 1 🟢</span>
+          <div style="font-weight: 700; margin-top: 4px;">Débutant / Socle CAP (5 Exercices)</div>
+          <div style="font-size: 0.78rem; color: var(--cma-text-muted);">Valide 100% du Socle CAP et débloque l'attestation officielle</div>
+        </div>
+        <span id="badge-status-1" style="font-weight: bold; color: var(--cma-bordeaux);">En cours</span>
+      </div>
+
+      <div class="level-card locked" id="hdr-lvl-2" onclick="switchLvlTab(2)">
+        <div>
+          <span class="level-pill pill-l2">NIVEAU 2 🟡</span>
+          <div style="font-weight: 700; margin-top: 4px;">Avancé / Dépassement (4 Exercices)</div>
+          <div style="font-size: 0.78rem; color: var(--cma-text-muted);">Points Bonus Élite, angle limite et sérum de macadamia</div>
+        </div>
+        <span id="badge-status-2" style="font-size: 0.82rem; color: var(--cma-text-muted);">🔒 Verrouillé</span>
+      </div>
+
+      <div class="level-card locked" id="hdr-lvl-3" onclick="switchLvlTab(3)">
+        <div>
+          <span class="level-pill pill-l3">NIVEAU 3 🔴</span>
+          <div style="font-weight: 700; margin-top: 4px;">Expert / Excellence (3 Exercices)</div>
+          <div style="font-size: 0.78rem; color: var(--cma-text-muted);">Lame à faces parallèles, simulation PhET et émulsion de soin</div>
+        </div>
+        <span id="badge-status-3" style="font-size: 0.82rem; color: var(--cma-text-muted);">🔒 Verrouillé</span>
+      </div>
+
+      <div class="level-card" id="hdr-lvl-eval" onclick="switchLvlTab(4)">
+        <div>
+          <span class="level-pill pill-eval">ÉVALUATION 📝</span>
+          <div style="font-weight: 700; margin-top: 4px;">Évaluation Formelle Étudiant (7 Points)</div>
+          <div style="font-size: 0.78rem; color: var(--cma-text-muted);">Épreuve de laboratoire Air / Sérum capillaire ($n_2=1,48$)</div>
+        </div>
+        <span id="badge-status-eval" style="font-size: 0.82rem; color: var(--cma-bordeaux); font-weight: bold;">Autonome</span>
+      </div>
+
+      <!-- ================= NIVEAU 1 ================= -->
+      <div id="cnt-lvl-1">
+
+        <!-- Ex 1.1 -->
+        <div class="exercise-box" id="exbox-p1-1">
+          <div class="exercise-meta">
+            <span>Exercice 1.1 / 1.5</span>
+            <span class="badge-tag tag-cap">Socle CAP</span>
+          </div>
+          <h4 style="color: var(--cma-bordeaux); margin-bottom: 8px;">
+            <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+            Identification des éléments d'un schéma de réfraction
+          </h4>
+          <p style="font-size: 0.92rem; margin-bottom: 12px;">
+            Sur un schéma d'optique représentant le passage d'un rayon lumineux de l'air vers l'eau du bac à shampooing :
+          </p>
+
+          <div class="q-item" id="q-p1-1-1">
+            <div class="q-title">1. Quel nom donne-t-on à la droite en pointillés tracée perpendiculairement à la surface de l'eau au point d'impact ?</div>
+            <div class="input-row">
+              <input type="text" class="cma-input" id="ex1_1_1" placeholder="Votre résultat...">
+              <button class="btn btn-primary btn-sm" onclick="checkEx1_1_1()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex1-1-1"></div>
+          </div>
+
+          <div class="q-item" id="q-p1-1-2">
+            <div class="q-title">2. L'angle d'incidence $i_1$ est-il mesuré par rapport à la surface de l'eau ou par rapport à la normale ?</div>
+            <div class="input-row">
+              <input type="text" class="cma-input" id="ex1_1_2" placeholder="surface ou normale ?">
+              <button class="btn btn-primary btn-sm" onclick="checkEx1_1_2()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex1-1-2"></div>
+          </div>
+
+          <div class="q-item" id="q-p1-1-3">
+            <div class="q-title">3. Si un rayon lumineux arrive perpendiculairement à la surface de l'eau ($i_1 = 0^\circ$), quelle est la valeur de l'angle de réfraction $i_2$ en degrés ?</div>
+            <div class="input-row">
+              <span class="input-unit">$i_2 =$</span>
+              <input type="text" inputmode="decimal" class="cma-input" id="ex1_1_3" placeholder="Votre résultat...">
+              <span class="input-unit">degrés (°)</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx1_1_3()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex1-1-3"></div>
+          </div>
+        </div>
+
+        <!-- Ex 1.2 -->
+        <div class="exercise-box locked-exercise" id="exbox-p1-2">
+          <div class="exercise-meta">
+            <span>Exercice 1.2 / 1.5</span>
+            <span class="badge-tag tag-cap">Socle CAP</span>
+          </div>
+          <h4 style="color: var(--cma-bordeaux); margin-bottom: 8px;">
+            <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+            Calcul direct de l'angle de réfraction dans l'eau ($n_2 = 1,33$)
+          </h4>
+          <p style="font-size: 0.92rem; margin-bottom: 12px;">
+            Un faisceau pénètre dans l'eau claire avec un angle d'incidence $i_1 = 30^\circ$.<br>
+            Données : $n_1 = 1,00$ ; $n_2 = 1,33$ ; $\sin(30^\circ) = 0,500$.
+          </p>
+
+          <div class="q-item" id="q-p1-2-1">
+            <div class="q-title">1. Calculer $\sin(i_2) = \frac{0,500}{1,33}$ arrondie au millième (3 décimales) :</div>
+            <div class="input-row">
+              <span class="input-unit">$\sin(i_2) =$</span>
+              <input type="text" inputmode="decimal" class="cma-input" id="ex1_2_1" placeholder="Votre résultat...">
+              <button class="btn btn-primary btn-sm" onclick="checkEx1_2_1()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex1-2-1"></div>
+          </div>
+
+          <div class="q-item" id="q-p1-2-2">
+            <div class="q-title">2. À l'aide de la touche $\sin^{-1}$, déterminer la mesure de l'angle $i_2$ en degrés arrondie au dixième :</div>
+            <div class="input-row">
+              <span class="input-unit">$i_2 =$</span>
+              <input type="text" inputmode="decimal" class="cma-input" id="ex1_2_2" placeholder="Votre résultat...">
+              <span class="input-unit">degrés (°)</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx1_2_2()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex1-2-2"></div>
+          </div>
+        </div>
+
+        <!-- Ex 1.3 -->
+        <div class="exercise-box locked-exercise" id="exbox-p1-3">
+          <div class="exercise-meta">
+            <span>Exercice 1.3 / 1.5</span>
+            <span class="badge-tag tag-cap">Socle CAP</span>
+          </div>
+          <h4 style="color: var(--cma-bordeaux); margin-bottom: 8px;">
+            <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+            Comparaison qualitative de la déviation selon l'indice optique
+          </h4>
+          <p style="font-size: 0.92rem; margin-bottom: 12px;">
+            Pour un même angle d'incidence $i_1 = 45^\circ$ :<br>
+            • Récipient A (Eau pure $n = 1,33$) $\implies i_2 = 32,1^\circ$<br>
+            • Récipient B (Glycérine végétale $n = 1,47$) $\implies i_2 = 28,8^\circ$<br>
+            • Récipient C (Flacon cristal $n = 1,60$) $\implies i_2 = 26,2^\circ$
+          </p>
+
+          <div class="q-item" id="q-p1-3-1">
+            <div class="q-title">1. Dans quel récipient (A, B ou C) la lumière est-elle le plus fortement déviée ?</div>
+            <div class="input-row">
+              <input type="text" class="cma-input" id="ex1_3_1" placeholder="A, B ou C ?">
+              <button class="btn btn-primary btn-sm" onclick="checkEx1_3_1()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex1-3-1"></div>
+          </div>
+
+          <div class="q-item" id="q-p1-3-2">
+            <div class="q-title">2. Compléter la règle : « Plus l'indice $n$ est grand, plus le rayon se ... de la normale ».</div>
+            <div class="input-row">
+              <input type="text" class="cma-input" id="ex1_3_2" placeholder="rapproche ou éloigne ?">
+              <button class="btn btn-primary btn-sm" onclick="checkEx1_3_2()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex1-3-2"></div>
+          </div>
+        </div>
+
+        <!-- Ex 1.4 -->
+        <div class="exercise-box locked-exercise" id="exbox-p1-4">
+          <div class="exercise-meta">
+            <span>Exercice 1.4 / 1.5</span>
+            <span class="badge-tag tag-cap">Socle CAP</span>
+          </div>
+          <h4 style="color: var(--cma-bordeaux); margin-bottom: 8px;">
+            <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+            Vitesse de la lumière dans les milieux transparents ($n = c / v$)
+          </h4>
+          <p style="font-size: 0.92rem; margin-bottom: 12px;">
+            La vitesse dans le vide/air est $c = 300\,000\text{ km/s}$.
+          </p>
+
+          <div class="q-item" id="q-p1-4-1">
+            <div class="q-title">1. Calculer la vitesse $v$ dans l'eau ($n = 1,33$) : $v = 300\,000 / 1,33$ (arrondie au millier de km/s le plus proche) :</div>
+            <div class="input-row">
+              <span class="input-unit">$v_{\text{eau}} =$</span>
+              <input type="text" inputmode="decimal" class="cma-input" id="ex1_4_1" placeholder="Votre résultat...">
+              <span class="input-unit">km/s</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx1_4_1()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex1-4-1"></div>
+          </div>
+
+          <div class="q-item" id="q-p1-4-2">
+            <div class="q-title">2. Calculer la vitesse $v$ dans le verre ($n = 1,50$) : $v = 300\,000 / 1,50$ :</div>
+            <div class="input-row">
+              <span class="input-unit">$v_{\text{verre}} =$</span>
+              <input type="text" inputmode="decimal" class="cma-input" id="ex1_4_2" placeholder="Votre résultat...">
+              <span class="input-unit">km/s</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx1_4_2()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex1-4-2"></div>
+          </div>
+        </div>
+
+        <!-- Ex 1.5 -->
+        <div class="exercise-box locked-exercise" id="exbox-p1-5">
+          <div class="exercise-meta">
+            <span>Exercice 1.5 / 1.5</span>
+            <span class="badge-tag tag-cap">Socle CAP</span>
+          </div>
+          <h4 style="color: var(--cma-bordeaux); margin-bottom: 8px;">
+            <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+            Vrai ou Faux sur les lois de l'optique
+          </h4>
+          <p style="font-size: 0.92rem; margin-bottom: 12px;">
+            Répondre par <strong>VRAI</strong> ou <strong>FAUX</strong> :
+          </p>
+
+          <div class="q-item" id="q-p1-5-1">
+            <div class="q-title">a) L'indice de réfraction de l'air est égal à 1,00 :</div>
+            <div class="input-row">
+              <input type="text" class="cma-input" id="ex1_5_a" placeholder="Vrai ou Faux ?">
+              <button class="btn btn-primary btn-sm" onclick="checkEx1_5_a()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex1-5-a"></div>
+          </div>
+
+          <div class="q-item" id="q-p1-5-2">
+            <div class="q-title">b) Lors de la réfraction, l'angle de réfraction est toujours égal à l'angle d'incidence ($i_1 = i_2$) :</div>
+            <div class="input-row">
+              <input type="text" class="cma-input" id="ex1_5_b" placeholder="Vrai ou Faux ?">
+              <button class="btn btn-primary btn-sm" onclick="checkEx1_5_b()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex1-5-b"></div>
+          </div>
+
+          <div class="q-item" id="q-p1-5-3">
+            <div class="q-title">c) Un bâtonnet plongé dans l'eau paraît coudé à cause du phénomène de réfraction :</div>
+            <div class="input-row">
+              <input type="text" class="cma-input" id="ex1_5_c" placeholder="Vrai ou Faux ?">
+              <button class="btn btn-primary btn-sm" onclick="checkEx1_5_c()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex1-5-c"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ================= NIVEAU 2 ================= -->
+      <div id="cnt-lvl-2" style="display: none;">
+
+        <!-- Ex 2.1 -->
+        <div class="exercise-box" id="exbox-p2-1">
+          <div class="exercise-meta">
+            <span>Exercice 2.1 / 2.4</span>
+            <span class="badge-tag tag-bonus">Bonus Élite</span>
+          </div>
+          <h4 style="color: var(--cma-bordeaux); margin-bottom: 8px;">
+            <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+            Réfraction à travers un flacon de sérum capillaire protecteur
+          </h4>
+          <p style="font-size: 0.92rem; margin-bottom: 12px;">
+            Un faisceau arrive depuis l'air ($n_1 = 1,00$) à la surface du sérum de macadamia ($n_2 = 1,46$) avec un angle d'incidence $i_1 = 50^\circ$.
+          </p>
+
+          <div class="q-item" id="q-p2-1-1">
+            <div class="q-title">1. Calculer $\sin(50^\circ)$ arrondie à 4 décimales :</div>
+            <div class="input-row">
+              <input type="text" inputmode="decimal" class="cma-input" id="ex2_1_1" placeholder="Votre résultat...">
+              <button class="btn btn-primary btn-sm" onclick="checkEx2_1_1()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex2-1-1"></div>
+          </div>
+
+          <div class="q-item" id="q-p2-1-2">
+            <div class="q-title">2. Calculer $\sin(i_2) = \frac{\sin(50^\circ)}{1,46}$ (arrondie à 4 décimales) :</div>
+            <div class="input-row">
+              <input type="text" inputmode="decimal" class="cma-input" id="ex2_1_2" placeholder="Votre résultat...">
+              <button class="btn btn-primary btn-sm" onclick="checkEx2_1_2()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex2-1-2"></div>
+          </div>
+
+          <div class="q-item" id="q-p2-1-3">
+            <div class="q-title">3. En déduire la mesure de l'angle $i_2$ en degrés (au dixième) puis la déviation $D = i_1 - i_2$ :</div>
+            <div class="input-row">
+              <span class="input-unit">$i_2 =$</span>
+              <input type="text" inputmode="decimal" class="cma-input" id="ex2_1_3_a" placeholder="Angle i2" style="max-width: 90px;">
+              <span class="input-unit">°, $D =$</span>
+              <input type="text" inputmode="decimal" class="cma-input" id="ex2_1_3_b" placeholder="Déviation" style="max-width: 90px;">
+              <span class="input-unit">°</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx2_1_3()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex2-1-3"></div>
+          </div>
+        </div>
+
+        <!-- Ex 2.2 -->
+        <div class="exercise-box locked-exercise" id="exbox-p2-2">
+          <div class="exercise-meta">
+            <span>Exercice 2.2 / 2.4</span>
+            <span class="badge-tag tag-bonus">Bonus Élite</span>
+          </div>
+          <h4 style="color: var(--cma-bordeaux); margin-bottom: 8px;">
+            <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+            Détermination expérimentale de l'indice de réfraction d'une lotion
+          </h4>
+          <p style="font-size: 0.92rem; margin-bottom: 12px;">
+            Mesures au laboratoire : $i_1 = 45^\circ$ ($\sin(45^\circ) \approx 0,7071$) et angle réfracté mesuré $i_2 = 29^\circ$ ($\sin(29^\circ) \approx 0,4848$).
+          </p>
+
+          <div class="q-item" id="q-p2-2-1">
+            <div class="q-title">1. Calculer l'indice de réfraction $n_2 = \frac{\sin(45^\circ)}{\sin(29^\circ)}$ (arrondi à 2 décimales) :</div>
+            <div class="input-row">
+              <span class="input-unit">$n_2 =$</span>
+              <input type="text" inputmode="decimal" class="cma-input" id="ex2_2_1" placeholder="Votre résultat...">
+              <button class="btn btn-primary btn-sm" onclick="checkEx2_2_1()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex2-2-1"></div>
+          </div>
+
+          <div class="q-item" id="q-p2-2-2">
+            <div class="q-title">2. Sachant que l'huile d'argan a un indice de 1,46 et l'alcool éthylique 1,36, identifier le composant dominant :</div>
+            <div class="input-row">
+              <input type="text" class="cma-input" id="ex2_2_2" placeholder="argan ou alcool ?">
+              <button class="btn btn-primary btn-sm" onclick="checkEx2_2_2()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex2-2-2"></div>
+          </div>
+        </div>
+
+        <!-- Ex 2.3 -->
+        <div class="exercise-box locked-exercise" id="exbox-p2-3">
+          <div class="exercise-meta">
+            <span>Exercice 2.3 / 2.4</span>
+            <span class="badge-tag tag-bonus">Bonus Élite</span>
+          </div>
+          <h4 style="color: var(--cma-bordeaux); margin-bottom: 8px;">
+            <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+            Passage inverse de l'eau vers l'air et angle critique à Saint-Gilles
+          </h4>
+          <p style="font-size: 0.92rem; margin-bottom: 12px;">
+            Un spot au fond d'un bac émet vers la surface : Milieu 1 = Eau ($n_1 = 1,33$) vers Milieu 2 = Air ($n_2 = 1,00$).
+          </p>
+
+          <div class="q-item" id="q-p2-3-1">
+            <div class="q-title">1. Pour $i_1 = 35^\circ$, calculer l'angle réfracté $i_2$ dans l'air (en degrés au dixième) :</div>
+            <div class="input-row">
+              <span class="input-unit">$i_2 =$</span>
+              <input type="text" inputmode="decimal" class="cma-input" id="ex2_3_1" placeholder="Votre résultat...">
+              <span class="input-unit">degrés (°)</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx2_3_1()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex2-3-1"></div>
+          </div>
+
+          <div class="q-item" id="q-p2-3-2">
+            <div class="q-title">2. Calculer l'angle critique $i_{\text{lim}}$ tel que $\sin(i_{\text{lim}}) = \frac{1,00}{1,33}$ (au dixième de degré) :</div>
+            <div class="input-row">
+              <span class="input-unit">$i_{\text{lim}} =$</span>
+              <input type="text" inputmode="decimal" class="cma-input" id="ex2_3_2" placeholder="Votre résultat...">
+              <span class="input-unit">degrés (°)</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx2_3_2()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex2-3-2"></div>
+          </div>
+
+          <div class="q-item" id="q-p2-3-3">
+            <div class="q-title">3. Si $i_1 = 60^\circ$ ($> i_{\text{lim}}$), quel phénomène physique se produit ?</div>
+            <div class="input-row">
+              <input type="text" class="cma-input" id="ex2_3_3" placeholder="Nom du phénomène...">
+              <button class="btn btn-primary btn-sm" onclick="checkEx2_3_3()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex2-3-3"></div>
+          </div>
+        </div>
+
+        <!-- Ex 2.4 -->
+        <div class="exercise-box locked-exercise" id="exbox-p2-4">
+          <div class="exercise-meta">
+            <span>Exercice 2.4 / 2.4</span>
+            <span class="badge-tag tag-bonus">Bonus Élite</span>
+          </div>
+          <h4 style="color: var(--cma-bordeaux); margin-bottom: 8px;">
+            <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+            Illusion d'optique de la profondeur apparente au bac
+          </h4>
+          <p style="font-size: 0.92rem; margin-bottom: 12px;">
+            La profondeur apparente est $h' = \frac{h}{n_{\text{eau}}}$. La profondeur réelle est $h = 24\text{ cm}$ avec $n_{\text{eau}} = 1,33$.
+          </p>
+
+          <div class="q-item" id="q-p2-4-1">
+            <div class="q-title">1. Calculer la profondeur apparente $h'$ perçue en cm (arrondie au dixième) :</div>
+            <div class="input-row">
+              <span class="input-unit">$h' =$</span>
+              <input type="text" inputmode="decimal" class="cma-input" id="ex2_4_1" placeholder="Votre résultat...">
+              <span class="input-unit">cm</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx2_4_1()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex2-4-1"></div>
+          </div>
+
+          <div class="q-item" id="q-p2-4-2">
+            <div class="q-title">2. Calculer la différence de niveau $h - h'$ en cm :</div>
+            <div class="input-row">
+              <span class="input-unit">Différence =</span>
+              <input type="text" inputmode="decimal" class="cma-input" id="ex2_4_2" placeholder="Votre résultat...">
+              <span class="input-unit">cm</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx2_4_2()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex2-4-2"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ================= NIVEAU 3 ================= -->
+      <div id="cnt-lvl-3" style="display: none;">
+
+        <!-- Ex 3.1 -->
+        <div class="exercise-box" id="exbox-p3-1">
+          <div class="exercise-meta">
+            <span>Exercice 3.1 / 3.3</span>
+            <span class="badge-tag tag-expert">Expert / Excellence</span>
+          </div>
+          <h4 style="color: var(--cma-bordeaux); margin-bottom: 8px;">
+            <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+            Traversée d'une lame à faces parallèles (Paroi en verre de 12 mm)
+          </h4>
+          <p style="font-size: 0.92rem; margin-bottom: 12px;">
+            Verre d'épaisseur $e = 12\text{ mm}$ et $n_2 = 1,50$. Rayon incident dans l'air avec $i_1 = 45^\circ$.
+          </p>
+
+          <div class="q-item" id="q-p3-1-1">
+            <div class="q-title">1. Calculer l'angle réfracté $i_2$ dans le verre (en degrés au dixième) :</div>
+            <div class="input-row">
+              <span class="input-unit">$i_2 =$</span>
+              <input type="text" inputmode="decimal" class="cma-input" id="ex3_1_1" placeholder="Votre résultat...">
+              <span class="input-unit">°</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx3_1_1()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex3-1-1"></div>
+          </div>
+
+          <div class="q-item" id="q-p3-1-2">
+            <div class="q-title">2. Que vaut l'angle d'émergence $i_3$ à la sortie dans l'air ?</div>
+            <div class="input-row">
+              <span class="input-unit">$i_3 =$</span>
+              <input type="text" inputmode="decimal" class="cma-input" id="ex3_1_2" placeholder="Votre résultat...">
+              <span class="input-unit">°</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx3_1_2()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex3-1-2"></div>
+          </div>
+
+          <div class="q-item" id="q-p3-1-3">
+            <div class="q-title">3. Calculer le décalage latéral $d = e \times \frac{\sin(i_1 - i_2)}{\cos(i_2)}$ en millimètres (arrondi au dixième) :</div>
+            <div class="input-row">
+              <span class="input-unit">$d =$</span>
+              <input type="text" inputmode="decimal" class="cma-input" id="ex3_1_3" placeholder="Votre résultat...">
+              <span class="input-unit">mm</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx3_1_3()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex3-1-3"></div>
+          </div>
+        </div>
+
+        <!-- Ex 3.2 -->
+        <div class="exercise-box locked-exercise" id="exbox-p3-2">
+          <div class="exercise-meta">
+            <span>Exercice 3.2 / 3.3</span>
+            <span class="badge-tag tag-expert">Expert / Excellence</span>
+          </div>
+          <h4 style="color: var(--cma-bordeaux); margin-bottom: 8px;">
+            <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+            Caractéristique $\sin(i_1) = f(\sin(i_2))$ et identification du matériau
+          </h4>
+          <p style="font-size: 0.92rem; margin-bottom: 12px;">
+            Mesures PhET : pour $i_1 = 30^\circ$ ($\sin = 0,500$) on mesure $i_2 = 20,2^\circ$ ($\sin = 0,345$).
+          </p>
+
+          <div class="q-item" id="q-p3-2-1">
+            <div class="q-title">1. Calculer le rapport $k = \frac{\sin(i_1)}{\sin(i_2)}$ (arrondi à 2 décimales) :</div>
+            <div class="input-row">
+              <span class="input-unit">$k =$</span>
+              <input type="text" inputmode="decimal" class="cma-input" id="ex3_2_1" placeholder="Votre résultat...">
+              <button class="btn btn-primary btn-sm" onclick="checkEx3_2_1()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex3-2-1"></div>
+          </div>
+
+          <div class="q-item" id="q-p3-2-2">
+            <div class="q-title">2. Identifier la matière (Plexiglas $n=1,45$ ; Verre $n=1,50$ ; Diamant $n=2,42$) :</div>
+            <div class="input-row">
+              <input type="text" class="cma-input" id="ex3_2_2" placeholder="Nom de la matière...">
+              <button class="btn btn-primary btn-sm" onclick="checkEx3_2_2()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex3-2-2"></div>
+          </div>
+        </div>
+
+        <!-- Ex 3.3 -->
+        <div class="exercise-box locked-exercise" id="exbox-p3-3">
+          <div class="exercise-meta">
+            <span>Exercice 3.3 / 3.3</span>
+            <span class="badge-tag tag-expert">Expert / Excellence</span>
+          </div>
+          <h4 style="color: var(--cma-bordeaux); margin-bottom: 8px;">
+            <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+            Réfractométrie de contrôle de conformité d'une émulsion de soin
+          </h4>
+          <p style="font-size: 0.92rem; margin-bottom: 12px;">
+            $n_{\text{huile}} = 1,470$ et $n_{\text{eau}} = 1,333$. Indice mesuré au salon : $n_{\text{mélange}} = 1,374$.<br>
+            Équation : $1,470x + 1,333(1 - x) = 1,374$.
+          </p>
+
+          <div class="q-item" id="q-p3-3-1">
+            <div class="q-title">1. Résoudre l'équation pour trouver la fraction volumique d'huile $x$ (arrondie au millième) :</div>
+            <div class="input-row">
+              <span class="input-unit">$x =$</span>
+              <input type="text" inputmode="decimal" class="cma-input" id="ex3_3_1" placeholder="Votre résultat...">
+              <button class="btn btn-primary btn-sm" onclick="checkEx3_3_1()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex3-3-1"></div>
+          </div>
+
+          <div class="q-item" id="q-p3-3-2">
+            <div class="q-title">2. En déduire le pourcentage volumique d'huile végétale dans cette émulsion (en %) :</div>
+            <div class="input-row">
+              <span class="input-unit">Pourcentage =</span>
+              <input type="text" inputmode="decimal" class="cma-input" id="ex3_3_2" placeholder="Votre résultat...">
+              <span class="input-unit">%</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx3_3_2()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex3-3-2"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ================= ÉVALUATION FORMELLE ================= -->
+      <div id="cnt-lvl-eval" style="display: none;">
+        <div class="card" style="border-left: 5px solid var(--cma-bordeaux);">
+          <div class="exercise-meta">
+            <span style="font-size: 1rem; color: var(--cma-bordeaux);">Évaluation Formelle Étudiant (15-20 min)</span>
+            <span class="badge-tag tag-cap">Barème : /7 pts</span>
+          </div>
+          <h4 style="color: var(--cma-bordeaux); margin-bottom: 8px;">
+            <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+            Étude de la réfraction à l'interface Air / Sérum capillaire
+          </h4>
+          <p style="font-size: 0.92rem; margin-bottom: 12px;">
+            Un faisceau traverse l'air ($n_1 = 1,00$) et frappe un sérum capillaire protecteur ($n_2 = 1,48$) avec un angle d'incidence $i_1 = 35,0^\circ$.
+          </p>
+
+          <!-- Eval Q1 -->
+          <div class="q-item" id="q-eval-1">
+            <div class="q-title">1. [C1 - S'informer] Nommer la ligne imaginaire perpendiculaire à la surface par rapport à laquelle on mesure les angles. (1 pt)</div>
+            <div class="input-row">
+              <input type="text" class="cma-input" id="eval_q1" placeholder="Votre résultat...">
+              <button class="btn btn-primary btn-sm" onclick="checkEval1()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-eval-1"></div>
+          </div>
+
+          <!-- Eval Q2 -->
+          <div class="q-item" id="q-eval-2">
+            <div class="q-title">2. [C2 - Exécuter] Calculer la valeur de $\sin(35,0^\circ)$ arrondie à 3 décimales. (1 pt)</div>
+            <div class="input-row">
+              <input type="text" inputmode="decimal" class="cma-input" id="eval_q2" placeholder="Votre résultat...">
+              <button class="btn btn-primary btn-sm" onclick="checkEval2()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-eval-2"></div>
+          </div>
+
+          <!-- Eval Q3 -->
+          <div class="q-item" id="q-eval-3">
+            <div class="q-title">3. [C2 - Exécuter] À l'aide de la 2e loi de Descartes, calculer $\sin(i_2) = \frac{1,00 \times \sin(35^\circ)}{1,48}$ au millième. (1,5 pt)</div>
+            <div class="input-row">
+              <input type="text" inputmode="decimal" class="cma-input" id="eval_q3" placeholder="Votre résultat...">
+              <button class="btn btn-primary btn-sm" onclick="checkEval3()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-eval-3"></div>
+          </div>
+
+          <!-- Eval Q4 -->
+          <div class="q-item" id="q-eval-4">
+            <div class="q-title">4. [C2 - Exécuter] En déduire la mesure de l'angle $i_2$ en degrés arrondie au dixième. (1,5 pt)</div>
+            <div class="input-row">
+              <span class="input-unit">$i_2 =$</span>
+              <input type="text" inputmode="decimal" class="cma-input" id="eval_q4" placeholder="Votre résultat...">
+              <span class="input-unit">degrés (°)</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEval4()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-eval-4"></div>
+          </div>
+
+          <!-- Eval Q5 -->
+          <div class="q-item" id="q-eval-5">
+            <div class="q-title">5. [C3 - Appliquer] Le rayon s'est-il rapproché ou éloigné de la normale ? (1 pt)</div>
+            <div class="input-row">
+              <input type="text" class="cma-input" id="eval_q5" placeholder="rapproché ou éloigné ?">
+              <button class="btn btn-primary btn-sm" onclick="checkEval5()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-eval-5"></div>
+          </div>
+
+          <!-- Eval Q6 -->
+          <div class="q-item" id="q-eval-6">
+            <div class="q-title">6. [C4 - Communiquer] Calculer l'angle de déviation angulaire $D = i_1 - i_2$ en degrés. (1 pt)</div>
+            <div class="input-row">
+              <span class="input-unit">$D =$</span>
+              <input type="text" inputmode="decimal" class="cma-input" id="eval_q6" placeholder="Votre résultat...">
+              <span class="input-unit">degrés (°)</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEval6()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-eval-6"></div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ========================================== -->
+    <!-- ÉTAPE 4 — BILAN ET ATTESTATION OFFICIELLE  -->
+    <!-- ========================================== -->
+    <section id="step-4" class="step-section">
+      <div class="card no-print">
+        <h2 class="card-title">
+          <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+          Bilan de compétences & Attestation officielle CMA Formation
+        </h2>
+        <p style="font-size: 0.93rem; color: var(--cma-text-muted); margin-bottom: 12px;">
+          Félicitations pour vos calculs d'optique ! Renseignez votre nom ci-dessous pour actualiser et imprimer votre attestation officielle de compétences.
+        </p>
+
+        <div style="margin-bottom: 14px;">
+          <label style="display: block; font-weight: 600; font-size: 0.92rem; margin-bottom: 6px;">
+            Nom et Prénom de l'apprenant(e) :
+          </label>
+          <div class="input-row">
+            <input type="text" class="cma-input" id="studentNameInput" placeholder="Ex: Sarah DIJOUX" oninput="updateStudentName(this.value)">
+            <button class="btn btn-corail" onclick="window.print()">
+              🖨️ Imprimer / Exporter en PDF
+            </button>
+          </div>
+        </div>
+
+        <div class="badge-shelf">
+          <div class="cma-badge" id="badge-optics-cap">
+            <span>🎓</span>
+            <span>Spécialiste Réfraction & Dioptre (Socle CAP)</span>
+          </div>
+          <div class="cma-badge locked" id="badge-optics-bonus">
+            <span>⭐</span>
+            <span>Expert Snell-Descartes & Angle Limite</span>
+          </div>
+          <div class="cma-badge locked" id="badge-optics-master">
+            <span>🏆</span>
+            <span>Maître Réfractométrie & Cosmétologie</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Attestation officielle imprimable -->
+      <div class="attestation-sheet" id="attestationPrintArea">
+        <div class="att-header">
+          <img src="logo.png" alt="Logo CMA Formation" class="att-logo" onerror="this.src='https://placehold.co/120x48/A50F23/ffffff?text=CMA+Formation'">
+          <div>
+            <h2 class="att-title">Attestation Pédagogique de Réussite</h2>
+            <div class="att-sub">CMA Formation de Sainte-Clotilde • Île de La Réunion</div>
+          </div>
+        </div>
+
+        <div style="font-size: 0.95rem; line-height: 1.6; color: var(--cma-text);">
+          <p>La direction pédagogique et le pôle Physique-Chimie attestent que l'apprenant(e) :</p>
+          <p style="text-align: center; margin: 12px 0;">
+            <span class="att-learner" id="attestationLearnerDisplay">APPRENANT(E) EN FORMATION</span>
+          </p>
+          <p>
+            a réalisé avec succès les manipulations numériques de laboratoire et validé les compétences en optique géométrique appliquées aux produits et équipements du salon de coiffure.
+          </p>
+
+          <div class="att-grid">
+            <div>
+              <strong>Séance :</strong> S5 P1 - Optique : Réfraction & Snell-Descartes<br>
+              <strong>Diplôme :</strong> CAP Métiers de la Coiffure (Gr. 1)<br>
+              <strong>Date d'évaluation :</strong> <span id="currentDateDisplay"></span>
+            </div>
+            <div>
+              <strong>Socle CAP validé :</strong> <span id="attSocleScore" style="color: var(--cma-bordeaux); font-weight: bold;">0%</span><br>
+              <strong>Points Bonus Dépassement :</strong> <span id="attBonusScore" style="color: var(--cma-corail); font-weight: bold;">0 pts</span><br>
+              <strong>Statut :</strong> <span id="attStatusBadge" style="font-weight: bold;">En cours d'acquisition</span>
+            </div>
+          </div>
+
+          <p style="font-size: 0.88rem; color: var(--cma-text-muted); margin-top: 10px;">
+            <strong>Compétences attestées :</strong> C1 (Identifier les éléments d'un dioptre et relever les indices optiques), C2 (Appliquer la loi $n_1 \times \sin(i_1) = n_2 \times \sin(i_2)$ et calculer l'angle réfracté), C3 (Prévoir le sens de déviation et repérer l'angle limite de réflexion totale), C4 (Expliquer scientifiquement les déformations visuelles dans les bacs et flacons de sérum).
+          </p>
+        </div>
+
+        <div class="att-footer">
+          <div style="font-size: 0.8rem; color: var(--cma-text-muted);">
+            Attestation pédagogique de réussite de séance • Document numérique d'atelier
+          </div>
+          <div class="att-sig-block">
+            <div>Formatrice Référente Physique-Chimie :</div>
+            <div class="att-sig-name">Rachel Lamberet-Lezais</div>
+            <div style="font-size: 0.78rem; color: var(--cma-text-muted);">CMA Formation Sainte-Clotilde</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    /* État réactif de l'application */
+    const appState = {
+      currentStep: 1,
+      learnerName: "APPRENANT(E) EN FORMATION",
+      disc: {
+        q1: false, q2: false, q3: false, q4: false, q5: false, q6: false, q7: false
+      },
+      lvl1: {
+        '1-1-1': false, '1-1-2': false, '1-1-3': false,
+        '1-2-1': false, '1-2-2': false,
+        '1-3-1': false, '1-3-2': false,
+        '1-4-1': false, '1-4-2': false,
+        '1-5-a': false, '1-5-b': false, '1-5-c': false
+      },
+      lvl2: {
+        '2-1-1': false, '2-1-2': false, '2-1-3': false,
+        '2-2-1': false, '2-2-2': false,
+        '2-3-1': false, '2-3-2': false, '2-3-3': false,
+        '2-4-1': false, '2-4-2': false
+      },
+      lvl3: {
+        '3-1-1': false, '3-1-2': false, '3-1-3': false,
+        '3-2-1': false, '3-2-2': false,
+        '3-3-1': false, '3-3-2': false
+      },
+      eval: {
+        '1': false, '2': false, '3': false, '4': false, '5': false, '6': false
+      },
+      unlockedLvl2: false,
+      unlockedLvl3: false
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const today = new Date();
+      const options = { day: 'numeric', month: 'long', year: 'numeric' };
+      document.getElementById('currentDateDisplay').textContent = today.toLocaleDateString('fr-FR', options);
+
+      initOpticsCanvas();
+      updateProgressBar();
+    });
+
+    function switchStep(stepNumber) {
+      appState.currentStep = stepNumber;
+      for (let i = 1; i <= 4; i++) {
+        const tab = document.getElementById(`tab-step-${i}`);
+        const sec = document.getElementById(`step-${i}`);
+        if (tab && sec) {
+          if (i === stepNumber) {
+            tab.classList.add('active');
+            tab.setAttribute('aria-selected', 'true');
+            sec.classList.add('active');
+          } else {
+            tab.classList.remove('active');
+            tab.setAttribute('aria-selected', 'false');
+            sec.classList.remove('active');
+          }
+        }
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      if (stepNumber === 2) {
+        resizeOpticsCanvas();
+      }
+
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise();
+      }
+    }
+
+    function toggleAccordion(header) {
+      header.parentElement.classList.toggle('open');
+    }
+
+    function updateStudentName(val) {
+      const trimmed = val.trim();
+      const display = document.getElementById('attestationLearnerDisplay');
+      if (trimmed.length > 0) {
+        display.textContent = trimmed.toUpperCase();
+        appState.learnerName = trimmed;
+      } else {
+        display.textContent = "APPRENANT(E) EN FORMATION";
+        appState.learnerName = "APPRENANT(E) EN FORMATION";
+      }
+    }
+
+    function parseInputNumber(valStr) {
+      if (!valStr) return null;
+      const clean = valStr.toString().trim().replace(',', '.');
+      const num = parseFloat(clean);
+      return isNaN(num) ? null : num;
+    }
+
+    function setFeedback(elemId, type, message) {
+      const fb = document.getElementById(elemId);
+      if (!fb) return;
+      fb.className = `feedback-box ${type}`;
+      fb.innerHTML = message;
+    }
+
+    function showCustomModal(msg) {
+      const existing = document.getElementById('cma-dialog-box');
+      if (existing) existing.remove();
+
+      const modal = document.createElement('div');
+      modal.id = 'cma-dialog-box';
+      modal.style.position = 'fixed';
+      modal.style.top = '0';
+      modal.style.left = '0';
+      modal.style.width = '100vw';
+      modal.style.height = '100vh';
+      modal.style.backgroundColor = 'rgba(0, 0, 0, 0.45)';
+      modal.style.display = 'flex';
+      modal.style.alignItems = 'center';
+      modal.style.justifyContent = 'center';
+      modal.style.zIndex = '9999';
+      modal.style.padding = '16px';
+
+      modal.innerHTML = `
+        <div style="background: white; border-radius: 12px; max-width: 380px; width: 100%; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); border-left: 6px solid #A50F23;">
+          <h3 style="color: #A50F23; margin-bottom: 10px; font-size: 1.1rem;">Information CMA Formation</h3>
+          <p style="font-size: 0.95rem; color: #1E293B; line-height: 1.5; margin-bottom: 16px;">${msg}</p>
+          <div style="text-align: right;">
+            <button class="btn btn-primary btn-sm" onclick="document.getElementById('cma-dialog-box').remove()">Compris</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+    }
+
+    function updateProgressBar() {
+      const totalL1 = Object.keys(appState.lvl1).length;
+      let countL1 = 0;
+      for (const k in appState.lvl1) if (appState.lvl1[k]) countL1++;
+
+      const pctCap = Math.round((countL1 / totalL1) * 100);
+      document.getElementById('capProgressTxt').textContent = `${pctCap}%`;
+      document.getElementById('attSocleScore').textContent = `${pctCap}%`;
+
+      if (pctCap >= 100 && !appState.unlockedLvl2) {
+        appState.unlockedLvl2 = true;
+        document.getElementById('hdr-lvl-2').classList.remove('locked');
+        document.getElementById('badge-status-2').textContent = 'Disponible !';
+        document.getElementById('badge-status-1').textContent = '✅ Validé (100%)';
+        document.getElementById('badge-optics-cap').classList.add('unlocked');
+        document.getElementById('attStatusBadge').textContent = 'Socle CAP Validé avec Félicitations';
+        document.getElementById('attStatusBadge').style.color = 'var(--cma-success)';
+      }
+
+      let bonus = 0;
+      for (const k in appState.lvl2) if (appState.lvl2[k]) bonus += 10;
+      for (const k in appState.lvl3) if (appState.lvl3[k]) bonus += 20;
+
+      document.getElementById('bonusScoreTxt').textContent = `+${bonus} pts`;
+      document.getElementById('attBonusScore').textContent = `+${bonus} pts`;
+
+      const totalL2 = Object.keys(appState.lvl2).length;
+      let countL2 = 0;
+      for (const k in appState.lvl2) if (appState.lvl2[k]) countL2++;
+
+      if (countL2 === totalL2 && !appState.unlockedLvl3) {
+        appState.unlockedLvl3 = true;
+        document.getElementById('hdr-lvl-3').classList.remove('locked');
+        document.getElementById('badge-status-3').textContent = 'Disponible !';
+        document.getElementById('badge-status-2').textContent = '✅ Validé (Bonus max)';
+        document.getElementById('badge-optics-bonus').classList.remove('locked');
+        document.getElementById('badge-optics-bonus').classList.add('unlocked');
+      }
+
+      const totalL3 = Object.keys(appState.lvl3).length;
+      let countL3 = 0;
+      for (const k in appState.lvl3) if (appState.lvl3[k]) countL3++;
+
+      if (countL3 === totalL3) {
+        document.getElementById('badge-status-3').textContent = '✅ Maîtrise totale !';
+        document.getElementById('badge-optics-master').classList.remove('locked');
+        document.getElementById('badge-optics-master').classList.add('unlocked');
+      }
+
+      const globalPct = Math.min(100, Math.round((countL1 + countL2 + countL3) / (totalL1 + totalL2 + totalL3) * 100));
+      document.getElementById('globalProgressBar').style.width = `${globalPct}%`;
+    }
+
+    function switchLvlTab(lvl) {
+      if (lvl === 2 && !appState.unlockedLvl2) {
+        showCustomModal("Le Niveau 2 🟡 est verrouillé. Vous devez d'abord valider les 5 exercices du Niveau 1 🟢 (Socle CAP à 100%) !");
+        return;
+      }
+      if (lvl === 3 && !appState.unlockedLvl3) {
+        showCustomModal("Le Niveau 3 🔴 est verrouillé. Vous devez d'abord réussir l'ensemble des défis du Niveau 2 🟡 !");
+        return;
+      }
+
+      const hdrs = ['hdr-lvl-1', 'hdr-lvl-2', 'hdr-lvl-3', 'hdr-lvl-eval'];
+      const cnts = ['cnt-lvl-1', 'cnt-lvl-2', 'cnt-lvl-3', 'cnt-lvl-eval'];
+
+      hdrs.forEach((hId, index) => {
+        const hElem = document.getElementById(hId);
+        const cElem = document.getElementById(cnts[index]);
+        if (hElem && cElem) {
+          if (index + 1 === lvl) {
+            hElem.classList.add('active-lvl');
+            cElem.style.display = 'block';
+          } else {
+            hElem.classList.remove('active-lvl');
+            cElem.style.display = 'none';
+          }
+        }
+      });
+    }
+
+    /* ================= DÉCOUVERTE ================= */
+    function checkDisc1() {
+      const v = document.getElementById('disc_q1').value.trim().toLowerCase();
+      if (!v) { setFeedback('fb-disc-1', 'hint', 'Entrez le nom de la surface.'); return; }
+      if (v.includes('dioptre')) {
+        setFeedback('fb-disc-1', 'correct', 'Exact ! La surface séparant deux milieux transparents s\'appelle le <strong>dioptre</strong>.');
+        document.getElementById('block-disc-1').classList.add('completed');
+        appState.disc.q1 = true;
+      } else {
+        setFeedback('fb-disc-1', 'incorrect', 'Indice : ce mot commence par « diop... ».');
+      }
+    }
+
+    function checkDisc2() {
+      const a = parseInputNumber(document.getElementById('disc_q2_air').value);
+      const e = parseInputNumber(document.getElementById('disc_q2_eau').value);
+      const s = parseInputNumber(document.getElementById('disc_q2_serum').value);
+      if (a === null || e === null || s === null) { setFeedback('fb-disc-2', 'hint', 'Renseignez les 3 indices numériques.'); return; }
+      if (Math.abs(a - 1.00) < 0.05 && Math.abs(e - 1.33) < 0.05 && Math.abs(s - 1.47) < 0.05) {
+        setFeedback('fb-disc-2', 'correct', 'Parfait ! Air = 1,00 ; Eau = 1,33 ; Sérum = 1,47.');
+        document.getElementById('block-disc-2').classList.add('completed');
+        appState.disc.q2 = true;
+      } else {
+        setFeedback('fb-disc-2', 'incorrect', 'Consultez le tableau ci-dessus : n(air)=1,00 ; n(eau)=1,33 ; n(sérum)=1,47.');
+      }
+    }
+
+    function checkDisc3() {
+      const v = document.getElementById('disc_q3').value.trim().toLowerCase();
+      if (!v) { setFeedback('fb-disc-3', 'hint', 'Entrez le nom de la droite perpendiculaire.'); return; }
+      if (v.includes('normale')) {
+        setFeedback('fb-disc-3', 'correct', 'Exact ! C\'est la <strong>normale</strong> (N).');
+        document.getElementById('block-disc-3').classList.add('completed');
+        appState.disc.q3 = true;
+      } else {
+        setFeedback('fb-disc-3', 'incorrect', 'La droite perpendiculaire au dioptre en I s\'appelle la « normale ».');
+      }
+    }
+
+    function checkDisc4() {
+      const v = parseInputNumber(document.getElementById('disc_q4').value);
+      if (v === null) { setFeedback('fb-disc-4', 'hint', 'Calculez sin(40°).'); return; }
+      if (Math.abs(v - 0.643) < 0.01) {
+        setFeedback('fb-disc-4', 'correct', 'Exact : sin(40°) ≈ 0,643.');
+        document.getElementById('block-disc-4').classList.add('completed');
+        appState.disc.q4 = true;
+      } else {
+        setFeedback('fb-disc-4', 'incorrect', 'Vérifiez que votre calculatrice est en mode DEGRÉ : sin(40) = 0,643.');
+      }
+    }
+
+    function checkDisc5() {
+      const s = parseInputNumber(document.getElementById('disc_q5_sin').value);
+      const d = parseInputNumber(document.getElementById('disc_q5_deg').value);
+      if (s === null || d === null) { setFeedback('fb-disc-5', 'hint', 'Renseignez sin(i2) et l\'angle.'); return; }
+      if (Math.abs(s - 0.483) < 0.015 && Math.abs(d - 28.9) < 0.2) {
+        setFeedback('fb-disc-5', 'correct', 'Très bien ! sin(i2) = 0,643 / 1,33 ≈ 0,483 et i2 = sin⁻¹(0,483) ≈ 28,9°.');
+        document.getElementById('block-disc-5').classList.add('completed');
+        appState.disc.q5 = true;
+      } else {
+        setFeedback('fb-disc-5', 'incorrect', '0,643 / 1,33 ≈ 0,483. Puis tapez sin⁻¹(0,483) ≈ 28,9°.');
+      }
+    }
+
+    function checkDisc6() {
+      const v = document.getElementById('disc_q6').value.trim().toLowerCase();
+      if (!v) { setFeedback('fb-disc-6', 'hint', 'Tapez « rapproché » ou « éloigné ».'); return; }
+      if (v.includes('rapp')) {
+        setFeedback('fb-disc-6', 'correct', 'Exact ! 28,9° < 40°, le rayon s\'est donc <strong>rapproché</strong> de la normale.');
+        document.getElementById('block-disc-6').classList.add('completed');
+        appState.disc.q6 = true;
+      } else {
+        setFeedback('fb-disc-6', 'incorrect', 'Puisque l\'angle i2 est plus petit que i1, le rayon s\'est rapproché de la normale.');
+      }
+    }
+
+    function checkDisc7() {
+      const v = document.getElementById('disc_q7').value.trim().toLowerCase();
+      if (!v) { setFeedback('fb-disc-7', 'hint', 'Expliquez en un mot (réfraction, déviation...).'); return; }
+      if (v.includes('réfract') || v.includes('dévia') || v.includes('changement de direction')) {
+        setFeedback('fb-disc-7', 'correct', 'Excellente explication ! La réfraction dévie les rayons lumineux lors du passage air-liquide, créant une illusion d\'optique.');
+        document.getElementById('block-disc-7').classList.add('completed');
+        appState.disc.q7 = true;
+      } else {
+        setFeedback('fb-disc-7', 'incorrect', 'Le phénomène en cause est la réfraction (déviation de la trajectoire de la lumière).');
+      }
+    }
+
+    /* ================= NIVEAU 1 ================= */
+    function checkEx1_1_1() {
+      const v = document.getElementById('ex1_1_1').value.trim().toLowerCase();
+      if (!v) { setFeedback('fb-ex1-1-1', 'hint', 'Nom de la droite en pointillés.'); return; }
+      if (v.includes('normale')) {
+        setFeedback('fb-ex1-1-1', 'correct', 'Exact : la droite en pointillés perpendiculaire est la normale.');
+        appState.lvl1['1-1-1'] = true;
+        document.getElementById('q-p1-1-1').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex1-1-1', 'incorrect', 'C\'est la normale.'); }
+    }
+
+    function checkEx1_1_2() {
+      const v = document.getElementById('ex1_1_2').value.trim().toLowerCase();
+      if (!v) { setFeedback('fb-ex1-1-2', 'hint', 'Surface ou normale ?'); return; }
+      if (v.includes('normale')) {
+        setFeedback('fb-ex1-1-2', 'correct', 'Très bien ! L\'angle se mesure toujours par rapport à la normale.');
+        appState.lvl1['1-1-2'] = true;
+        document.getElementById('q-p1-1-2').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex1-1-2', 'incorrect', 'Les angles d\'optique sont mesurés par rapport à la normale.'); }
+    }
+
+    function checkEx1_1_3() {
+      const v = parseInputNumber(document.getElementById('ex1_1_3').value);
+      if (v === null) { setFeedback('fb-ex1-1-3', 'hint', 'Entrez la valeur en degrés.'); return; }
+      if (Math.abs(v - 0) < 0.1) {
+        setFeedback('fb-ex1-1-3', 'correct', 'Exact : à incidence normale (0°), le rayon n\'est pas dévié : i2 = 0°.');
+        appState.lvl1['1-1-3'] = true;
+        document.getElementById('q-p1-1-3').classList.add('completed');
+        document.getElementById('exbox-p1-2').classList.remove('locked-exercise');
+        updateProgressBar();
+      } else { setFeedback('fb-ex1-1-3', 'incorrect', 'Si i1 = 0°, sin(i1) = 0 donc i2 = 0° (traversée en ligne droite).'); }
+    }
+
+    function checkEx1_2_1() {
+      const v = parseInputNumber(document.getElementById('ex1_2_1').value);
+      if (v === null) { setFeedback('fb-ex1-2-1', 'hint', 'Calculez 0,500 / 1,33.'); return; }
+      if (Math.abs(v - 0.376) < 0.01) {
+        setFeedback('fb-ex1-2-1', 'correct', 'Exact : sin(i2) = 0,500 / 1,33 ≈ 0,376.');
+        appState.lvl1['1-2-1'] = true;
+        document.getElementById('q-p1-2-1').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex1-2-1', 'incorrect', '0,500 / 1,33 = 0,376.'); }
+    }
+
+    function checkEx1_2_2() {
+      const v = parseInputNumber(document.getElementById('ex1_2_2').value);
+      if (v === null) { setFeedback('fb-ex1-2-2', 'hint', 'Calculez sin⁻¹(0,376).'); return; }
+      if (Math.abs(v - 22.1) < 0.2) {
+        setFeedback('fb-ex1-2-2', 'correct', 'Bravo ! i2 = sin⁻¹(0,376) ≈ 22,1°.');
+        appState.lvl1['1-2-2'] = true;
+        document.getElementById('q-p1-2-2').classList.add('completed');
+        document.getElementById('exbox-p1-3').classList.remove('locked-exercise');
+        updateProgressBar();
+      } else { setFeedback('fb-ex1-2-2', 'incorrect', 'Tapez sin⁻¹(0,376) en mode degré : 22,1°.'); }
+    }
+
+    function checkEx1_3_1() {
+      const v = document.getElementById('ex1_3_1').value.trim().toUpperCase();
+      if (!v) { setFeedback('fb-ex1-3-1', 'hint', 'A, B ou C ?'); return; }
+      if (v.includes('C')) {
+        setFeedback('fb-ex1-3-1', 'correct', 'Exact : Récipient C (i2 = 26,2°, plus forte déviation par rapport aux 45° initiaux).');
+        appState.lvl1['1-3-1'] = true;
+        document.getElementById('q-p1-3-1').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex1-3-1', 'incorrect', 'C\'est dans le cristal (C) où l\'angle est le plus réduit (26,2°).'); }
+    }
+
+    function checkEx1_3_2() {
+      const v = document.getElementById('ex1_3_2').value.trim().toLowerCase();
+      if (!v) { setFeedback('fb-ex1-3-2', 'hint', 'Rapproche ou éloigne ?'); return; }
+      if (v.includes('rapp')) {
+        setFeedback('fb-ex1-3-2', 'correct', 'Exact : le rayon se rapproche de la normale.');
+        appState.lvl1['1-3-2'] = true;
+        document.getElementById('q-p1-3-2').classList.add('completed');
+        document.getElementById('exbox-p1-4').classList.remove('locked-exercise');
+        updateProgressBar();
+      } else { setFeedback('fb-ex1-3-2', 'incorrect', 'Plus n est élevé, plus le rayon se rapproche de la normale.'); }
+    }
+
+    function checkEx1_4_1() {
+      const v = parseInputNumber(document.getElementById('ex1_4_1').value);
+      if (v === null) { setFeedback('fb-ex1-4-1', 'hint', 'Calculez 300 000 / 1,33.'); return; }
+      if (Math.abs(v - 225564) < 1500 || Math.abs(v - 226000) < 1500) {
+        setFeedback('fb-ex1-4-1', 'correct', 'Exact : v ≈ 226 000 km/s (225 564 km/s).');
+        appState.lvl1['1-4-1'] = true;
+        document.getElementById('q-p1-4-1').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex1-4-1', 'incorrect', '300 000 / 1,33 ≈ 225 564 ou 226 000 km/s.'); }
+    }
+
+    function checkEx1_4_2() {
+      const v = parseInputNumber(document.getElementById('ex1_4_2').value);
+      if (v === null) { setFeedback('fb-ex1-4-2', 'hint', 'Calculez 300 000 / 1,50.'); return; }
+      if (Math.abs(v - 200000) < 500) {
+        setFeedback('fb-ex1-4-2', 'correct', 'Exact : v = 200 000 km/s.');
+        appState.lvl1['1-4-2'] = true;
+        document.getElementById('q-p1-4-2').classList.add('completed');
+        document.getElementById('exbox-p1-5').classList.remove('locked-exercise');
+        updateProgressBar();
+      } else { setFeedback('fb-ex1-4-2', 'incorrect', '300 000 / 1,50 = 200 000 km/s.'); }
+    }
+
+    function checkEx1_5_a() {
+      const v = document.getElementById('ex1_5_a').value.trim().toUpperCase();
+      if (!v) { setFeedback('fb-ex1-5-a', 'hint', 'Vrai ou Faux ?'); return; }
+      if (v.includes('V')) {
+        setFeedback('fb-ex1-5-a', 'correct', 'VRAI : l\'indice de l\'air est conventionnellement de 1,00.');
+        appState.lvl1['1-5-a'] = true;
+        document.getElementById('q-p1-5-1').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex1-5-a', 'incorrect', 'C\'est VRAI (n=1,00 pour l\'air).'); }
+    }
+
+    function checkEx1_5_b() {
+      const v = document.getElementById('ex1_5_b').value.trim().toUpperCase();
+      if (!v) { setFeedback('fb-ex1-5-b', 'hint', 'Vrai ou Faux ?'); return; }
+      if (v.includes('F')) {
+        setFeedback('fb-ex1-5-b', 'correct', 'FAUX : les angles ne sont égaux que pour i1 = 0° ou si les milieux sont identiques.');
+        appState.lvl1['1-5-b'] = true;
+        document.getElementById('q-p1-5-2').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex1-5-b', 'incorrect', 'C\'est FAUX (la réfraction modifie l\'angle).'); }
+    }
+
+    function checkEx1_5_c() {
+      const v = document.getElementById('ex1_5_c').value.trim().toUpperCase();
+      if (!v) { setFeedback('fb-ex1-5-c', 'hint', 'Vrai ou Faux ?'); return; }
+      if (v.includes('V')) {
+        setFeedback('fb-ex1-5-c', 'correct', 'VRAI : la réfraction dévie les rayons, ce qui fait paraître le bâtonnet brisé. SOCLE CAP VALIDÉ À 100% !');
+        appState.lvl1['1-5-c'] = true;
+        document.getElementById('q-p1-5-3').classList.add('completed');
+        updateProgressBar();
+        showCustomModal("Félicitations ! Vous avez validé l'intégralité du Niveau 1 🟢 (Socle CAP à 100%). Votre Attestation Officielle CMA Formation est débloquée et le Niveau 2 🟡 est accessible !");
+      } else { setFeedback('fb-ex1-5-c', 'incorrect', 'C\'est VRAI.'); }
+    }
+
+    /* ================= NIVEAU 2 ================= */
+    function checkEx2_1_1() {
+      const v = parseInputNumber(document.getElementById('ex2_1_1').value);
+      if (v === null) { setFeedback('fb-ex2-1-1', 'hint', 'Calculez sin(50°).'); return; }
+      if (Math.abs(v - 0.7660) < 0.005) {
+        setFeedback('fb-ex2-1-1', 'correct', 'Exact : sin(50°) ≈ 0,7660.');
+        appState.lvl2['2-1-1'] = true;
+        document.getElementById('q-p2-1-1').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex2-1-1', 'incorrect', 'sin(50°) ≈ 0,7660.'); }
+    }
+
+    function checkEx2_1_2() {
+      const v = parseInputNumber(document.getElementById('ex2_1_2').value);
+      if (v === null) { setFeedback('fb-ex2-1-2', 'hint', 'Calculez 0,7660 / 1,46.'); return; }
+      if (Math.abs(v - 0.5247) < 0.005) {
+        setFeedback('fb-ex2-1-2', 'correct', 'Exact : sin(i2) = 0,7660 / 1,46 ≈ 0,5247.');
+        appState.lvl2['2-1-2'] = true;
+        document.getElementById('q-p2-1-2').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex2-1-2', 'incorrect', '0,7660 / 1,46 ≈ 0,5247.'); }
+    }
+
+    function checkEx2_1_3() {
+      const a = parseInputNumber(document.getElementById('ex2_1_3_a').value);
+      const b = parseInputNumber(document.getElementById('ex2_1_3_b').value);
+      if (a === null || b === null) { setFeedback('fb-ex2-1-3', 'hint', 'Remplissez i2 et D.'); return; }
+      if (Math.abs(a - 31.6) < 0.2 && Math.abs(b - 18.4) < 0.2) {
+        setFeedback('fb-ex2-1-3', 'correct', 'Bravo ! i2 ≈ 31,6° et Déviation D = 50° - 31,6° = 18,4°.');
+        appState.lvl2['2-1-3'] = true;
+        document.getElementById('q-p2-1-3').classList.add('completed');
+        document.getElementById('exbox-p2-2').classList.remove('locked-exercise');
+        updateProgressBar();
+      } else { setFeedback('fb-ex2-1-3', 'incorrect', 'sin⁻¹(0,5247) ≈ 31,6° et D = 50 - 31,6 = 18,4°.'); }
+    }
+
+    function checkEx2_2_1() {
+      const v = parseInputNumber(document.getElementById('ex2_2_1').value);
+      if (v === null) { setFeedback('fb-ex2-2-1', 'hint', 'Calculez 0,7071 / 0,4848.'); return; }
+      if (Math.abs(v - 1.46) < 0.02) {
+        setFeedback('fb-ex2-2-1', 'correct', 'Exact : n2 = 0,7071 / 0,4848 ≈ 1,46.');
+        appState.lvl2['2-2-1'] = true;
+        document.getElementById('q-p2-2-1').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex2-2-1', 'incorrect', '0,7071 / 0,4848 ≈ 1,46.'); }
+    }
+
+    function checkEx2_2_2() {
+      const v = document.getElementById('ex2_2_2').value.trim().toLowerCase();
+      if (!v) { setFeedback('fb-ex2-2-2', 'hint', 'Argan ou alcool ?'); return; }
+      if (v.includes('argan')) {
+        setFeedback('fb-ex2-2-2', 'correct', 'Exact ! n2 = 1,46 correspond à l\'huile d\'argan.');
+        appState.lvl2['2-2-2'] = true;
+        document.getElementById('q-p2-2-2').classList.add('completed');
+        document.getElementById('exbox-p2-3').classList.remove('locked-exercise');
+        updateProgressBar();
+      } else { setFeedback('fb-ex2-2-2', 'incorrect', '1,46 est l\'indice de l\'huile d\'argan.'); }
+    }
+
+    function checkEx2_3_1() {
+      const v = parseInputNumber(document.getElementById('ex2_3_1').value);
+      if (v === null) { setFeedback('fb-ex2-3-1', 'hint', 'Calculez sin⁻¹(1,33 × sin(35°)).'); return; }
+      if (Math.abs(v - 49.8) < 0.3) {
+        setFeedback('fb-ex2-3-1', 'correct', 'Exact : sin(i2) = 1,33 × sin(35°) ≈ 0,7629 => i2 ≈ 49,8°.');
+        appState.lvl2['2-3-1'] = true;
+        document.getElementById('q-p2-3-1').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex2-3-1', 'incorrect', '1,33 × sin(35°) ≈ 0,7629 => i2 ≈ 49,8°.'); }
+    }
+
+    function checkEx2_3_2() {
+      const v = parseInputNumber(document.getElementById('ex2_3_2').value);
+      if (v === null) { setFeedback('fb-ex2-3-2', 'hint', 'Calculez sin⁻¹(1 / 1,33).'); return; }
+      if (Math.abs(v - 48.8) < 0.3) {
+        setFeedback('fb-ex2-3-2', 'correct', 'Exact : sin(i_lim) = 1 / 1,33 ≈ 0,7519 => i_lim ≈ 48,8°.');
+        appState.lvl2['2-3-2'] = true;
+        document.getElementById('q-p2-3-2').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex2-3-2', 'incorrect', 'sin⁻¹(1 / 1,33) ≈ 48,8°.'); }
+    }
+
+    function checkEx2_3_3() {
+      const v = document.getElementById('ex2_3_3').value.trim().toLowerCase();
+      if (!v) { setFeedback('fb-ex2-3-3', 'hint', 'Nom du phénomène.'); return; }
+      if (v.includes('totale') || v.includes('réflexion')) {
+        setFeedback('fb-ex2-3-3', 'correct', 'Bravo ! C\'est la <strong>réflexion totale</strong>.');
+        appState.lvl2['2-3-3'] = true;
+        document.getElementById('q-p2-3-3').classList.add('completed');
+        document.getElementById('exbox-p2-4').classList.remove('locked-exercise');
+        updateProgressBar();
+      } else { setFeedback('fb-ex2-3-3', 'incorrect', 'Au-delà de 48,8°, il y a « réflexion totale ».'); }
+    }
+
+    function checkEx2_4_1() {
+      const v = parseInputNumber(document.getElementById('ex2_4_1').value);
+      if (v === null) { setFeedback('fb-ex2-4-1', 'hint', 'Calculez 24 / 1,33.'); return; }
+      if (Math.abs(v - 18.0) < 0.2) {
+        setFeedback('fb-ex2-4-1', 'correct', 'Exact : h\' = 24 / 1,33 ≈ 18,0 cm.');
+        appState.lvl2['2-4-1'] = true;
+        document.getElementById('q-p2-4-1').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex2-4-1', 'incorrect', '24 / 1,33 ≈ 18,0 cm.'); }
+    }
+
+    function checkEx2_4_2() {
+      const v = parseInputNumber(document.getElementById('ex2_4_2').value);
+      if (v === null) { setFeedback('fb-ex2-4-2', 'hint', 'Calculez 24 - 18.'); return; }
+      if (Math.abs(v - 6.0) < 0.2) {
+        setFeedback('fb-ex2-4-2', 'correct', 'Bravo ! Différence = 24 - 18 = 6,0 cm. NIVEAU 2 PLEINEMENT VALIDÉ !');
+        appState.lvl2['2-4-2'] = true;
+        document.getElementById('q-p2-4-2').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex2-4-2', 'incorrect', '24 - 18,0 = 6,0 cm.'); }
+    }
+
+    /* ================= NIVEAU 3 ================= */
+    function checkEx3_1_1() {
+      const v = parseInputNumber(document.getElementById('ex3_1_1').value);
+      if (v === null) { setFeedback('fb-ex3-1-1', 'hint', 'Calculez sin⁻¹(sin(45°) / 1,50).'); return; }
+      if (Math.abs(v - 28.1) < 0.2) {
+        setFeedback('fb-ex3-1-1', 'correct', 'Exact : i2 = sin⁻¹(0,7071 / 1,5) ≈ 28,1°.');
+        appState.lvl3['3-1-1'] = true;
+        document.getElementById('q-p3-1-1').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex3-1-1', 'incorrect', 'sin(45°) / 1,50 ≈ 0,4714 => i2 ≈ 28,1°.'); }
+    }
+
+    function checkEx3_1_2() {
+      const v = parseInputNumber(document.getElementById('ex3_1_2').value);
+      if (v === null) { setFeedback('fb-ex3-1-2', 'hint', 'Angle de sortie dans l\'air.'); return; }
+      if (Math.abs(v - 45.0) < 0.2) {
+        setFeedback('fb-ex3-1-2', 'correct', 'Exact : i3 = 45,0° (le rayon sort parallèlement au rayon d\'origine).');
+        appState.lvl3['3-1-2'] = true;
+        document.getElementById('q-p3-1-2').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex3-1-2', 'incorrect', 'Le rayon ressort avec l\'angle d\'origine : 45°.'); }
+    }
+
+    function checkEx3_1_3() {
+      const v = parseInputNumber(document.getElementById('ex3_1_3').value);
+      if (v === null) { setFeedback('fb-ex3-1-3', 'hint', 'Calculez 12 × sin(45° - 28,1°) / cos(28,1°).'); return; }
+      if (Math.abs(v - 4.0) < 0.2 || Math.abs(v - 3.96) < 0.1) {
+        setFeedback('fb-ex3-1-3', 'correct', 'Très bien ! d ≈ 4,0 mm (3,96 mm).');
+        appState.lvl3['3-1-3'] = true;
+        document.getElementById('q-p3-1-3').classList.add('completed');
+        document.getElementById('exbox-p3-2').classList.remove('locked-exercise');
+        updateProgressBar();
+      } else { setFeedback('fb-ex3-1-3', 'incorrect', '12 × sin(16,9°) / cos(28,1°) ≈ 3,96 mm (environ 4,0 mm).'); }
+    }
+
+    function checkEx3_2_1() {
+      const v = parseInputNumber(document.getElementById('ex3_2_1').value);
+      if (v === null) { setFeedback('fb-ex3-2-1', 'hint', 'Calculez 0,500 / 0,345.'); return; }
+      if (Math.abs(v - 1.45) < 0.03) {
+        setFeedback('fb-ex3-2-1', 'correct', 'Exact : k = 0,500 / 0,345 ≈ 1,45.');
+        appState.lvl3['3-2-1'] = true;
+        document.getElementById('q-p3-2-1').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex3-2-1', 'incorrect', '0,500 / 0,345 ≈ 1,45.'); }
+    }
+
+    function checkEx3_2_2() {
+      const v = document.getElementById('ex3_2_2').value.trim().toLowerCase();
+      if (!v) { setFeedback('fb-ex3-2-2', 'hint', 'Plexiglas, Verre ou Diamant ?'); return; }
+      if (v.includes('plexi')) {
+        setFeedback('fb-ex3-2-2', 'correct', 'Exact : c\'est du Plexiglas (n = 1,45).');
+        appState.lvl3['3-2-2'] = true;
+        document.getElementById('q-p3-2-2').classList.add('completed');
+        document.getElementById('exbox-p3-3').classList.remove('locked-exercise');
+        updateProgressBar();
+      } else { setFeedback('fb-ex3-2-2', 'incorrect', 'n = 1,45 correspond au Plexiglas.'); }
+    }
+
+    function checkEx3_3_1() {
+      const v = parseInputNumber(document.getElementById('ex3_3_1').value);
+      if (v === null) { setFeedback('fb-ex3-3-1', 'hint', 'Résolvez 0,137x = 0,041.'); return; }
+      if (Math.abs(v - 0.299) < 0.015 || Math.abs(v - 0.3) < 0.015) {
+        setFeedback('fb-ex3-3-1', 'correct', 'Exact : x = 0,041 / 0,137 ≈ 0,299.');
+        appState.lvl3['3-3-1'] = true;
+        document.getElementById('q-p3-3-1').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex3-3-1', 'incorrect', '(1,374 - 1,333) / (1,470 - 1,333) = 0,041 / 0,137 ≈ 0,299.'); }
+    }
+
+    function checkEx3_3_2() {
+      const v = parseInputNumber(document.getElementById('ex3_3_2').value);
+      if (v === null) { setFeedback('fb-ex3-3-2', 'hint', 'Convertir x en %.'); return; }
+      if (Math.abs(v - 30) < 1) {
+        setFeedback('fb-ex3-3-2', 'correct', 'Bravo ! 0,299 ≈ 30% d\'huile végétale. NIVEAU 3 EXPERT COMPLÉTÉ À 100% !');
+        appState.lvl3['3-3-2'] = true;
+        document.getElementById('q-p3-3-2').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex3-3-2', 'incorrect', '0,299 × 100 ≈ 30%.'); }
+    }
+
+    /* ================= ÉVALUATION ================= */
+    function checkEval1() {
+      const v = document.getElementById('eval_q1').value.trim().toLowerCase();
+      if (!v) { setFeedback('fb-eval-1', 'hint', 'Nom de la ligne perpendiculaire.'); return; }
+      if (v.includes('normale')) {
+        setFeedback('fb-eval-1', 'correct', 'Correct (1/1 pt) : la normale.');
+        document.getElementById('q-eval-1').classList.add('completed');
+      } else { setFeedback('fb-eval-1', 'incorrect', 'C\'est la normale.'); }
+    }
+
+    function checkEval2() {
+      const v = parseInputNumber(document.getElementById('eval_q2').value);
+      if (v === null) { setFeedback('fb-eval-2', 'hint', 'sin(35,0°).'); return; }
+      if (Math.abs(v - 0.574) < 0.005) {
+        setFeedback('fb-eval-2', 'correct', 'Correct (1/1 pt) : sin(35,0°) ≈ 0,574.');
+        document.getElementById('q-eval-2').classList.add('completed');
+      } else { setFeedback('fb-eval-2', 'incorrect', 'sin(35°) ≈ 0,574.'); }
+    }
+
+    function checkEval3() {
+      const v = parseInputNumber(document.getElementById('eval_q3').value);
+      if (v === null) { setFeedback('fb-eval-3', 'hint', '0,574 / 1,48.'); return; }
+      if (Math.abs(v - 0.388) < 0.005) {
+        setFeedback('fb-eval-3', 'correct', 'Correct (1,5/1,5 pt) : sin(i2) = 0,574 / 1,48 ≈ 0,388.');
+        document.getElementById('q-eval-3').classList.add('completed');
+      } else { setFeedback('fb-eval-3', 'incorrect', '0,574 / 1,48 ≈ 0,388.'); }
+    }
+
+    function checkEval4() {
+      const v = parseInputNumber(document.getElementById('eval_q4').value);
+      if (v === null) { setFeedback('fb-eval-4', 'hint', 'sin⁻¹(0,388).'); return; }
+      if (Math.abs(v - 22.8) < 0.2) {
+        setFeedback('fb-eval-4', 'correct', 'Correct (1,5/1,5 pt) : i2 = sin⁻¹(0,388) ≈ 22,8°.');
+        document.getElementById('q-eval-4').classList.add('completed');
+      } else { setFeedback('fb-eval-4', 'incorrect', 'sin⁻¹(0,388) ≈ 22,8°.'); }
+    }
+
+    function checkEval5() {
+      const v = document.getElementById('eval_q5').value.trim().toLowerCase();
+      if (!v) { setFeedback('fb-eval-5', 'hint', 'Rapproché ou éloigné ?'); return; }
+      if (v.includes('rapp')) {
+        setFeedback('fb-eval-5', 'correct', 'Correct (1/1 pt) : 22,8° < 35,0°, le rayon s\'est donc rapproché de la normale.');
+        document.getElementById('q-eval-5').classList.add('completed');
+      } else { setFeedback('fb-eval-5', 'incorrect', 'i2 < i1 donc le rayon s\'est rapproché de la normale.'); }
+    }
+
+    function checkEval6() {
+      const v = parseInputNumber(document.getElementById('eval_q6').value);
+      if (v === null) { setFeedback('fb-eval-6', 'hint', '35,0 - 22,8.'); return; }
+      if (Math.abs(v - 12.2) < 0.2) {
+        setFeedback('fb-eval-6', 'correct', 'Correct (1/1 pt) : Déviation D = 35,0 - 22,8 = 12,2°.');
+        document.getElementById('q-eval-6').classList.add('completed');
+      } else { setFeedback('fb-eval-6', 'incorrect', '35,0 - 22,8 = 12,2°.'); }
+    }
+
+    /* ================= CANVAS : SIMULATEUR PHET ================= */
+    const optCanvas = document.getElementById('opticsCanvas');
+    const optCtx = optCanvas.getContext('2d');
+    let angleI1 = 40.0;
+    let n1 = 1.00;
+    let n2 = 1.33;
+
+    function initOpticsCanvas() {
+      resizeOpticsCanvas();
+      window.addEventListener('resize', resizeOpticsCanvas);
+
+      optCanvas.addEventListener('pointerdown', handleCanvasTouch);
+      optCanvas.addEventListener('pointermove', (e) => {
+        if (e.buttons === 1) handleCanvasTouch(e);
+      });
+    }
+
+    function resizeOpticsCanvas() {
+      if (!optCanvas) return;
+      optCanvas.width = optCanvas.parentElement.getBoundingClientRect().width;
+      optCanvas.height = optCanvas.parentElement.getBoundingClientRect().height;
+      drawOptics();
+    }
+
+    function handleCanvasTouch(e) {
+      const rect = optCanvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const midX = rect.width / 2;
+      const midY = rect.height / 2;
+
+      // Uniquement dans le milieu supérieur (y < midY)
+      if (y < midY - 5) {
+        const dx = midX - x;
+        const dy = midY - y;
+        let deg = Math.atan2(dx, dy) * (180 / Math.PI);
+        if (deg < 0) deg = 0;
+        if (deg > 85) deg = 85;
+        angleI1 = Math.round(deg * 2) / 2;
+        document.getElementById('slider-i1').value = angleI1;
+        document.getElementById('lbl-i1-val').textContent = angleI1.toFixed(1) + '°';
+        drawOptics();
+      }
+    }
+
+    function onAngleSlider(val) {
+      angleI1 = parseFloat(val);
+      document.getElementById('lbl-i1-val').textContent = angleI1.toFixed(1) + '°';
+      drawOptics();
+    }
+
+    function onMaterialChange() {
+      n1 = parseFloat(document.getElementById('select-m1').value);
+      n2 = parseFloat(document.getElementById('select-m2').value);
+      document.getElementById('lbl-m1-idx').textContent = 'n1 = ' + n1.toFixed(2);
+      document.getElementById('lbl-m2-idx').textContent = 'n2 = ' + n2.toFixed(2);
+      drawOptics();
+    }
+
+    function drawOptics() {
+      if (!optCanvas) return;
+      const w = optCanvas.width;
+      const h = optCanvas.height;
+      optCtx.clearRect(0, 0, w, h);
+
+      const midX = w / 2;
+      const midY = h / 2;
+
+      // Milieu 1 (Fond haut)
+      optCtx.fillStyle = n1 === 1.00 ? '#FFFFFF' : (n1 === 1.33 ? '#F0F9FF' : (n1 === 1.47 ? '#FEFCE8' : '#F5F3FF'));
+      optCtx.fillRect(0, 0, w, midY);
+
+      // Milieu 2 (Fond bas)
+      optCtx.fillStyle = n2 === 1.00 ? '#FFFFFF' : (n2 === 1.33 ? '#E0F2FE' : (n2 === 1.47 ? '#FEF08A' : '#EDE9FE'));
+      optCtx.fillRect(0, midY, w, midY);
+
+      // Ligne du dioptre
+      optCtx.strokeStyle = '#94A3B8';
+      optCtx.lineWidth = 2;
+      optCtx.beginPath();
+      optCtx.moveTo(0, midY);
+      optCtx.lineTo(w, midY);
+      optCtx.stroke();
+
+      // Normale (Pointillés)
+      optCtx.strokeStyle = '#64748B';
+      optCtx.lineWidth = 1.5;
+      optCtx.setLineDash([5, 4]);
+      optCtx.beginPath();
+      optCtx.moveTo(midX, 10);
+      optCtx.lineTo(midX, h - 10);
+      optCtx.stroke();
+      optCtx.setLineDash([]);
+
+      // Légendes dioptre et normale
+      optCtx.fillStyle = '#64748B';
+      optCtx.font = 'bold 11px Arial';
+      optCtx.textAlign = 'right';
+      optCtx.fillText('Dioptre (Surface)', w - 10, midY - 6);
+      optCtx.textAlign = 'left';
+      optCtx.fillText('Normale (N)', midX + 6, 20);
+
+      // Calculs physiques
+      const radI1 = (angleI1 * Math.PI) / 180;
+      const sinI1 = Math.sin(radI1);
+      const sinI2 = (n1 * sinI1) / n2;
+
+      document.getElementById('metric-sin-i1').textContent = sinI1.toFixed(3);
+
+      const rayLen = Math.min(w, h) * 0.44;
+      const srcX = midX - rayLen * Math.sin(radI1);
+      const srcY = midY - rayLen * Math.cos(radI1);
+
+      // Rayon Incident (Rouge laser)
+      optCtx.strokeStyle = '#EE3C3D';
+      optCtx.lineWidth = 3.5;
+      optCtx.beginPath();
+      optCtx.moveTo(srcX, srcY);
+      optCtx.lineTo(midX, midY);
+      optCtx.stroke();
+
+      // Flèche incident
+      drawArrow(optCtx, srcX, srcY, midX, midY, 0.55);
+
+      // Rayon Réfléchi (partiel ou total)
+      const reflX = midX + rayLen * Math.sin(radI1);
+      const reflY = midY - rayLen * Math.cos(radI1);
+      optCtx.strokeStyle = 'rgba(238, 60, 61, 0.5)';
+      optCtx.lineWidth = 2;
+      optCtx.beginPath();
+      optCtx.moveTo(midX, midY);
+      optCtx.lineTo(reflX, reflY);
+      optCtx.stroke();
+
+      // Arc d'angle i1
+      optCtx.strokeStyle = '#A50F23';
+      optCtx.lineWidth = 1.5;
+      optCtx.beginPath();
+      optCtx.arc(midX, midY, 34, -Math.PI / 2 - radI1, -Math.PI / 2);
+      optCtx.stroke();
+      optCtx.fillStyle = '#A50F23';
+      optCtx.font = 'bold 11px Arial';
+      optCtx.fillText(`i1=${angleI1.toFixed(1)}°`, midX - 38, midY - 40);
+
+      // Gestion Réflexion Totale vs Réfraction
+      const boxI2 = document.getElementById('box-metric-i2');
+      if (sinI2 > 1.0) {
+        // Réflexion totale
+        boxI2.classList.add('total-reflection');
+        document.getElementById('metric-sin-i2').textContent = sinI2.toFixed(3) + ' (>1)';
+        document.getElementById('metric-i2-val').textContent = 'RÉFLEXION TOTALE';
+        document.getElementById('metric-dev-val').textContent = '100% Réfléchi';
+
+        // Rayon réfléchi renforcé
+        optCtx.strokeStyle = '#EE3C3D';
+        optCtx.lineWidth = 4;
+        optCtx.beginPath();
+        optCtx.moveTo(midX, midY);
+        optCtx.lineTo(reflX, reflY);
+        optCtx.stroke();
+
+        optCtx.fillStyle = '#D97706';
+        optCtx.font = 'bold 13px Arial';
+        optCtx.textAlign = 'center';
+        optCtx.fillText('⚠️ Réflexion Totale (Pas de rayon réfracté)', midX, midY + 45);
+      } else {
+        boxI2.classList.remove('total-reflection');
+        const radI2 = Math.asin(sinI2);
+        const degI2 = (radI2 * 180) / Math.PI;
+        const dev = Math.abs(angleI1 - degI2);
+
+        document.getElementById('metric-sin-i2').textContent = sinI2.toFixed(3);
+        document.getElementById('metric-i2-val').textContent = degI2.toFixed(1) + '°';
+        document.getElementById('metric-dev-val').textContent = dev.toFixed(1) + '°';
+
+        // Rayon Réfracté
+        const refrX = midX + rayLen * Math.sin(radI2);
+        const refrY = midY + rayLen * Math.cos(radI2);
+
+        optCtx.strokeStyle = '#0284C7';
+        optCtx.lineWidth = 3.5;
+        optCtx.beginPath();
+        optCtx.moveTo(midX, midY);
+        optCtx.lineTo(refrX, refrY);
+        optCtx.stroke();
+
+        drawArrow(optCtx, midX, midY, refrX, refrY, 0.55);
+
+        // Arc d'angle i2
+        optCtx.strokeStyle = '#0284C7';
+        optCtx.lineWidth = 1.5;
+        optCtx.beginPath();
+        optCtx.arc(midX, midY, 34, Math.PI / 2 - radI2, Math.PI / 2);
+        optCtx.stroke();
+        optCtx.fillStyle = '#0284C7';
+        optCtx.font = 'bold 11px Arial';
+        optCtx.fillText(`i2=${degI2.toFixed(1)}°`, midX + 10, midY + 45);
+      }
+
+      // Point d'incidence I
+      optCtx.fillStyle = '#A50F23';
+      optCtx.beginPath();
+      optCtx.arc(midX, midY, 5, 0, Math.PI * 2);
+      optCtx.fill();
+      optCtx.strokeStyle = '#FFFFFF';
+      optCtx.lineWidth = 1.5;
+      optCtx.stroke();
+    }
+
+    function drawArrow(ctx, fromx, fromy, tox, toy, ratio) {
+      const x = fromx + (tox - fromx) * ratio;
+      const y = fromy + (toy - fromy) * ratio;
+      const angle = Math.atan2(toy - fromy, tox - fromx);
+      const headlen = 8;
+      ctx.fillStyle = ctx.strokeStyle;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x - headlen * Math.cos(angle - Math.PI / 6), y - headlen * Math.sin(angle - Math.PI / 6));
+      ctx.lineTo(x - headlen * Math.cos(angle + Math.PI / 6), y - headlen * Math.sin(angle + Math.PI / 6));
+      ctx.closePath();
+      ctx.fill();
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,2931 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>S5 M2 - Comparaison de deux tarifs | CMA Formation Sainte-Clotilde</title>
+  
+  <!-- MathJax v3 pour le rendu des formules mathématiques LaTeX -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      },
+      options: {
+        enableMenu: false
+      }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <style>
+    /* Charte graphique officielle CMA Formation */
+    :root {
+      --cma-bordeaux: #A50F23;
+      --cma-bordeaux-dark: #7F0B1A;
+      --cma-corail: #EE3C3D;
+      --cma-corail-light: #FDE8E8;
+      --cma-bg: #F8FAFC;
+      --cma-card-bg: #FFFFFF;
+      --cma-text: #1E293B;
+      --cma-text-muted: #64748B;
+      --cma-border: #E2E8F0;
+      --cma-success: #16A34A;
+      --cma-success-bg: #DCFCE7;
+      --cma-warning: #D97706;
+      --cma-warning-bg: #FEF3C7;
+      --radius: 12px;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+      --shadow-md: 0 4px 12px rgba(165, 15, 35, 0.08);
+      --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: var(--cma-bg);
+      color: var(--cma-text);
+      line-height: 1.5;
+      font-size: 15px;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* Puces officielles CMA */
+    .icon-bullet {
+      height: 18px;
+      width: 18px;
+      object-fit: contain;
+      display: inline-block;
+      vertical-align: middle;
+      flex-shrink: 0;
+      margin-right: 8px;
+    }
+
+    /* En-tête principal et motif vague */
+    .app-header {
+      position: relative;
+      overflow: hidden;
+      padding: 16px 16px 24px 16px;
+      background: linear-gradient(135deg, #FFFFFF 0%, #FFF5F5 100%);
+      border-bottom: 1px solid var(--cma-border);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .header-content {
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .app-logo {
+      height: 48px;
+      width: auto;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+
+    .header-titles {
+      flex: 1;
+    }
+
+    .header-titles h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--cma-bordeaux);
+      line-height: 1.25;
+    }
+
+    .header-titles p {
+      font-size: 0.82rem;
+      color: var(--cma-text-muted);
+      margin-top: 3px;
+    }
+
+    .cma-wave-border {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: auto;
+      height: 14px;
+      margin: 0;
+      border: 0;
+      background-image: url("ruban_vague.png");
+      background-repeat: repeat-x;
+      background-size: 102.941176px 102.941176px;
+      background-position: left -46.941176px;
+    }
+
+    /* Barre de progression compacte de 8px */
+    .progress-track {
+      width: 100%;
+      height: 8px;
+      background-color: #E2E8F0;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--cma-corail) 0%, var(--cma-bordeaux) 100%);
+      transition: width 0.4s ease;
+    }
+
+    /* Barre d'onglets de navigation */
+    .nav-container {
+      max-width: 960px;
+      margin: 12px auto 6px auto;
+      padding: 0 12px;
+      width: 100%;
+    }
+
+    .nav-tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .nav-tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .nav-btn {
+      flex: 1 0 auto;
+      min-height: 44px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      border: 1.5px solid var(--cma-border);
+      background: #FFFFFF;
+      color: var(--cma-text);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .nav-btn:hover {
+      border-color: var(--cma-corail);
+      color: var(--cma-bordeaux);
+    }
+
+    .nav-btn.active {
+      background: var(--cma-bordeaux);
+      color: #FFFFFF;
+      border-color: var(--cma-bordeaux);
+      box-shadow: 0 2px 8px rgba(165, 15, 35, 0.3);
+    }
+
+    /* Conteneur principal */
+    .main-container {
+      max-width: 960px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 12px 14px 40px 14px;
+      flex: 1;
+    }
+
+    .step-section {
+      display: none;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .step-section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Cartes & Éléments visuels */
+    .card {
+      background: var(--cma-card-bg);
+      border-radius: var(--radius);
+      border: 1px solid var(--cma-border);
+      padding: 18px 16px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .card-title {
+      font-size: 1.08rem;
+      font-weight: 700;
+      color: var(--cma-bordeaux);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+    }
+
+    .badge-tag {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 999px;
+      margin-left: 8px;
+      letter-spacing: 0.5px;
+    }
+
+    .tag-cap {
+      background: var(--cma-corail-light);
+      color: var(--cma-bordeaux);
+    }
+
+    .tag-bonus {
+      background: #FEF3C7;
+      color: #B45309;
+    }
+
+    .tag-expert {
+      background: #EDE9FE;
+      color: #6D28D9;
+    }
+
+    .info-callout {
+      background: #F1F5F9;
+      border-left: 4px solid var(--cma-corail);
+      padding: 12px 14px;
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 14px;
+      font-size: 0.93rem;
+    }
+
+    .info-callout strong {
+      color: var(--cma-bordeaux);
+    }
+
+    /* Tableaux adaptatifs */
+    .table-scroll {
+      width: 100%;
+      overflow-x: auto;
+      margin: 12px 0;
+      border-radius: 8px;
+      border: 1px solid var(--cma-border);
+    }
+
+    .cma-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: center;
+      font-size: 0.92rem;
+      min-width: 500px;
+    }
+
+    .cma-table th {
+      background: #F8FAFC;
+      color: var(--cma-bordeaux);
+      font-weight: 700;
+      padding: 10px;
+      border-bottom: 2px solid var(--cma-border);
+      border-right: 1px solid var(--cma-border);
+    }
+
+    .cma-table td {
+      padding: 10px;
+      border-bottom: 1px solid var(--cma-border);
+      border-right: 1px solid var(--cma-border);
+      background: #FFFFFF;
+    }
+
+    .cma-table td:last-child, .cma-table th:last-child {
+      border-right: none;
+    }
+
+    /* Formulaires & Champs de saisie (44px min et 16px font pour mobile) */
+    .input-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+
+    .cma-input {
+      font-size: 16px;
+      height: 44px;
+      padding: 8px 12px;
+      border: 1.5px solid var(--cma-border);
+      border-radius: 8px;
+      color: var(--cma-text);
+      background: #FFFFFF;
+      min-width: 130px;
+      flex: 1;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .cma-input:focus {
+      outline: none;
+      border-color: var(--cma-corail);
+      box-shadow: 0 0 0 3px rgba(238, 60, 61, 0.15);
+    }
+
+    .input-unit {
+      font-weight: 600;
+      color: var(--cma-text-muted);
+      font-size: 0.95rem;
+      white-space: nowrap;
+    }
+
+    .btn {
+      min-height: 44px;
+      min-width: 44px;
+      padding: 10px 18px;
+      border-radius: 8px;
+      border: none;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--cma-bordeaux);
+      color: #FFFFFF;
+    }
+
+    .btn-primary:hover {
+      background: var(--cma-bordeaux-dark);
+    }
+
+    .btn-corail {
+      background: var(--cma-corail);
+      color: #FFFFFF;
+    }
+
+    .btn-corail:hover {
+      background: #D92B2C;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1.5px solid var(--cma-border);
+      color: var(--cma-text);
+    }
+
+    .btn-sm {
+      min-height: 38px;
+      padding: 6px 14px;
+      font-size: 0.88rem;
+    }
+
+    /* Retours pédagogiques */
+    .feedback-box {
+      margin-top: 10px;
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      display: none;
+      animation: fadeIn 0.25s ease;
+    }
+
+    .feedback-box.correct {
+      display: block;
+      background: var(--cma-success-bg);
+      border: 1px solid var(--cma-success);
+      color: #065F46;
+    }
+
+    .feedback-box.incorrect {
+      display: block;
+      background: #FEE2E2;
+      border: 1px solid #EF4444;
+      color: #991B1B;
+    }
+
+    .feedback-box.hint {
+      display: block;
+      background: var(--cma-warning-bg);
+      border: 1px solid var(--cma-warning);
+      color: #92400E;
+    }
+
+    /* Accordéons pour le cours */
+    .accordion-item {
+      border: 1px solid var(--cma-border);
+      border-radius: 8px;
+      margin-bottom: 10px;
+      overflow: hidden;
+      background: #FFFFFF;
+    }
+
+    .accordion-header {
+      padding: 14px 16px;
+      min-height: 48px;
+      background: #FFFFFF;
+      font-weight: 700;
+      color: var(--cma-bordeaux);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+    }
+
+    .accordion-header:hover {
+      background: #F8FAFC;
+    }
+
+    .accordion-header::after {
+      content: '+';
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: var(--cma-corail);
+      transition: transform 0.2s;
+    }
+
+    .accordion-item.open .accordion-header::after {
+      content: '−';
+    }
+
+    .accordion-body {
+      padding: 14px 16px;
+      border-top: 1px solid var(--cma-border);
+      background: #FDFDFE;
+      display: none;
+      font-size: 0.93rem;
+    }
+
+    .accordion-item.open .accordion-body {
+      display: block;
+    }
+
+    /* Simulateur interactif */
+    .simulator-container {
+      background: #FFFFFF;
+      border-radius: 12px;
+      border: 1px solid var(--cma-border);
+      padding: 14px;
+      margin-bottom: 16px;
+    }
+
+    .canvas-wrapper {
+      position: relative;
+      width: 100%;
+      height: 290px;
+      background: #FAFAFA;
+      border-radius: 8px;
+      border: 1px solid #E2E8F0;
+      overflow: hidden;
+      margin-bottom: 14px;
+      touch-action: none;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .sim-controls {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    @media (min-width: 640px) {
+      .sim-controls {
+        grid-template-columns: 1fr 1fr;
+      }
+      .canvas-wrapper {
+        height: 340px;
+      }
+    }
+
+    .slider-card {
+      background: #F8FAFC;
+      border: 1px solid var(--cma-border);
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.88rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .sim-range {
+      width: 100%;
+      height: 38px;
+      cursor: pointer;
+    }
+
+    .sim-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .stat-box {
+      background: #FFF5F5;
+      border: 1px solid #FED7D7;
+      border-radius: 8px;
+      padding: 8px 10px;
+      text-align: center;
+    }
+
+    .stat-label {
+      font-size: 0.76rem;
+      color: var(--cma-text-muted);
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .stat-val {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--cma-bordeaux);
+      margin-top: 2px;
+    }
+
+    /* Niveaux gamifiés et séquentiels */
+    .level-header-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #FFFFFF;
+      border: 1.5px solid var(--cma-border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.2s;
+    }
+
+    .level-header-card.active-level {
+      border-color: var(--cma-bordeaux);
+      box-shadow: 0 0 0 2px rgba(165, 15, 35, 0.1);
+    }
+
+    .level-header-card.locked {
+      background: #F1F5F9;
+      opacity: 0.75;
+      cursor: not-allowed;
+    }
+
+    .level-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .level-pill {
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+
+    .pill-l1 { background: #DCFCE7; color: #15803D; }
+    .pill-l2 { background: #FEF3C7; color: #B45309; }
+    .pill-l3 { background: #EDE9FE; color: #6D28D9; }
+    .pill-eval { background: #FFE4E6; color: #BE123C; }
+
+    .exercise-box {
+      background: #FFFFFF;
+      border: 1.5px solid var(--cma-border);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .exercise-box.locked-exercise {
+      display: none;
+    }
+
+    .exercise-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--cma-text-muted);
+    }
+
+    .q-item {
+      padding: 12px;
+      border-radius: 8px;
+      background: #F8FAFC;
+      border: 1px solid var(--cma-border);
+      margin-bottom: 12px;
+    }
+
+    .q-item.completed {
+      background: #F0FDF4;
+      border-color: #BBF7D0;
+    }
+
+    .q-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 8px;
+      color: var(--cma-text);
+    }
+
+    /* Score banner */
+    .score-summary-bar {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .score-chip {
+      background: #FFFFFF;
+      border: 1px solid var(--cma-border);
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .score-chip.cap-primary {
+      border-color: #86EFAC;
+      background: #F0FDF4;
+    }
+
+    .score-chip-title {
+      font-size: 0.74rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--cma-text-muted);
+    }
+
+    .score-chip-value {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--cma-bordeaux);
+      margin-top: 2px;
+    }
+
+    /* Badges */
+    .badge-collection {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 14px 0;
+    }
+
+    .cma-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #FFFFFF;
+      border: 1.5px solid var(--cma-border);
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .cma-badge.unlocked {
+      border-color: #F59E0B;
+      background: #FFFBEB;
+      color: #92400E;
+    }
+
+    .cma-badge.locked {
+      opacity: 0.5;
+      background: #F1F5F9;
+      color: #94A3B8;
+    }
+
+    /* Attestation officielle */
+    .attestation-wrapper {
+      background: #FFFFFF;
+      border: 3px double var(--cma-bordeaux);
+      border-radius: 14px;
+      padding: 24px 20px;
+      margin: 16px 0;
+      box-shadow: var(--shadow-md);
+      position: relative;
+    }
+
+    .attestation-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      border-bottom: 2px solid var(--cma-corail);
+      padding-bottom: 14px;
+      margin-bottom: 16px;
+      gap: 10px;
+    }
+
+    .att-logo {
+      max-height: 48px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .attestation-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--cma-bordeaux);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .attestation-subtitle {
+      font-size: 0.88rem;
+      color: var(--cma-text-muted);
+      font-weight: 600;
+    }
+
+    .attestation-body {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: var(--cma-text);
+    }
+
+    .att-learner-name {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--cma-bordeaux);
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    .att-grid-details {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin: 16px 0;
+      background: #F8FAFC;
+      border-radius: 8px;
+      padding: 12px;
+      border: 1px solid var(--cma-border);
+    }
+
+    @media (min-width: 600px) {
+      .att-grid-details {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .att-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-top: 20px;
+      padding-top: 14px;
+      border-top: 1px dashed var(--cma-border);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .att-signature {
+      text-align: right;
+      font-size: 0.85rem;
+    }
+
+    .att-signature-name {
+      font-weight: 700;
+      color: var(--cma-bordeaux);
+      margin-top: 4px;
+    }
+
+    /* Impression / Export PDF */
+    @media print {
+      body {
+        background: #FFFFFF;
+        color: #000000;
+      }
+      .app-header, .progress-track, .nav-container, .step-section:not(#step-4), .no-print, .btn, .input-row, input {
+        display: none !important;
+      }
+      #step-4 {
+        display: block !important;
+      }
+      .main-container {
+        padding: 0;
+        max-width: 100%;
+      }
+      .attestation-wrapper {
+        border: 2px solid #A50F23;
+        box-shadow: none;
+        page-break-inside: avoid;
+        margin: 0;
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header officiel CMA Formation Sainte-Clotilde -->
+  <header class="app-header">
+    <div class="header-content">
+      <img src="logo.png" alt="Logo CMA Formation" class="app-logo" onerror="this.src='https://placehold.co/120x48/A50F23/ffffff?text=CMA+Formation'">
+      <div class="header-titles">
+        <h1>Fonctions : Comparaison de deux tarifs (Intersections de droites)</h1>
+        <p>CAP Métiers de la Coiffure | S5 M2 | CMA Formation Sainte-Clotilde (Rachel Lamberet-Lezais)</p>
+      </div>
+    </div>
+    <!-- Motif officiel ruban vague répété au bord inférieur -->
+    <div class="cma-wave-border"></div>
+  </header>
+
+  <!-- Barre de progression compacte de 8px -->
+  <div class="progress-track" aria-label="Progression de la séance">
+    <div class="progress-bar-fill" id="globalProgressBar"></div>
+  </div>
+
+  <!-- Barre de navigation tactile Mobile-First -->
+  <div class="nav-container">
+    <nav class="nav-tabs" role="tablist">
+      <button class="nav-btn active" onclick="switchStep(1)" id="tab-step-1" role="tab" aria-selected="true">
+        <span>1.</span> Découverte
+      </button>
+      <button class="nav-btn" onclick="switchStep(2)" id="tab-step-2" role="tab" aria-selected="false">
+        <span>2.</span> Cours & Simulateur
+      </button>
+      <button class="nav-btn" onclick="switchStep(3)" id="tab-step-3" role="tab" aria-selected="false">
+        <span>3.</span> Entraînement
+      </button>
+      <button class="nav-btn" onclick="switchStep(4)" id="tab-step-4" role="tab" aria-selected="false">
+        <span>4.</span> Bilan & Attestation
+      </button>
+    </nav>
+  </div>
+
+  <!-- Contenu principal -->
+  <main class="main-container">
+
+    <!-- ========================================== -->
+    <!-- ÉTAPE 1 — DÉCOUVERTE                      -->
+    <!-- ========================================== -->
+    <section id="step-1" class="step-section active">
+      <div class="card">
+        <h2 class="card-title">
+          <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+          Mise en situation : Choix entre deux fournisseurs de shampooing à Sainte-Clotilde
+        </h2>
+        <div class="info-callout">
+          <strong>Contexte professionnel :</strong> Au salon « L'Atelier Kréol » à Sainte-Clotilde, la gérante prépare la commande mensuelle de shampooing technique neutre utilisé quotidiennement aux bacs de lavage.<br>
+          Pour s'approvisionner en bidons de 5 L sous le climat tropical de La Réunion, le salon met en concurrence deux grossistes spécialisés :
+          <ul style="margin-top: 6px; padding-left: 20px;">
+            <li><strong>Fournisseur A (Distributeur Nord Réunion, Sainte-Clotilde) :</strong> 12,00 € par litre, sans aucun frais de livraison (livraison offerte en salon).</li>
+            <li><strong>Fournisseur B (Océan Indien Coiffure Pro, Le Port) :</strong> 8,00 € par litre, avec un forfait fixe de livraison et d'acheminement sécurisé de 40,00 € par commande.</li>
+          </ul>
+        </div>
+        <p style="margin-bottom: 6px;">
+          On note $x$ le volume total de shampooing commandé (en litres). On note $f(x)$ le coût facturé par le Fournisseur A et $g(x)$ le coût facturé par le Fournisseur B.
+        </p>
+      </div>
+
+      <!-- Tableau de valeurs interactif -->
+      <div class="card">
+        <h3 class="card-title">
+          <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+          Tableau comparatif des coûts selon le volume commandé
+        </h3>
+        <div class="table-scroll">
+          <table class="cma-table">
+            <thead>
+              <tr>
+                <th>Volume commandé ($x$ en L)</th>
+                <th>0 L</th>
+                <th>5 L</th>
+                <th>10 L</th>
+                <th>15 L</th>
+                <th>20 L</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="font-weight: 700; color: #0284C7;">Fournisseur A : $f(x) = 12x$</td>
+                <td>0,00 €</td>
+                <td>60,00 €</td>
+                <td id="tbl-f-10" style="font-weight: bold; color: var(--cma-bordeaux);">?</td>
+                <td>180,00 €</td>
+                <td id="tbl-f-20" style="font-weight: bold; color: var(--cma-bordeaux);">?</td>
+              </tr>
+              <tr>
+                <td style="font-weight: 700; color: #D97706;">Fournisseur B : $g(x) = 8x + 40$</td>
+                <td>40,00 €</td>
+                <td>80,00 €</td>
+                <td id="tbl-g-10" style="font-weight: bold; color: var(--cma-bordeaux);">?</td>
+                <td>160,00 €</td>
+                <td id="tbl-g-20" style="font-weight: bold; color: var(--cma-bordeaux);">?</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div style="margin-top: 16px;">
+          <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 8px; color: var(--cma-bordeaux);">
+            Représentation graphique : $d_1$ (Fournisseur A) et $d_2$ (Fournisseur B)
+          </h4>
+          <div class="canvas-wrapper">
+            <canvas id="discoveryCanvas"></canvas>
+          </div>
+          <p style="font-size: 0.82rem; color: var(--cma-text-muted); text-align: center;">
+            Touchez ou glissez sur le graphe pour explorer le volume $x$ et comparer instantanément les deux factures.
+          </p>
+        </div>
+      </div>
+
+      <!-- Questions d'investigation -->
+      <div class="card">
+        <h3 class="card-title">
+          <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+          Questions d'investigation professionnelle
+        </h3>
+
+        <!-- Q1 -->
+        <div class="q-item" id="block-q1">
+          <div class="q-title">1. [C1 - S'informer] Quel est le prix par litre du Fournisseur A et la nature de la fonction $f$ ?</div>
+          <div class="input-row">
+            <span class="input-unit">Prix :</span>
+            <input type="text" inputmode="decimal" class="cma-input" id="q1_price" placeholder="Votre résultat..." style="max-width: 90px;">
+            <span class="input-unit">€/L. Nature :</span>
+            <input type="text" class="cma-input" id="q1_nature" placeholder="linéaire ou affine ?">
+            <button class="btn btn-primary btn-sm" onclick="checkQ1()">Valider</button>
+          </div>
+          <div class="feedback-box" id="fb-q1"></div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="q-item" id="block-q2">
+          <div class="q-title">2. [C1 - S'informer] Quel est le montant des frais fixes de livraison du Fournisseur B et la nature de $g$ ?</div>
+          <div class="input-row">
+            <span class="input-unit">Frais fixes :</span>
+            <input type="text" inputmode="decimal" class="cma-input" id="q2_fixed" placeholder="Votre résultat..." style="max-width: 90px;">
+            <span class="input-unit">€. Nature :</span>
+            <input type="text" class="cma-input" id="q2_nature" placeholder="linéaire ou affine ?">
+            <button class="btn btn-primary btn-sm" onclick="checkQ2()">Valider</button>
+          </div>
+          <div class="feedback-box" id="fb-q2"></div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="q-item" id="block-q3">
+          <div class="q-title">3. [C2 - Exécuter] Compléter le tableau : calculer le coût pour 10 L puis 20 L avec le Fournisseur A ($f(x) = 12x$).</div>
+          <div class="input-row">
+            <span class="input-unit">Pour 10 L :</span>
+            <input type="text" inputmode="decimal" class="cma-input" id="q3_10" placeholder="Votre résultat..." style="max-width: 90px;">
+            <span class="input-unit">€. Pour 20 L :</span>
+            <input type="text" inputmode="decimal" class="cma-input" id="q3_20" placeholder="Votre résultat..." style="max-width: 90px;">
+            <span class="input-unit">€</span>
+            <button class="btn btn-primary btn-sm" onclick="checkQ3()">Valider</button>
+          </div>
+          <div class="feedback-box" id="fb-q3"></div>
+        </div>
+
+        <!-- Q4 -->
+        <div class="q-item" id="block-q4">
+          <div class="q-title">4. [C2 - Exécuter] Compléter le tableau : calculer le coût pour 10 L puis 20 L avec le Fournisseur B ($g(x) = 8x + 40$).</div>
+          <div class="input-row">
+            <span class="input-unit">Pour 10 L :</span>
+            <input type="text" inputmode="decimal" class="cma-input" id="q4_10" placeholder="Votre résultat..." style="max-width: 90px;">
+            <span class="input-unit">€. Pour 20 L :</span>
+            <input type="text" inputmode="decimal" class="cma-input" id="q4_20" placeholder="Votre résultat..." style="max-width: 90px;">
+            <span class="input-unit">€</span>
+            <button class="btn btn-primary btn-sm" onclick="checkQ4()">Valider</button>
+          </div>
+          <div class="feedback-box" id="fb-q4"></div>
+        </div>
+
+        <!-- Q5 -->
+        <div class="q-item" id="block-q5">
+          <div class="q-title">5. [C2 - Exécuter] Résoudre algébriquement $12x = 8x + 40$. Quel est le volume d'équilibre $x_0$ et le coût commun ?</div>
+          <div class="input-row">
+            <span class="input-unit">$x_0 =$</span>
+            <input type="text" inputmode="decimal" class="cma-input" id="q5_x0" placeholder="Votre résultat..." style="max-width: 90px;">
+            <span class="input-unit">L , Coût commun =</span>
+            <input type="text" inputmode="decimal" class="cma-input" id="q5_cost" placeholder="Votre résultat..." style="max-width: 90px;">
+            <span class="input-unit">€</span>
+            <button class="btn btn-primary btn-sm" onclick="checkQ5()">Valider</button>
+          </div>
+          <div class="feedback-box" id="fb-q5"></div>
+        </div>
+
+        <!-- Q6 -->
+        <div class="q-item" id="block-q6">
+          <div class="q-title">6. [C3 - Appliquer] Relever graphiquement les coordonnées du point d'intersection $I(x ; y)$ des deux droites.</div>
+          <div class="input-row">
+            <span class="input-unit">Abscisse $x_I =$</span>
+            <input type="text" inputmode="decimal" class="cma-input" id="q6_xi" placeholder="Votre résultat..." style="max-width: 90px;">
+            <span class="input-unit">, Ordonnée $y_I =$</span>
+            <input type="text" inputmode="decimal" class="cma-input" id="q6_yi" placeholder="Votre résultat..." style="max-width: 90px;">
+            <button class="btn btn-primary btn-sm" onclick="checkQ6()">Valider</button>
+          </div>
+          <div class="feedback-box" id="fb-q6"></div>
+        </div>
+
+        <!-- Q7 -->
+        <div class="q-item" id="block-q7">
+          <div class="q-title">7. [C4 - Communiquer] Règle de décision : Quel fournisseur choisir si le salon commande moins de 10 L, et quel fournisseur choisir si le salon commande plus de 10 L ?</div>
+          <div class="input-row">
+            <span class="input-unit">Moins de 10 L :</span>
+            <input type="text" class="cma-input" id="q7_less" placeholder="Fournisseur A ou B ?">
+            <span class="input-unit">Plus de 10 L :</span>
+            <input type="text" class="cma-input" id="q7_more" placeholder="Fournisseur A ou B ?">
+            <button class="btn btn-primary btn-sm" onclick="checkQ7()">Valider</button>
+          </div>
+          <div class="feedback-box" id="fb-q7"></div>
+        </div>
+
+        <div style="text-align: right; margin-top: 14px;">
+          <button class="btn btn-corail" onclick="switchStep(2)">Passer au Cours & Simulateur →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- ÉTAPE 2 — COURS ET SIMULATEUR INTERACTIF   -->
+    <!-- ========================================== -->
+    <section id="step-2" class="step-section">
+      <div class="card">
+        <h2 class="card-title">
+          <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+          Synthèse de cours : Comparaison de deux tarifs par intersection de droites
+        </h2>
+
+        <div class="accordion-item open">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            1. Modélisation de deux tarifs concurrents
+          </div>
+          <div class="accordion-body">
+            <ul style="padding-left: 20px; margin: 8px 0;">
+              <li><strong>Tarif proportionnel pur :</strong> $f(x) = a_1 x$ (sans abonnement ni forfait fixe). C'est une <strong>fonction linéaire</strong> dont la droite représentative $d_1$ passe toujours par l'origine $O(0 ; 0)$.</li>
+              <li><strong>Tarif mixte :</strong> $g(x) = a_2 x + b_2$ (forfait fixe + prix variable à l'unité). C'est une <strong>fonction affine</strong> dont la droite représentative $d_2$ coupe l'axe vertical au point $(0 ; b_2)$ (l'ordonnée à l'origine).</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            2. Détermination du seuil d'équilibre (Intersection de droites)
+          </div>
+          <div class="accordion-body">
+            <p><strong>Méthode algébrique (par le calcul) :</strong></p>
+            <p style="margin: 6px 0;">On résout l'équation du premier degré :</p>
+            <p style="text-align: center; font-weight: 700; color: var(--cma-bordeaux);">
+              $$f(x) = g(x) \iff a_1 x = a_2 x + b_2 \iff (a_1 - a_2)x = b_2 \iff x_0 = \frac{b_2}{a_1 - a_2}$$
+            </p>
+            <p style="margin-top: 6px;"><strong>Méthode graphique :</strong> Les deux droites se coupent en un point unique $I(x_0 ; y_0)$. Son abscisse $x_0$ donne le volume d'équilibre, et son ordonnée $y_0$ donne le coût commun.</p>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            3. Règle de décision économique (La droite située en-dessous)
+          </div>
+          <div class="accordion-body">
+            <div class="info-callout">
+              Sur un repère de coûts, <strong>le tarif le plus économique est toujours représenté par la droite située EN DESSOUS</strong> :
+            </div>
+            <ul style="padding-left: 20px;">
+              <li>Pour $x < x_0$ : la droite $d_1$ est en dessous de $d_2 \implies$ Le Fournisseur A est le plus avantageux.</li>
+              <li>Pour $x = x_0$ : les deux tarifs sont strictement équivalents ($f(x_0) = g(x_0)$).</li>
+              <li>Pour $x > x_0$ : la droite $d_2$ passe en dessous de $d_1 \implies$ Le Fournisseur B devient le plus avantageux.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Simulateur interactif dynamique de tarifs -->
+      <div class="card">
+        <h3 class="card-title">
+          <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+          Simulateur interactif GeoGebra-like : Comparateur de tarifs & Intersection
+        </h3>
+        <p style="font-size: 0.92rem; color: var(--cma-text-muted); margin-bottom: 12px;">
+          Modifiez les paramètres des deux grossistes pour observer en direct le déplacement des droites et le point d'équilibre $I(x_0 ; y_0)$.
+        </p>
+
+        <div class="simulator-container">
+          <div class="canvas-wrapper">
+            <canvas id="simCanvas"></canvas>
+          </div>
+
+          <div class="sim-controls">
+            <div class="slider-card">
+              <div class="slider-header">
+                <span style="color: #0284C7;">Fournisseur A (Prix unitaire $a_1$) :</span>
+                <span id="lbl-a1" style="font-weight: bold; color: #0284C7;">12.00 €/L</span>
+              </div>
+              <input type="range" class="sim-range" id="sim-a1" min="6" max="18" step="0.5" value="12">
+            </div>
+
+            <div class="slider-card">
+              <div class="slider-header">
+                <span style="color: #D97706;">Fournisseur B (Prix unitaire $a_2$) :</span>
+                <span id="lbl-a2" style="font-weight: bold; color: #D97706;">8.00 €/L</span>
+              </div>
+              <input type="range" class="sim-range" id="sim-a2" min="3" max="12" step="0.5" value="8">
+            </div>
+
+            <div class="slider-card" style="grid-column: 1 / -1;">
+              <div class="slider-header">
+                <span style="color: #D97706;">Fournisseur B (Forfait livraison $b_2$) :</span>
+                <span id="lbl-b2" style="font-weight: bold; color: #D97706;">40.00 €</span>
+              </div>
+              <input type="range" class="sim-range" id="sim-b2" min="10" max="80" step="5" value="40">
+            </div>
+          </div>
+
+          <div class="sim-stats-grid">
+            <div class="stat-box">
+              <div class="stat-label">Point d'équilibre $I$</div>
+              <div class="stat-val" id="stat-pt-i">I(10.0 L ; 120.0 €)</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-label">Règle d'arbitrage</div>
+              <div class="stat-val" id="stat-decision" style="font-size: 0.95rem;">A si &lt; 10 L | B si &gt; 10 L</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="text-align: right; margin-top: 14px;">
+          <button class="btn btn-corail" onclick="switchStep(3)">Accéder aux Entraînements Différenciés →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- ÉTAPE 3 — ENTRAÎNEMENT GAMIFIÉ             -->
+    <!-- ========================================== -->
+    <section id="step-3" class="step-section">
+
+      <!-- Barre de score -->
+      <div class="score-summary-bar">
+        <div class="score-chip cap-primary">
+          <div class="score-chip-title">Socle CAP (Niveau 1)</div>
+          <div class="score-chip-value" id="capProgressDisplay">0%</div>
+        </div>
+        <div class="score-chip">
+          <div class="score-chip-title">Bonus Élite / Dépassement</div>
+          <div class="score-chip-value" id="bonusScoreDisplay">+0 pts</div>
+        </div>
+      </div>
+
+      <!-- Onglets de sélection des niveaux -->
+      <div class="level-header-card active-level" id="header-lvl-1" onclick="selectLevelTab(1)">
+        <div class="level-info">
+          <span class="level-pill pill-l1">NIVEAU 1 🟢</span>
+          <div>
+            <div style="font-weight: 700;">Débutant / Socle CAP (5 Exercices)</div>
+            <div style="font-size: 0.78rem; color: var(--cma-text-muted);">Valide 100% du Socle CAP et débloque l'attestation officielle</div>
+          </div>
+        </div>
+        <span id="lvl1-status" style="font-weight: bold; color: var(--cma-bordeaux);">En cours</span>
+      </div>
+
+      <div class="level-header-card locked" id="header-lvl-2" onclick="selectLevelTab(2)">
+        <div class="level-info">
+          <span class="level-pill pill-l2">NIVEAU 2 🟡</span>
+          <div>
+            <div style="font-weight: 700;">Avancé / Dépassement (4 Exercices)</div>
+            <div style="font-size: 0.78rem; color: var(--cma-text-muted);">Points Bonus Élite & situations professionnelles d'autonomie</div>
+          </div>
+        </div>
+        <span id="lvl2-status" style="font-size: 0.82rem; color: var(--cma-text-muted);">🔒 Verrouillé</span>
+      </div>
+
+      <div class="level-header-card locked" id="header-lvl-3" onclick="selectLevelTab(3)">
+        <div class="level-info">
+          <span class="level-pill pill-l3">NIVEAU 3 🔴</span>
+          <div>
+            <div style="font-weight: 700;">Expert / Excellence (3 Exercices)</div>
+            <div style="font-size: 0.78rem; color: var(--cma-text-muted);">Tarifs dégressifs, énergie réunionnaise & tableur</div>
+          </div>
+        </div>
+        <span id="lvl3-status" style="font-size: 0.82rem; color: var(--cma-text-muted);">🔒 Verrouillé</span>
+      </div>
+
+      <div class="level-header-card" id="header-lvl-eval" onclick="selectLevelTab(4)">
+        <div class="level-info">
+          <span class="level-pill pill-eval">ÉVALUATION 📝</span>
+          <div>
+            <div style="font-weight: 700;">Évaluation Formelle Étudiant (7 Points)</div>
+            <div style="font-size: 0.78rem; color: var(--cma-text-muted);">Bourbon Beauté vs Alizés Pro pour salon d'application</div>
+          </div>
+        </div>
+        <span id="eval-status" style="font-size: 0.82rem; color: var(--cma-bordeaux); font-weight: bold;">Autonome</span>
+      </div>
+
+      <!-- ================= NIVEAU 1 ================= -->
+      <div id="container-lvl-1">
+
+        <!-- Ex 1.1 -->
+        <div class="exercise-box" id="exbox-1-1">
+          <div class="exercise-meta">
+            <span>Exercice 1.1 / 1.5</span>
+            <span class="badge-tag tag-cap">Socle CAP</span>
+          </div>
+          <h4 style="color: var(--cma-bordeaux); margin-bottom: 8px;">
+            <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+            Calcul et comparaison de deux formules de serviettes jetables
+          </h4>
+          <p style="font-size: 0.92rem; margin-bottom: 12px;">
+            Un salon compare deux options pour des cartons de 100 serviettes jetables ($x$ étant le nombre de cartons) :<br>
+            • Formule 1 : $f(x) = 25x$ (25,00 € le carton, sans abonnement).<br>
+            • Formule 2 : $g(x) = 15x + 50$ (15,00 € le carton avec une carte privilège de 50,00 €).
+          </p>
+
+          <div class="q-item" id="qitem-1-1-1">
+            <div class="q-title">1. Calculer le coût pour $x = 3$ cartons avec chaque formule :</div>
+            <div class="input-row">
+              <span class="input-unit">Formule 1 :</span>
+              <input type="text" inputmode="decimal" class="cma-input" id="ex1_1_1_a" placeholder="Votre résultat..." style="max-width: 90px;">
+              <span class="input-unit">€. Formule 2 :</span>
+              <input type="text" inputmode="decimal" class="cma-input" id="ex1_1_1_b" placeholder="Votre résultat..." style="max-width: 90px;">
+              <span class="input-unit">€</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx1_1_1()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex1-1-1"></div>
+          </div>
+
+          <div class="q-item" id="qitem-1-1-2">
+            <div class="q-title">2. Calculer le coût pour $x = 5$ cartons avec chaque formule :</div>
+            <div class="input-row">
+              <span class="input-unit">Formule 1 :</span>
+              <input type="text" inputmode="decimal" class="cma-input" id="ex1_1_2_a" placeholder="Votre résultat..." style="max-width: 90px;">
+              <span class="input-unit">€. Formule 2 :</span>
+              <input type="text" inputmode="decimal" class="cma-input" id="ex1_1_2_b" placeholder="Votre résultat..." style="max-width: 90px;">
+              <span class="input-unit">€</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx1_1_2()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex1-1-2"></div>
+          </div>
+
+          <div class="q-item" id="qitem-1-1-3">
+            <div class="q-title">3. Pour $x = 8$ cartons : calculer le coût de la Formule 1, de la Formule 2 et indiquer la formule la plus avantageuse :</div>
+            <div class="input-row">
+              <span class="input-unit">Formule 1 :</span>
+              <input type="text" inputmode="decimal" class="cma-input" id="ex1_1_3_a" placeholder="Votre résultat..." style="max-width: 80px;">
+              <span class="input-unit">€. Formule 2 :</span>
+              <input type="text" inputmode="decimal" class="cma-input" id="ex1_1_3_b" placeholder="Votre résultat..." style="max-width: 80px;">
+              <span class="input-unit">€. La plus avantageuse :</span>
+              <input type="text" class="cma-input" id="ex1_1_3_c" placeholder="Formule 1 ou 2 ?">
+              <button class="btn btn-primary btn-sm" onclick="checkEx1_1_3()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex1-1-3"></div>
+          </div>
+        </div>
+
+        <!-- Ex 1.2 -->
+        <div class="exercise-box locked-exercise" id="exbox-1-2">
+          <div class="exercise-meta">
+            <span>Exercice 1.2 / 1.5</span>
+            <span class="badge-tag tag-cap">Socle CAP</span>
+          </div>
+          <h4 style="color: var(--cma-bordeaux); margin-bottom: 8px;">
+            <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+            Résolution guidée de l'égalité de deux tarifs
+          </h4>
+          <p style="font-size: 0.92rem; margin-bottom: 12px;">
+            Résoudre l'équation $25x = 15x + 50$ en suivant les étapes pas à pas :
+          </p>
+
+          <div class="q-item" id="qitem-1-2-1">
+            <div class="q-title">1. Réduire $25x - 15x$ : quel est le coefficient de $x$ ? ($... x = 50$)</div>
+            <div class="input-row">
+              <input type="text" inputmode="decimal" class="cma-input" id="ex1_2_1" placeholder="Votre résultat...">
+              <span class="input-unit">$x = 50$</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx1_2_1()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex1-2-1"></div>
+          </div>
+
+          <div class="q-item" id="qitem-1-2-2">
+            <div class="q-title">2. Diviser 50 par ce coefficient pour trouver le nombre de cartons d'équilibre $x_0$ :</div>
+            <div class="input-row">
+              <input type="text" inputmode="decimal" class="cma-input" id="ex1_2_2" placeholder="Votre résultat...">
+              <span class="input-unit">cartons</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx1_2_2()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex1-2-2"></div>
+          </div>
+        </div>
+
+        <!-- Ex 1.3 -->
+        <div class="exercise-box locked-exercise" id="exbox-1-3">
+          <div class="exercise-meta">
+            <span>Exercice 1.3 / 1.5</span>
+            <span class="badge-tag tag-cap">Socle CAP</span>
+          </div>
+          <h4 style="color: var(--cma-bordeaux); margin-bottom: 8px;">
+            <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+            Lecture directe d'un point d'intersection sur graphique (Blanchisserie)
+          </h4>
+          <p style="font-size: 0.92rem; margin-bottom: 12px;">
+            La représentation graphique de deux formules de blanchisserie industrielle pour le linge de coiffure se coupe au point $I(20 ; 300)$.
+          </p>
+
+          <div class="q-item" id="qitem-1-3-1">
+            <div class="q-title">1. Relever l'abscisse du point d'intersection (nombre de peignoirs) :</div>
+            <div class="input-row">
+              <input type="text" inputmode="decimal" class="cma-input" id="ex1_3_1" placeholder="Votre résultat...">
+              <span class="input-unit">peignoirs</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx1_3_1()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex1-3-1"></div>
+          </div>
+
+          <div class="q-item" id="qitem-1-3-2">
+            <div class="q-title">2. Relever l'ordonnée du point d'intersection (coût total facturé) :</div>
+            <div class="input-row">
+              <input type="text" inputmode="decimal" class="cma-input" id="ex1_3_2" placeholder="Votre résultat...">
+              <span class="input-unit">€</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx1_3_2()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex1-3-2"></div>
+          </div>
+
+          <div class="q-item" id="qitem-1-3-3">
+            <div class="q-title">3. Que peut-on dire des deux tarifs lorsque le salon confie exactement 20 peignoirs à laver ?</div>
+            <div class="input-row">
+              <input type="text" class="cma-input" id="ex1_3_3" placeholder="égaux / différents ?">
+              <button class="btn btn-primary btn-sm" onclick="checkEx1_3_3()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex1-3-3"></div>
+          </div>
+        </div>
+
+        <!-- Ex 1.4 -->
+        <div class="exercise-box locked-exercise" id="exbox-1-4">
+          <div class="exercise-meta">
+            <span>Exercice 1.4 / 1.5</span>
+            <span class="badge-tag tag-cap">Socle CAP</span>
+          </div>
+          <h4 style="color: var(--cma-bordeaux); margin-bottom: 8px;">
+            <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+            Modélisation littérale de tarifs d'oxydant à Sainte-Marie
+          </h4>
+          <p style="font-size: 0.92rem; margin-bottom: 12px;">
+            Pour commander des flacons d'oxydant 30 volumes de 1 L (quantité $x$) :<br>
+            • Grossiste A : 6,00 € par flacon, sans frais de port.<br>
+            • Grossiste B : 4,50 € par flacon, avec forfait fixe de port de 15,00 €.
+          </p>
+
+          <div class="q-item" id="qitem-1-4-1">
+            <div class="q-title">1. Donner le coefficient $a$ pour la fonction du grossiste A ($f(x) = ... x$) :</div>
+            <div class="input-row">
+              <span class="input-unit">$f(x) =$</span>
+              <input type="text" inputmode="decimal" class="cma-input" id="ex1_4_1" placeholder="Votre résultat..." style="max-width: 90px;">
+              <span class="input-unit">$x$</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx1_4_1()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex1-4-1"></div>
+          </div>
+
+          <div class="q-item" id="qitem-1-4-2">
+            <div class="q-title">2. Donner les coefficients pour la fonction du grossiste B ($g(x) = a x + b$) :</div>
+            <div class="input-row">
+              <span class="input-unit">$g(x) =$</span>
+              <input type="text" inputmode="decimal" class="cma-input" id="ex1_4_2_a" placeholder="Prix/u" style="max-width: 90px;">
+              <span class="input-unit">$x +$</span>
+              <input type="text" inputmode="decimal" class="cma-input" id="ex1_4_2_b" placeholder="Frais" style="max-width: 90px;">
+              <button class="btn btn-primary btn-sm" onclick="checkEx1_4_2()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex1-4-2"></div>
+          </div>
+
+          <div class="q-item" id="qitem-1-4-3">
+            <div class="q-title">3. Lequel des deux tarifs est modélisé par une fonction linéaire ?</div>
+            <div class="input-row">
+              <input type="text" class="cma-input" id="ex1_4_3" placeholder="Grossiste A ou B ?">
+              <button class="btn btn-primary btn-sm" onclick="checkEx1_4_3()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex1-4-3"></div>
+          </div>
+        </div>
+
+        <!-- Ex 1.5 -->
+        <div class="exercise-box locked-exercise" id="exbox-1-5">
+          <div class="exercise-meta">
+            <span>Exercice 1.5 / 1.5</span>
+            <span class="badge-tag tag-cap">Socle CAP</span>
+          </div>
+          <h4 style="color: var(--cma-bordeaux); margin-bottom: 8px;">
+            <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+            Identification visuelle de la zone avantageuse
+          </h4>
+          <p style="font-size: 0.92rem; margin-bottom: 12px;">
+            Sur un graphique représentant deux droites tarifaires $d_1$ (rouge) et $d_2$ (bleue) se coupant en $x = 12$ litres :<br>
+            • Pour $x < 12$ L, la droite rouge $d_1$ est située <strong>en dessous</strong> de la droite bleue $d_2$.<br>
+            • Pour $x > 12$ L, la droite bleue $d_2$ est située <strong>en dessous</strong> de la droite rouge $d_1$.
+          </p>
+
+          <div class="q-item" id="qitem-1-5-1">
+            <div class="q-title">1. Quel tarif est le plus économique si l'on commande 8 litres ?</div>
+            <div class="input-row">
+              <input type="text" class="cma-input" id="ex1_5_1" placeholder="rouge (d1) ou bleue (d2) ?">
+              <button class="btn btn-primary btn-sm" onclick="checkEx1_5_1()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex1-5-1"></div>
+          </div>
+
+          <div class="q-item" id="qitem-1-5-2">
+            <div class="q-title">2. Quel tarif est le plus économique si l'on commande 18 litres ?</div>
+            <div class="input-row">
+              <input type="text" class="cma-input" id="ex1_5_2" placeholder="rouge (d1) ou bleue (d2) ?">
+              <button class="btn btn-primary btn-sm" onclick="checkEx1_5_2()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex1-5-2"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ================= NIVEAU 2 ================= -->
+      <div id="container-lvl-2" style="display: none;">
+
+        <!-- Ex 2.1 -->
+        <div class="exercise-box" id="exbox-2-1">
+          <div class="exercise-meta">
+            <span>Exercice 2.1 / 2.4</span>
+            <span class="badge-tag tag-bonus">Bonus Élite</span>
+          </div>
+          <h4 style="color: var(--cma-bordeaux); margin-bottom: 8px;">
+            <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+            Choix entre deux distributeurs de laques à Saint-Denis
+          </h4>
+          <p style="font-size: 0.92rem; margin-bottom: 12px;">
+            Approvisionnement en sprays fixants (quantité $x$) :<br>
+            • Réunion Beauté : $f(x) = 9x$ (9,00 € le flacon, livraison gratuite).<br>
+            • Mascareignes Pro : $g(x) = 6,5x + 30$ (6,50 € le flacon + 30,00 € livraison par coursier).
+          </p>
+
+          <div class="q-item" id="qitem-2-1-1">
+            <div class="q-title">1. Résoudre algébriquement $9x = 6,5x + 30$. Déterminer le nombre de flacons d'équilibre $x_0$ :</div>
+            <div class="input-row">
+              <input type="text" inputmode="decimal" class="cma-input" id="ex2_1_1" placeholder="Votre résultat...">
+              <span class="input-unit">flacons</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx2_1_1()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex2-1-1"></div>
+          </div>
+
+          <div class="q-item" id="qitem-2-1-2">
+            <div class="q-title">2. Calculer le montant commun facturé pour ce nombre de flacons d'équilibre :</div>
+            <div class="input-row">
+              <input type="text" inputmode="decimal" class="cma-input" id="ex2_1_2" placeholder="Votre résultat...">
+              <span class="input-unit">€</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx2_1_2()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex2-1-2"></div>
+          </div>
+
+          <div class="q-item" id="qitem-2-1-3">
+            <div class="q-title">3. Pour 20 flacons : calculer l'économie réalisée en choisissant le fournisseur le moins cher ($g(20)$ vs $f(20)$) :</div>
+            <div class="input-row">
+              <span class="input-unit">Économie de :</span>
+              <input type="text" inputmode="decimal" class="cma-input" id="ex2_1_3" placeholder="Votre résultat...">
+              <span class="input-unit">€</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx2_1_3()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex2-1-3"></div>
+          </div>
+        </div>
+
+        <!-- Ex 2.2 -->
+        <div class="exercise-box locked-exercise" id="exbox-2-2">
+          <div class="exercise-meta">
+            <span>Exercice 2.2 / 2.4</span>
+            <span class="badge-tag tag-bonus">Bonus Élite</span>
+          </div>
+          <h4 style="color: var(--cma-bordeaux); margin-bottom: 8px;">
+            <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+            Location d'appareil d'analyse capillaire numérique
+          </h4>
+          <p style="font-size: 0.92rem; margin-bottom: 12px;">
+            Location en fonction du nombre de mois $x$ :<br>
+            • Option A : $f(x) = 50x$<br>
+            • Option B : $g(x) = 30x + 120$
+          </p>
+
+          <div class="q-item" id="qitem-2-2-1">
+            <div class="q-title">1. Déterminer le nombre de mois d'équilibre ($50x = 30x + 120$) :</div>
+            <div class="input-row">
+              <input type="text" inputmode="decimal" class="cma-input" id="ex2_2_1" placeholder="Votre résultat...">
+              <span class="input-unit">mois</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx2_2_1()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex2-2-1"></div>
+          </div>
+
+          <div class="q-item" id="qitem-2-2-2">
+            <div class="q-title">2. Quel est le coût commun facturé pour cette durée ?</div>
+            <div class="input-row">
+              <input type="text" inputmode="decimal" class="cma-input" id="ex2_2_2" placeholder="Votre résultat...">
+              <span class="input-unit">€</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx2_2_2()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex2-2-2"></div>
+          </div>
+
+          <div class="q-item" id="qitem-2-2-3">
+            <div class="q-title">3. Le salon prévoit d'utiliser l'appareil pendant 8 mois. Quelle option est la plus avantageuse ?</div>
+            <div class="input-row">
+              <input type="text" class="cma-input" id="ex2_2_3" placeholder="Option A ou Option B ?">
+              <button class="btn btn-primary btn-sm" onclick="checkEx2_2_3()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex2-2-3"></div>
+          </div>
+        </div>
+
+        <!-- Ex 2.3 -->
+        <div class="exercise-box locked-exercise" id="exbox-2-3">
+          <div class="exercise-meta">
+            <span>Exercice 2.3 / 2.4</span>
+            <span class="badge-tag tag-bonus">Bonus Élite</span>
+          </div>
+          <h4 style="color: var(--cma-bordeaux); margin-bottom: 8px;">
+            <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+            Plateformes de prise de rendez-vous en ligne
+          </h4>
+          <p style="font-size: 0.92rem; margin-bottom: 12px;">
+            Deux logiciels selon le nombre $x$ de réservations mensuelles :<br>
+            • Clic-Coif : $f(x) = 0,80x$ (0,80 € par réservation, sans abonnement).<br>
+            • Plan-Beauté : $g(x) = 0,30x + 25$ (abonnement de 25,00 € + 0,30 € par réservation).
+          </p>
+
+          <div class="q-item" id="qitem-2-3-1">
+            <div class="q-title">1. Résoudre l'équation $0,80x = 0,30x + 25$. Quel est le seuil $x_0$ ?</div>
+            <div class="input-row">
+              <input type="text" inputmode="decimal" class="cma-input" id="ex2_3_1" placeholder="Votre résultat...">
+              <span class="input-unit">réservations</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx2_3_1()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex2-3-1"></div>
+          </div>
+
+          <div class="q-item" id="qitem-2-3-2">
+            <div class="q-title">2. À partir de quel nombre entier de réservations mensuelles Plan-Beauté devient-il strictement plus rentable ?</div>
+            <div class="input-row">
+              <span class="input-unit">À partir de :</span>
+              <input type="text" inputmode="decimal" class="cma-input" id="ex2_3_2" placeholder="Votre résultat...">
+              <span class="input-unit">réservations</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx2_3_2()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex2-3-2"></div>
+          </div>
+        </div>
+
+        <!-- Ex 2.4 -->
+        <div class="exercise-box locked-exercise" id="exbox-2-4">
+          <div class="exercise-meta">
+            <span>Exercice 2.4 / 2.4</span>
+            <span class="badge-tag tag-bonus">Bonus Élite</span>
+          </div>
+          <h4 style="color: var(--cma-bordeaux); margin-bottom: 8px;">
+            <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+            Affûtage de ciseaux professionnels par rémouleur
+          </h4>
+          <p style="font-size: 0.92rem; margin-bottom: 12px;">
+            • Formule Standard : $S(x) = 14x$ (14,00 € par paire, sans engagement).<br>
+            • Formule Contrat Annuel : $C(x) = 8x + 48$ (forfait de 48,00 € puis 8,00 € par paire).
+          </p>
+
+          <div class="q-item" id="qitem-2-4-1">
+            <div class="q-title">1. Résoudre $S(x) = C(x) : 14x = 8x + 48$. Quel est le nombre de paires d'équilibre ?</div>
+            <div class="input-row">
+              <input type="text" inputmode="decimal" class="cma-input" id="ex2_4_1" placeholder="Votre résultat...">
+              <span class="input-unit">paires</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx2_4_1()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex2-4-1"></div>
+          </div>
+
+          <div class="q-item" id="qitem-2-4-2">
+            <div class="q-title">2. Pour 10 paires affûtées dans l'année : quelle formule conseiller à la gérante ?</div>
+            <div class="input-row">
+              <input type="text" class="cma-input" id="ex2_4_2" placeholder="Standard ou Contrat Annuel ?">
+              <button class="btn btn-primary btn-sm" onclick="checkEx2_4_2()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex2-4-2"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ================= NIVEAU 3 ================= -->
+      <div id="container-lvl-3" style="display: none;">
+
+        <!-- Ex 3.1 -->
+        <div class="exercise-box" id="exbox-3-1">
+          <div class="exercise-meta">
+            <span>Exercice 3.1 / 3.3</span>
+            <span class="badge-tag tag-expert">Expert / Excellence</span>
+          </div>
+          <h4 style="color: var(--cma-bordeaux); margin-bottom: 8px;">
+            <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+            Étude comparative à trois tarifs et seuil de gratuité
+          </h4>
+          <p style="font-size: 0.92rem; margin-bottom: 12px;">
+            Achat de tubes de coloration ($x$ étant le nombre de tubes) :<br>
+            • Fournisseur 1 : $f(x) = 8x$<br>
+            • Fournisseur 2 : $g(x) = 6x + 36$<br>
+            • Fournisseur 3 : $h(x) = 5x + 60$ pour $x < 40$, et $h(x) = 5x$ dès $x \ge 40$ (frais offerts).
+          </p>
+
+          <div class="q-item" id="qitem-3-1-1">
+            <div class="q-title">1. Déterminer le volume d'intersection entre Fournisseur 1 et Fournisseur 2 ($8x = 6x + 36$) :</div>
+            <div class="input-row">
+              <input type="text" inputmode="decimal" class="cma-input" id="ex3_1_1" placeholder="Votre résultat...">
+              <span class="input-unit">tubes</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx3_1_1()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex3-1-1"></div>
+          </div>
+
+          <div class="q-item" id="qitem-3-1-2">
+            <div class="q-title">2. Déterminer le volume d'intersection entre Fournisseur 2 et Fournisseur 3 ($6x + 36 = 5x + 60$) :</div>
+            <div class="input-row">
+              <input type="text" inputmode="decimal" class="cma-input" id="ex3_1_2" placeholder="Votre résultat...">
+              <span class="input-unit">tubes</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx3_1_2()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex3-1-2"></div>
+          </div>
+
+          <div class="q-item" id="qitem-3-1-3">
+            <div class="q-title">3. Pour une grosse commande de 50 tubes ($x \ge 40$), quel est le fournisseur le plus économique ?</div>
+            <div class="input-row">
+              <input type="text" class="cma-input" id="ex3_1_3" placeholder="Fournisseur 1, 2 ou 3 ?">
+              <button class="btn btn-primary btn-sm" onclick="checkEx3_1_3()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex3-1-3"></div>
+          </div>
+        </div>
+
+        <!-- Ex 3.2 -->
+        <div class="exercise-box locked-exercise" id="exbox-3-2">
+          <div class="exercise-meta">
+            <span>Exercice 3.2 / 3.3</span>
+            <span class="badge-tag tag-expert">Expert / Excellence</span>
+          </div>
+          <h4 style="color: var(--cma-bordeaux); margin-bottom: 8px;">
+            <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+            Contrat d'énergie EDF Réunion (Option Base vs Heures Creuses)
+          </h4>
+          <p style="font-size: 0.92rem; margin-bottom: 12px;">
+            • Option Base : $B(x) = 0,22x + 180$<br>
+            • Option Heures Creuses : $H(x) = 0,18x + 240$
+          </p>
+
+          <div class="q-item" id="qitem-3-2-1">
+            <div class="q-title">1. Résoudre $0,22x + 180 = 0,18x + 240$ pour trouver le seuil de consommation annuelle en kWh :</div>
+            <div class="input-row">
+              <input type="text" inputmode="decimal" class="cma-input" id="ex3_2_1" placeholder="Votre résultat...">
+              <span class="input-unit">kWh</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx3_2_1()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex3-2-1"></div>
+          </div>
+
+          <div class="q-item" id="qitem-3-2-2">
+            <div class="q-title">2. Pour 3 000 kWh/an consommés à Sainte-Clotilde, calculer l'économie annuelle réalisée avec l'Option Heures Creuses :</div>
+            <div class="input-row">
+              <span class="input-unit">Économie de :</span>
+              <input type="text" inputmode="decimal" class="cma-input" id="ex3_2_2" placeholder="Votre résultat...">
+              <span class="input-unit">€ / an</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx3_2_2()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex3-2-2"></div>
+          </div>
+        </div>
+
+        <!-- Ex 3.3 -->
+        <div class="exercise-box locked-exercise" id="exbox-3-3">
+          <div class="exercise-meta">
+            <span>Exercice 3.3 / 3.3</span>
+            <span class="badge-tag tag-expert">Expert / Excellence</span>
+          </div>
+          <h4 style="color: var(--cma-bordeaux); margin-bottom: 8px;">
+            <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+            Automatisation sous tableur et test conditionnel d'arbitrage
+          </h4>
+          <p style="font-size: 0.92rem; margin-bottom: 12px;">
+            B1: Quantité $x$ | B2: Prix unit. A ($a_1$) | B3: Frais A ($b_1$) | B4: Prix unit. B ($a_2$) | B5: Frais B ($b_2$).
+          </p>
+
+          <div class="q-item" id="qitem-3-3-1">
+            <div class="q-title">1. Écrire la formule tableur de la cellule B6 pour le coût total du Fournisseur A :</div>
+            <div class="input-row">
+              <input type="text" class="cma-input" id="ex3_3_1" placeholder="Ex: =B1*B2+B3">
+              <button class="btn btn-primary btn-sm" onclick="checkEx3_3_1()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex3-3-1"></div>
+          </div>
+
+          <div class="q-item" id="qitem-3-3-2">
+            <div class="q-title">2. Écrire la formule de la cellule B7 pour le Fournisseur B :</div>
+            <div class="input-row">
+              <input type="text" class="cma-input" id="ex3_3_2" placeholder="Ex: =B1*B4+B5">
+              <button class="btn btn-primary btn-sm" onclick="checkEx3_3_2()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex3-3-2"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ================= ÉVALUATION FORMELLE ================= -->
+      <div id="container-lvl-eval" style="display: none;">
+        <div class="card" style="border-left: 5px solid var(--cma-bordeaux);">
+          <div class="exercise-meta">
+            <span style="font-size: 1rem; color: var(--cma-bordeaux);">Évaluation Formelle Étudiant (15-20 min)</span>
+            <span class="badge-tag tag-cap">Barème : /7 pts</span>
+          </div>
+          <h4 style="color: var(--cma-bordeaux); margin-bottom: 8px;">
+            <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+            Arbitrage tarifaire entre deux grossistes en salon d'application
+          </h4>
+          <p style="font-size: 0.92rem; margin-bottom: 12px;">
+            Pour l'achat de bidons de shampooing volumateur de 1 L à Sainte-Clotilde :<br>
+            • <strong>Proposition 1 (Bourbon Beauté) :</strong> 15,00 € par litre, sans frais de livraison : $f(x) = 15x$<br>
+            • <strong>Proposition 2 (Alizés Pro) :</strong> 10,00 € par litre, avec un forfait fixe d'expédition de 35,00 € : $g(x) = 10x + 35$
+          </p>
+
+          <!-- Eval Q1 -->
+          <div class="q-item" id="qitem-eval-1">
+            <div class="q-title">1. [C1 - S'informer] Donner la nature de $f$ et de $g$ (linéaire ou affine). (1 pt)</div>
+            <div class="input-row">
+              <span class="input-unit">f est :</span>
+              <input type="text" class="cma-input" id="eval_1_f" placeholder="linéaire / affine">
+              <span class="input-unit">, g est :</span>
+              <input type="text" class="cma-input" id="eval_1_g" placeholder="linéaire / affine">
+              <button class="btn btn-primary btn-sm" onclick="checkEval1()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-eval-1"></div>
+          </div>
+
+          <!-- Eval Q2 -->
+          <div class="q-item" id="qitem-eval-2">
+            <div class="q-title">2. [C2 - Exécuter] Calculer le coût pour $x = 4$ litres avec Proposition 1 puis Proposition 2. (1,5 pt)</div>
+            <div class="input-row">
+              <span class="input-unit">Prop. 1 :</span>
+              <input type="text" inputmode="decimal" class="cma-input" id="eval_2_p1" placeholder="Votre résultat..." style="max-width: 90px;">
+              <span class="input-unit">€. Prop. 2 :</span>
+              <input type="text" inputmode="decimal" class="cma-input" id="eval_2_p2" placeholder="Votre résultat..." style="max-width: 90px;">
+              <span class="input-unit">€</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEval2()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-eval-2"></div>
+          </div>
+
+          <!-- Eval Q3 -->
+          <div class="q-item" id="qitem-eval-3">
+            <div class="q-title">3. [C2 - Exécuter] Résoudre $15x = 10x + 35$. En déduire le volume d'équilibre $x_0$. (2 pts)</div>
+            <div class="input-row">
+              <span class="input-unit">$x_0 =$</span>
+              <input type="text" inputmode="decimal" class="cma-input" id="eval_3_x0" placeholder="Votre résultat...">
+              <span class="input-unit">litres</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEval3()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-eval-3"></div>
+          </div>
+
+          <!-- Eval Q4 -->
+          <div class="q-item" id="qitem-eval-4">
+            <div class="q-title">4. [C2 - Exécuter] Calculer le montant commun facturé $y_0$ pour ce volume d'équilibre. (1 pt)</div>
+            <div class="input-row">
+              <span class="input-unit">$y_0 =$</span>
+              <input type="text" inputmode="decimal" class="cma-input" id="eval_4_y0" placeholder="Votre résultat...">
+              <span class="input-unit">€</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEval4()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-eval-4"></div>
+          </div>
+
+          <!-- Eval Q5 -->
+          <div class="q-item" id="qitem-eval-5">
+            <div class="q-title">5. [C4 - Communiquer] Pour 12 L commandés au trimestre : déterminer la proposition la plus avantageuse et l'économie réalisée. (1,5 pt)</div>
+            <div class="input-row">
+              <span class="input-unit">La plus avantageuse :</span>
+              <input type="text" class="cma-input" id="eval_5_choice" placeholder="Prop. 1 ou 2 ?">
+              <span class="input-unit">Économie de :</span>
+              <input type="text" inputmode="decimal" class="cma-input" id="eval_5_saving" placeholder="Votre résultat..." style="max-width: 90px;">
+              <span class="input-unit">€</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEval5()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-eval-5"></div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ========================================== -->
+    <!-- ÉTAPE 4 — BILAN ET ATTESTATION OFFICIELLE  -->
+    <!-- ========================================== -->
+    <section id="step-4" class="step-section">
+      <div class="card no-print">
+        <h2 class="card-title">
+          <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+          Bilan de compétences & Attestation officielle CMA Formation
+        </h2>
+        <p style="font-size: 0.93rem; color: var(--cma-text-muted); margin-bottom: 12px;">
+          Félicitations pour vos calculs et vos analyses économiques ! Renseignez votre identité ci-dessous pour éditer ou imprimer votre attestation officielle de compétences.
+        </p>
+
+        <div style="margin-bottom: 14px;">
+          <label style="display: block; font-weight: 600; font-size: 0.92rem; margin-bottom: 6px;">
+            Nom et Prénom de l'apprenant(e) :
+          </label>
+          <div class="input-row">
+            <input type="text" class="cma-input" id="learnerNameInput" placeholder="Ex: Lucas MOREL" oninput="updateLearnerName(this.value)">
+            <button class="btn btn-corail" onclick="window.print()">
+              🖨️ Imprimer / PDF
+            </button>
+          </div>
+        </div>
+
+        <div class="badge-collection">
+          <div class="cma-badge" id="badge-cap">
+            <span>🎓</span>
+            <span>Maître de l'Intersection Tarifaire (Socle CAP)</span>
+          </div>
+          <div class="cma-badge locked" id="badge-bonus">
+            <span>⭐</span>
+            <span>Gestionnaire Achat & Coiffure Pro</span>
+          </div>
+          <div class="cma-badge locked" id="badge-expert">
+            <span>🏆</span>
+            <span>Expert Négociation & Énergie Solaire</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Attestation officielle imprimable -->
+      <div class="attestation-wrapper" id="attestationPrintArea">
+        <div class="attestation-header">
+          <img src="logo.png" alt="Logo CMA Formation" class="att-logo" onerror="this.src='https://placehold.co/120x48/A50F23/ffffff?text=CMA+Formation'">
+          <div>
+            <h2 class="attestation-title">Attestation Pédagogique de Réussite</h2>
+            <div class="attestation-subtitle">CMA Formation de Sainte-Clotilde • Île de La Réunion</div>
+          </div>
+        </div>
+
+        <div class="attestation-body">
+          <p>La direction pédagogique et le pôle Mathématiques-Sciences attestent que l'apprenant(e) :</p>
+          <p style="text-align: center; margin: 12px 0;">
+            <span class="att-learner-name" id="displayLearnerName">APPRENANT(E) EN FORMATION</span>
+          </p>
+          <p>
+            a suivi avec succès les activités numériques et validé les compétences de modélisation de tarifs et de résolution d'équations en mathématiques appliquées aux métiers de l'artisanat.
+          </p>
+
+          <div class="att-grid-details">
+            <div>
+              <strong>Séance :</strong> S5 M2 - Comparaison de deux tarifs (Intersections)<br>
+              <strong>Diplôme :</strong> CAP Métiers de la Coiffure (Gr. 1)<br>
+              <strong>Date d'évaluation :</strong> <span id="attestationDate"></span>
+            </div>
+            <div>
+              <strong>Socle CAP validé :</strong> <span id="attSocleScore" style="color: var(--cma-bordeaux); font-weight: bold;">0%</span><br>
+              <strong>Dépassement / Bonus :</strong> <span id="attBonusScore" style="color: var(--cma-corail); font-weight: bold;">0 pts</span><br>
+              <strong>Statut :</strong> <span id="attStatus" style="font-weight: bold;">En cours d'acquisition</span>
+            </div>
+          </div>
+
+          <p style="font-size: 0.88rem; color: var(--cma-text-muted); margin-top: 10px;">
+            <strong>Compétences attestées :</strong> C1 (Identifier les variables d'un tarif linéaire ou affine), C2 (Résoudre algébriquement une équation $ax+b=cx+d$), C3 (Repérer les coordonnées de l'intersection de droites et identifier la zone avantageuse), C4 (Formuler une préconisation économique pour optimiser les achats d'un salon).
+          </p>
+        </div>
+
+        <div class="att-footer">
+          <div style="font-size: 0.8rem; color: var(--cma-text-muted);">
+            Attestation pédagogique de réussite de séance • Document numérique authentifié
+          </div>
+          <div class="att-signature">
+            <div>Formatrice Référente Mathématiques & Sciences :</div>
+            <div class="att-signature-name">Rachel Lamberet-Lezais</div>
+            <div style="font-size: 0.78rem; color: var(--cma-text-muted);">CMA Formation Sainte-Clotilde</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    /* État de l'application */
+    const appState = {
+      currentStep: 1,
+      learnerName: "APPRENANT(E) EN FORMATION",
+      lvl1: {
+        '1-1-1': false, '1-1-2': false, '1-1-3': false,
+        '1-2-1': false, '1-2-2': false,
+        '1-3-1': false, '1-3-2': false, '1-3-3': false,
+        '1-4-1': false, '1-4-2': false, '1-4-3': false,
+        '1-5-1': false, '1-5-2': false
+      },
+      lvl2: {
+        '2-1-1': false, '2-1-2': false, '2-1-3': false,
+        '2-2-1': false, '2-2-2': false, '2-2-3': false,
+        '2-3-1': false, '2-3-2': false,
+        '2-4-1': false, '2-4-2': false
+      },
+      lvl3: {
+        '3-1-1': false, '3-1-2': false, '3-1-3': false,
+        '3-2-1': false, '3-2-2': false,
+        '3-3-1': false, '3-3-2': false
+      },
+      eval: {
+        'eval-1': false, 'eval-2': false, 'eval-3': false,
+        'eval-4': false, 'eval-5': false
+      },
+      unlockedLvl2: false,
+      unlockedLvl3: false
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const today = new Date();
+      const options = { day: 'numeric', month: 'long', year: 'numeric' };
+      document.getElementById('attestationDate').textContent = today.toLocaleDateString('fr-FR', options);
+
+      initDiscoveryCanvas();
+      initSimCanvas();
+      updateProgressBar();
+    });
+
+    function switchStep(stepNumber) {
+      appState.currentStep = stepNumber;
+      for (let i = 1; i <= 4; i++) {
+        const tab = document.getElementById(`tab-step-${i}`);
+        const sec = document.getElementById(`step-${i}`);
+        if (tab && sec) {
+          if (i === stepNumber) {
+            tab.classList.add('active');
+            tab.setAttribute('aria-selected', 'true');
+            sec.classList.add('active');
+          } else {
+            tab.classList.remove('active');
+            tab.setAttribute('aria-selected', 'false');
+            sec.classList.remove('active');
+          }
+        }
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      if (stepNumber === 1) resizeDiscoveryCanvas();
+      if (stepNumber === 2) resizeSimCanvas();
+
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise();
+      }
+    }
+
+    function toggleAccordion(header) {
+      header.parentElement.classList.toggle('open');
+    }
+
+    function updateLearnerName(val) {
+      const trimmed = val.trim();
+      const display = document.getElementById('displayLearnerName');
+      if (trimmed.length > 0) {
+        display.textContent = trimmed.toUpperCase();
+        appState.learnerName = trimmed;
+      } else {
+        display.textContent = "APPRENANT(E) EN FORMATION";
+        appState.learnerName = "APPRENANT(E) EN FORMATION";
+      }
+    }
+
+    function parseInputNumber(valStr) {
+      if (!valStr) return null;
+      const clean = valStr.toString().trim().replace(',', '.');
+      const num = parseFloat(clean);
+      return isNaN(num) ? null : num;
+    }
+
+    function setFeedback(elemId, type, message) {
+      const fb = document.getElementById(elemId);
+      if (!fb) return;
+      fb.className = `feedback-box ${type}`;
+      fb.innerHTML = message;
+    }
+
+    function alertModal(msg) {
+      const existing = document.getElementById('cma-custom-dialog');
+      if (existing) existing.remove();
+
+      const dialog = document.createElement('div');
+      dialog.id = 'cma-custom-dialog';
+      dialog.style.position = 'fixed';
+      dialog.style.top = '0';
+      dialog.style.left = '0';
+      dialog.style.width = '100vw';
+      dialog.style.height = '100vh';
+      dialog.style.backgroundColor = 'rgba(0, 0, 0, 0.4)';
+      dialog.style.display = 'flex';
+      dialog.style.alignItems = 'center';
+      dialog.style.justifyContent = 'center';
+      dialog.style.zIndex = '9999';
+      dialog.style.padding = '16px';
+
+      dialog.innerHTML = `
+        <div style="background: white; border-radius: 12px; max-width: 380px; width: 100%; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); border-left: 6px solid #A50F23;">
+          <h3 style="color: #A50F23; margin-bottom: 10px; font-size: 1.1rem;">Information CMA Formation</h3>
+          <p style="font-size: 0.95rem; color: #1E293B; line-height: 1.5; margin-bottom: 16px;">${msg}</p>
+          <div style="text-align: right;">
+            <button class="btn btn-primary btn-sm" onclick="document.getElementById('cma-custom-dialog').remove()">D'accord</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(dialog);
+    }
+
+    function updateProgressBar() {
+      const totalL1 = Object.keys(appState.lvl1).length;
+      let countL1 = 0;
+      for (const k in appState.lvl1) if (appState.lvl1[k]) countL1++;
+
+      const pctCap = Math.round((countL1 / totalL1) * 100);
+      document.getElementById('capProgressDisplay').textContent = `${pctCap}%`;
+      document.getElementById('attSocleScore').textContent = `${pctCap}%`;
+
+      if (pctCap >= 100 && !appState.unlockedLvl2) {
+        appState.unlockedLvl2 = true;
+        document.getElementById('header-lvl-2').classList.remove('locked');
+        document.getElementById('lvl2-status').textContent = 'Disponible !';
+        document.getElementById('lvl1-status').textContent = '✅ Validé (100%)';
+        document.getElementById('badge-cap').classList.add('unlocked');
+        document.getElementById('attStatus').textContent = 'Admis au Socle CAP avec Félicitations';
+        document.getElementById('attStatus').style.color = 'var(--cma-success)';
+      }
+
+      let bonus = 0;
+      for (const k in appState.lvl2) if (appState.lvl2[k]) bonus += 10;
+      for (const k in appState.lvl3) if (appState.lvl3[k]) bonus += 20;
+
+      document.getElementById('bonusScoreDisplay').textContent = `+${bonus} pts`;
+      document.getElementById('attBonusScore').textContent = `+${bonus} pts`;
+
+      const totalL2 = Object.keys(appState.lvl2).length;
+      let countL2 = 0;
+      for (const k in appState.lvl2) if (appState.lvl2[k]) countL2++;
+
+      if (countL2 === totalL2 && !appState.unlockedLvl3) {
+        appState.unlockedLvl3 = true;
+        document.getElementById('header-lvl-3').classList.remove('locked');
+        document.getElementById('lvl3-status').textContent = 'Disponible !';
+        document.getElementById('lvl2-status').textContent = '✅ Validé (Bonus max)';
+        document.getElementById('badge-bonus').classList.remove('locked');
+        document.getElementById('badge-bonus').classList.add('unlocked');
+      }
+
+      const totalL3 = Object.keys(appState.lvl3).length;
+      let countL3 = 0;
+      for (const k in appState.lvl3) if (appState.lvl3[k]) countL3++;
+
+      if (countL3 === totalL3) {
+        document.getElementById('lvl3-status').textContent = '✅ Maîtrise totale !';
+        document.getElementById('badge-expert').classList.remove('locked');
+        document.getElementById('badge-expert').classList.add('unlocked');
+      }
+
+      const globalPct = Math.min(100, Math.round((countL1 + countL2 + countL3) / (totalL1 + totalL2 + totalL3) * 100));
+      document.getElementById('globalProgressBar').style.width = `${globalPct}%`;
+    }
+
+    function selectLevelTab(lvl) {
+      if (lvl === 2 && !appState.unlockedLvl2) {
+        alertModal("Le Niveau 2 🟡 est verrouillé. Vous devez d'abord compléter l'ensemble des exercices du Niveau 1 🟢 (Socle CAP) !");
+        return;
+      }
+      if (lvl === 3 && !appState.unlockedLvl3) {
+        alertModal("Le Niveau 3 🔴 est verrouillé. Vous devez d'abord réussir l'ensemble des défis du Niveau 2 🟡 !");
+        return;
+      }
+
+      const headers = ['header-lvl-1', 'header-lvl-2', 'header-lvl-3', 'header-lvl-eval'];
+      const containers = ['container-lvl-1', 'container-lvl-2', 'container-lvl-3', 'container-lvl-eval'];
+
+      headers.forEach((hId, index) => {
+        const hElem = document.getElementById(hId);
+        const cElem = document.getElementById(containers[index]);
+        if (hElem && cElem) {
+          if (index + 1 === lvl) {
+            hElem.classList.add('active-level');
+            cElem.style.display = 'block';
+          } else {
+            hElem.classList.remove('active-level');
+            cElem.style.display = 'none';
+          }
+        }
+      });
+    }
+
+    /* ================= DÉCOUVERTE ================= */
+    function checkQ1() {
+      const p = parseInputNumber(document.getElementById('q1_price').value);
+      const n = document.getElementById('q1_nature').value.trim().toLowerCase();
+      if (p === null || !n) { setFeedback('fb-q1', 'hint', 'Renseignez le prix et la nature.'); return; }
+      if (Math.abs(p - 12) < 0.1 && n.includes('lin')) {
+        setFeedback('fb-q1', 'correct', 'Exact ! 12,00 € par litre. f(x) = 12x est une fonction linéaire (proportionnalité sans frais fixes).');
+        document.getElementById('block-q1').classList.add('completed');
+      } else {
+        setFeedback('fb-q1', 'incorrect', 'Le prix est de 12 € et la droite passe par l\'origine : fonction linéaire.');
+      }
+    }
+
+    function checkQ2() {
+      const f = parseInputNumber(document.getElementById('q2_fixed').value);
+      const n = document.getElementById('q2_nature').value.trim().toLowerCase();
+      if (f === null || !n) { setFeedback('fb-q2', 'hint', 'Renseignez les frais fixes et la nature.'); return; }
+      if (Math.abs(f - 40) < 0.1 && n.includes('aff')) {
+        setFeedback('fb-q2', 'correct', 'Exact ! Frais fixes de 40,00 €. g(x) = 8x + 40 est une fonction affine.');
+        document.getElementById('block-q2').classList.add('completed');
+      } else {
+        setFeedback('fb-q2', 'incorrect', 'Les frais fixes sont de 40 € et g(x) a une ordonnée à l\'origine : fonction affine.');
+      }
+    }
+
+    function checkQ3() {
+      const v10 = parseInputNumber(document.getElementById('q3_10').value);
+      const v20 = parseInputNumber(document.getElementById('q3_20').value);
+      if (v10 === null || v20 === null) { setFeedback('fb-q3', 'hint', 'Calculez les deux montants.'); return; }
+      if (Math.abs(v10 - 120) < 0.1 && Math.abs(v20 - 240) < 0.1) {
+        setFeedback('fb-q3', 'correct', 'Parfait ! f(10) = 12 × 10 = 120 € et f(20) = 12 × 20 = 240 €.');
+        document.getElementById('tbl-f-10').textContent = '120,00 €';
+        document.getElementById('tbl-f-20').textContent = '240,00 €';
+        document.getElementById('block-q3').classList.add('completed');
+      } else {
+        setFeedback('fb-q3', 'incorrect', 'Pour f(x) = 12x : calculez 12 × 10 puis 12 × 20.');
+      }
+    }
+
+    function checkQ4() {
+      const v10 = parseInputNumber(document.getElementById('q4_10').value);
+      const v20 = parseInputNumber(document.getElementById('q4_20').value);
+      if (v10 === null || v20 === null) { setFeedback('fb-q4', 'hint', 'Calculez les deux montants.'); return; }
+      if (Math.abs(v10 - 120) < 0.1 && Math.abs(v20 - 200) < 0.1) {
+        setFeedback('fb-q4', 'correct', 'Bravo ! g(10) = 8 × 10 + 40 = 120 € et g(20) = 8 × 20 + 40 = 200 €.');
+        document.getElementById('tbl-g-10').textContent = '120,00 €';
+        document.getElementById('tbl-g-20').textContent = '200,00 €';
+        document.getElementById('block-q4').classList.add('completed');
+      } else {
+        setFeedback('fb-q4', 'incorrect', 'Pour g(x) = 8x + 40 : calculez 8(10) + 40 puis 8(20) + 40.');
+      }
+    }
+
+    function checkQ5() {
+      const x0 = parseInputNumber(document.getElementById('q5_x0').value);
+      const c = parseInputNumber(document.getElementById('q5_cost').value);
+      if (x0 === null || c === null) { setFeedback('fb-q5', 'hint', 'Remplissez le volume et le montant.'); return; }
+      if (Math.abs(x0 - 10) < 0.1 && Math.abs(c - 120) < 0.1) {
+        setFeedback('fb-q5', 'correct', 'Exact ! 12x - 8x = 40 => 4x = 40 => x0 = 10 L. Coût commun : 120 €.');
+        document.getElementById('block-q5').classList.add('completed');
+      } else {
+        setFeedback('fb-q5', 'incorrect', '12x - 8x = 40 => 4x = 40 => x = 10 L. Puis calculez 12 × 10.');
+      }
+    }
+
+    function checkQ6() {
+      const x = parseInputNumber(document.getElementById('q6_xi').value);
+      const y = parseInputNumber(document.getElementById('q6_yi').value);
+      if (x === null || y === null) { setFeedback('fb-q6', 'hint', 'Remplissez les deux coordonnées.'); return; }
+      if (Math.abs(x - 10) < 0.2 && Math.abs(y - 120) < 0.2) {
+        setFeedback('fb-q6', 'correct', 'Très bien ! Les droites se coupent au point I(10 ; 120).');
+        document.getElementById('block-q6').classList.add('completed');
+      } else {
+        setFeedback('fb-q6', 'incorrect', 'Observez l\'intersection des droites sur le graphique : abscisse 10, ordonnée 120.');
+      }
+    }
+
+    function checkQ7() {
+      const l = document.getElementById('q7_less').value.trim().toUpperCase();
+      const m = document.getElementById('q7_more').value.trim().toUpperCase();
+      if (!l || !m) { setFeedback('fb-q7', 'hint', 'Indiquez Fournisseur A ou B.'); return; }
+      if (l.includes('A') && m.includes('B')) {
+        setFeedback('fb-q7', 'correct', 'Excellente recommandation ! Choisir Fournisseur A en dessous de 10 L, et Fournisseur B au-dessus de 10 L.');
+        document.getElementById('block-q7').classList.add('completed');
+      } else {
+        setFeedback('fb-q7', 'incorrect', 'Pour x < 10, le Fournisseur A est moins cher (pas de frais fixes). Pour x > 10, le Fournisseur B est plus économique.');
+      }
+    }
+
+    /* ================= NIVEAU 1 ================= */
+    function checkEx1_1_1() {
+      const a = parseInputNumber(document.getElementById('ex1_1_1_a').value);
+      const b = parseInputNumber(document.getElementById('ex1_1_1_b').value);
+      if (a === null || b === null) { setFeedback('fb-ex1-1-1', 'hint', 'Calculez pour les deux formules.'); return; }
+      if (Math.abs(a - 75) < 0.1 && Math.abs(b - 95) < 0.1) {
+        setFeedback('fb-ex1-1-1', 'correct', 'Exact : Formule 1 = 25 × 3 = 75 € ; Formule 2 = 15 × 3 + 50 = 95 €.');
+        appState.lvl1['1-1-1'] = true;
+        document.getElementById('qitem-1-1-1').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex1-1-1', 'incorrect', 'f(3) = 25 × 3 = 75 € et g(3) = 15 × 3 + 50 = 95 €.'); }
+    }
+
+    function checkEx1_1_2() {
+      const a = parseInputNumber(document.getElementById('ex1_1_2_a').value);
+      const b = parseInputNumber(document.getElementById('ex1_1_2_b').value);
+      if (a === null || b === null) { setFeedback('fb-ex1-1-2', 'hint', 'Calculez pour les deux formules.'); return; }
+      if (Math.abs(a - 125) < 0.1 && Math.abs(b - 125) < 0.1) {
+        setFeedback('fb-ex1-1-2', 'correct', 'Exact ! Pour 5 cartons, les deux formules coûtent 125 € (point d\'équilibre).');
+        appState.lvl1['1-1-2'] = true;
+        document.getElementById('qitem-1-1-2').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex1-1-2', 'incorrect', '25 × 5 = 125 € et 15 × 5 + 50 = 125 €.'); }
+    }
+
+    function checkEx1_1_3() {
+      const a = parseInputNumber(document.getElementById('ex1_1_3_a').value);
+      const b = parseInputNumber(document.getElementById('ex1_1_3_b').value);
+      const c = document.getElementById('ex1_1_3_c').value.trim();
+      if (a === null || b === null || !c) { setFeedback('fb-ex1-1-3', 'hint', 'Remplissez les 3 champs.'); return; }
+      if (Math.abs(a - 200) < 0.1 && Math.abs(b - 170) < 0.1 && (c.includes('2') || c.toLowerCase().includes('deux'))) {
+        setFeedback('fb-ex1-1-3', 'correct', 'Bravo ! Formule 1 = 200 € vs Formule 2 = 170 €. La formule 2 est la plus avantageuse.');
+        appState.lvl1['1-1-3'] = true;
+        document.getElementById('qitem-1-1-3').classList.add('completed');
+        document.getElementById('exbox-1-2').classList.remove('locked-exercise');
+        updateProgressBar();
+      } else { setFeedback('fb-ex1-1-3', 'incorrect', '25 × 8 = 200 € et 15 × 8 + 50 = 170 €. 170 € < 200 €, c\'est la Formule 2.'); }
+    }
+
+    function checkEx1_2_1() {
+      const v = parseInputNumber(document.getElementById('ex1_2_1').value);
+      if (v === null) { setFeedback('fb-ex1-2-1', 'hint', 'Entrez le résultat de 25 - 15.'); return; }
+      if (Math.abs(v - 10) < 0.1) {
+        setFeedback('fb-ex1-2-1', 'correct', 'Exact : 25x - 15x = 10x.');
+        appState.lvl1['1-2-1'] = true;
+        document.getElementById('qitem-1-2-1').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex1-2-1', 'incorrect', '25 - 15 = 10.'); }
+    }
+
+    function checkEx1_2_2() {
+      const v = parseInputNumber(document.getElementById('ex1_2_2').value);
+      if (v === null) { setFeedback('fb-ex1-2-2', 'hint', 'Calculez 50 / 10.'); return; }
+      if (Math.abs(v - 5) < 0.1) {
+        setFeedback('fb-ex1-2-2', 'correct', 'Exact : x = 50 / 10 = 5 cartons.');
+        appState.lvl1['1-2-2'] = true;
+        document.getElementById('qitem-1-2-2').classList.add('completed');
+        document.getElementById('exbox-1-3').classList.remove('locked-exercise');
+        updateProgressBar();
+      } else { setFeedback('fb-ex1-2-2', 'incorrect', '50 divisé par 10 donne 5 cartons.'); }
+    }
+
+    function checkEx1_3_1() {
+      const v = parseInputNumber(document.getElementById('ex1_3_1').value);
+      if (v === null) { setFeedback('fb-ex1-3-1', 'hint', 'Entrez l\'abscisse.'); return; }
+      if (Math.abs(v - 20) < 0.1) {
+        setFeedback('fb-ex1-3-1', 'correct', 'Exact : abscisse = 20 peignoirs.');
+        appState.lvl1['1-3-1'] = true;
+        document.getElementById('qitem-1-3-1').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex1-3-1', 'incorrect', 'L\'abscisse de I(20 ; 300) est 20.'); }
+    }
+
+    function checkEx1_3_2() {
+      const v = parseInputNumber(document.getElementById('ex1_3_2').value);
+      if (v === null) { setFeedback('fb-ex1-3-2', 'hint', 'Entrez l\'ordonnée.'); return; }
+      if (Math.abs(v - 300) < 0.1) {
+        setFeedback('fb-ex1-3-2', 'correct', 'Exact : ordonnée = 300 €.');
+        appState.lvl1['1-3-2'] = true;
+        document.getElementById('qitem-1-3-2').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex1-3-2', 'incorrect', 'L\'ordonnée de I(20 ; 300) est 300.'); }
+    }
+
+    function checkEx1_3_3() {
+      const t = document.getElementById('ex1_3_3').value.trim().toLowerCase();
+      if (!t) { setFeedback('fb-ex1-3-3', 'hint', 'Tapez « égaux » ou « identiques ».'); return; }
+      if (t.includes('ég') || t.includes('id') || t.includes('mêm')) {
+        setFeedback('fb-ex1-3-3', 'correct', 'Exact : les deux tarifs sont égaux (coût identique de 300 €).');
+        appState.lvl1['1-3-3'] = true;
+        document.getElementById('qitem-1-3-3').classList.add('completed');
+        document.getElementById('exbox-1-4').classList.remove('locked-exercise');
+        updateProgressBar();
+      } else { setFeedback('fb-ex1-3-3', 'incorrect', 'Au point d\'intersection, les tarifs sont identiques (égaux).'); }
+    }
+
+    function checkEx1_4_1() {
+      const v = parseInputNumber(document.getElementById('ex1_4_1').value);
+      if (v === null) { setFeedback('fb-ex1-4-1', 'hint', 'Entrez le prix au flacon.'); return; }
+      if (Math.abs(v - 6) < 0.1) {
+        setFeedback('fb-ex1-4-1', 'correct', 'Exact : f(x) = 6x.');
+        appState.lvl1['1-4-1'] = true;
+        document.getElementById('qitem-1-4-1').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex1-4-1', 'incorrect', 'Le prix unitaire du grossiste A est de 6,00 €.'); }
+    }
+
+    function checkEx1_4_2() {
+      const a = parseInputNumber(document.getElementById('ex1_4_2_a').value);
+      const b = parseInputNumber(document.getElementById('ex1_4_2_b').value);
+      if (a === null || b === null) { setFeedback('fb-ex1-4-2', 'hint', 'Entrez les deux coefficients.'); return; }
+      if (Math.abs(a - 4.5) < 0.1 && Math.abs(b - 15) < 0.1) {
+        setFeedback('fb-ex1-4-2', 'correct', 'Exact : g(x) = 4,5x + 15.');
+        appState.lvl1['1-4-2'] = true;
+        document.getElementById('qitem-1-4-2').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex1-4-2', 'incorrect', 'Prix unitaire 4,50 € et forfait port 15,00 €.'); }
+    }
+
+    function checkEx1_4_3() {
+      const t = document.getElementById('ex1_4_3').value.trim().toUpperCase();
+      if (!t) { setFeedback('fb-ex1-4-3', 'hint', 'Tapez Grossiste A ou B.'); return; }
+      if (t.includes('A') && !t.includes('B')) {
+        setFeedback('fb-ex1-4-3', 'correct', 'Bravo ! Le tarif A est linéaire (pas de frais fixes).');
+        appState.lvl1['1-4-3'] = true;
+        document.getElementById('qitem-1-4-3').classList.add('completed');
+        document.getElementById('exbox-1-5').classList.remove('locked-exercise');
+        updateProgressBar();
+      } else { setFeedback('fb-ex1-4-3', 'incorrect', 'C\'est le Grossiste A car sa fonction f(x) = 6x est de la forme ax (linéaire).'); }
+    }
+
+    function checkEx1_5_1() {
+      const t = document.getElementById('ex1_5_1').value.trim().toLowerCase();
+      if (!t) { setFeedback('fb-ex1-5-1', 'hint', 'Indiquez d1 ou d2.'); return; }
+      if (t.includes('rouge') || t.includes('d1') || t.includes('1')) {
+        setFeedback('fb-ex1-5-1', 'correct', 'Exact : la droite d1 (rouge) est située en dessous pour x < 12 L.');
+        appState.lvl1['1-5-1'] = true;
+        document.getElementById('qitem-1-5-1').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex1-5-1', 'incorrect', 'Pour x = 8 < 12, la droite d1 (rouge) est en dessous, c\'est donc le tarif rouge.'); }
+    }
+
+    function checkEx1_5_2() {
+      const t = document.getElementById('ex1_5_2').value.trim().toLowerCase();
+      if (!t) { setFeedback('fb-ex1-5-2', 'hint', 'Indiquez d1 ou d2.'); return; }
+      if (t.includes('bleu') || t.includes('d2') || t.includes('2')) {
+        setFeedback('fb-ex1-5-2', 'correct', 'Parfait ! Pour 18 L, la droite d2 (bleue) est en dessous. SOCLE CAP VALIDÉ À 100% !');
+        appState.lvl1['1-5-2'] = true;
+        document.getElementById('qitem-1-5-2').classList.add('completed');
+        updateProgressBar();
+        alertModal("Félicitations ! Vous avez validé l'intégralité du Niveau 1 🟢 (Socle CAP à 100%). Votre Attestation Officielle CMA Formation est débloquée et le Niveau 2 🟡 est accessible !");
+      } else { setFeedback('fb-ex1-5-2', 'incorrect', 'Pour x = 18 > 12, la droite d2 (bleue) est en dessous.'); }
+    }
+
+    /* ================= NIVEAU 2 ================= */
+    function checkEx2_1_1() {
+      const v = parseInputNumber(document.getElementById('ex2_1_1').value);
+      if (v === null) { setFeedback('fb-ex2_1_1', 'hint', 'Résolvez 9x - 6,5x = 30.'); return; }
+      if (Math.abs(v - 12) < 0.1) {
+        setFeedback('fb-ex2_1_1', 'correct', 'Exact : 2,5x = 30 => x = 12 flacons.');
+        appState.lvl2['2-1-1'] = true;
+        document.getElementById('qitem-2-1-1').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex2_1_1', 'incorrect', '9x - 6,5x = 2,5x => 30 / 2,5 = 12.'); }
+    }
+
+    function checkEx2_1_2() {
+      const v = parseInputNumber(document.getElementById('ex2_1_2').value);
+      if (v === null) { setFeedback('fb-ex2_1_2', 'hint', 'Calculez 9 × 12.'); return; }
+      if (Math.abs(v - 108) < 0.1) {
+        setFeedback('fb-ex2_1_2', 'correct', 'Exact : montant = 9 × 12 = 108,00 €.');
+        appState.lvl2['2-1-2'] = true;
+        document.getElementById('qitem-2-1-2').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex2_1_2', 'incorrect', '9 × 12 = 108 €.'); }
+    }
+
+    function checkEx2_1_3() {
+      const v = parseInputNumber(document.getElementById('ex2_1_3').value);
+      if (v === null) { setFeedback('fb-ex2_1_3', 'hint', 'Calculez f(20) - g(20).'); return; }
+      if (Math.abs(v - 20) < 0.1) {
+        setFeedback('fb-ex2_1_3', 'correct', 'Exact : Réunion Beauté = 180 € vs Mascareignes = 160 €. Économie = 20 € avec Mascareignes Pro !');
+        appState.lvl2['2-1-3'] = true;
+        document.getElementById('qitem-2-1-3').classList.add('completed');
+        document.getElementById('exbox-2-2').classList.remove('locked-exercise');
+        updateProgressBar();
+      } else { setFeedback('fb-ex2_1_3', 'incorrect', 'f(20) = 180 € et g(20) = 6,5(20)+30 = 160 €. Économie : 180 - 160 = 20 €.'); }
+    }
+
+    function checkEx2_2_1() {
+      const v = parseInputNumber(document.getElementById('ex2_2_1').value);
+      if (v === null) { setFeedback('fb-ex2_2_1', 'hint', 'Résolvez 50x - 30x = 120.'); return; }
+      if (Math.abs(v - 6) < 0.1) {
+        setFeedback('fb-ex2_2_1', 'correct', 'Exact : 20x = 120 => x = 6 mois.');
+        appState.lvl2['2-2-1'] = true;
+        document.getElementById('qitem-2-2-1').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex2_2_1', 'incorrect', '20x = 120 => x = 6.'); }
+    }
+
+    function checkEx2_2_2() {
+      const v = parseInputNumber(document.getElementById('ex2_2_2').value);
+      if (v === null) { setFeedback('fb-ex2_2_2', 'hint', 'Calculez 50 × 6.'); return; }
+      if (Math.abs(v - 300) < 0.1) {
+        setFeedback('fb-ex2_2_2', 'correct', 'Exact : coût = 300 € (Point I(6 ; 300)).');
+        appState.lvl2['2-2-2'] = true;
+        document.getElementById('qitem-2-2-2').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex2_2_2', 'incorrect', '50 × 6 = 300 €.'); }
+    }
+
+    function checkEx2_2_3() {
+      const t = document.getElementById('ex2_2_3').value.trim().toUpperCase();
+      if (!t) { setFeedback('fb-ex2_2_3', 'hint', 'Option A ou Option B ?'); return; }
+      if (t.includes('B')) {
+        setFeedback('fb-ex2_2_3', 'correct', 'Exact ! Pour 8 mois (> 6 mois), l\'Option B est plus avantageuse (360 € contre 400 €).');
+        appState.lvl2['2-2-3'] = true;
+        document.getElementById('qitem-2-2-3').classList.add('completed');
+        document.getElementById('exbox-2-3').classList.remove('locked-exercise');
+        updateProgressBar();
+      } else { setFeedback('fb-ex2_2_3', 'incorrect', 'Pour x = 8 mois > 6 mois, c\'est l\'Option B qui est la plus économique.'); }
+    }
+
+    function checkEx2_3_1() {
+      const v = parseInputNumber(document.getElementById('ex2_3_1').value);
+      if (v === null) { setFeedback('fb-ex2_3_1', 'hint', 'Résolvez 0,50x = 25.'); return; }
+      if (Math.abs(v - 50) < 0.1) {
+        setFeedback('fb-ex2_3_1', 'correct', 'Exact : 0,50x = 25 => x = 50 réservations.');
+        appState.lvl2['2-3-1'] = true;
+        document.getElementById('qitem-2-3-1').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex2_3_1', 'incorrect', '0,80 - 0,30 = 0,50 => 25 / 0,50 = 50.'); }
+    }
+
+    function checkEx2_3_2() {
+      const v = parseInputNumber(document.getElementById('ex2_3_2').value);
+      if (v === null) { setFeedback('fb-ex2_3_2', 'hint', 'Entrez le nombre entier.'); return; }
+      if (Math.abs(v - 51) < 0.1) {
+        setFeedback('fb-ex2_3_2', 'correct', 'Bravo ! À 50 c\'est égal, donc dès 51 réservations Plan-Beauté devient plus rentable.');
+        appState.lvl2['2-3-2'] = true;
+        document.getElementById('qitem-2-3-2').classList.add('completed');
+        document.getElementById('exbox-2-4').classList.remove('locked-exercise');
+        updateProgressBar();
+      } else { setFeedback('fb-ex2_3_2', 'incorrect', 'Le seuil strict étant à 50, c\'est à partir de 51 réservations.'); }
+    }
+
+    function checkEx2_4_1() {
+      const v = parseInputNumber(document.getElementById('ex2_4_1').value);
+      if (v === null) { setFeedback('fb-ex2_4_1', 'hint', 'Résolvez 14x - 8x = 48.'); return; }
+      if (Math.abs(v - 8) < 0.1) {
+        setFeedback('fb-ex2_4_1', 'correct', 'Exact : 6x = 48 => x = 8 paires de ciseaux.');
+        appState.lvl2['2-4-1'] = true;
+        document.getElementById('qitem-2-4-1').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex2_4_1', 'incorrect', '6x = 48 => 48 / 6 = 8.'); }
+    }
+
+    function checkEx2_4_2() {
+      const t = document.getElementById('ex2_4_2').value.trim().toLowerCase();
+      if (!t) { setFeedback('fb-ex2_4_2', 'hint', 'Standard ou Contrat Annuel ?'); return; }
+      if (t.includes('contrat') || t.includes('annuel') || t.includes('c(')) {
+        setFeedback('fb-ex2_4_2', 'correct', 'Bravo ! Contrat Annuel (128 € contre 140 €). NIVEAU 2 PLEINEMENT VALIDÉ !');
+        appState.lvl2['2-4-2'] = true;
+        document.getElementById('qitem-2-4-2').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex2_4_2', 'incorrect', 'Pour 10 paires (> 8), le Contrat Annuel coûte 128 € contre 140 €.'); }
+    }
+
+    /* ================= NIVEAU 3 ================= */
+    function checkEx3_1_1() {
+      const v = parseInputNumber(document.getElementById('ex3_1_1').value);
+      if (v === null) { setFeedback('fb-ex3_1_1', 'hint', 'Résolvez 8x = 6x + 36.'); return; }
+      if (Math.abs(v - 18) < 0.1) {
+        setFeedback('fb-ex3_1_1', 'correct', 'Exact : 2x = 36 => x = 18 tubes.');
+        appState.lvl3['3-1-1'] = true;
+        document.getElementById('qitem-3-1-1').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex3_1_1', 'incorrect', '2x = 36 => x = 18.'); }
+    }
+
+    function checkEx3_1_2() {
+      const v = parseInputNumber(document.getElementById('ex3_1_2').value);
+      if (v === null) { setFeedback('fb-ex3_1_2', 'hint', 'Résolvez 6x + 36 = 5x + 60.'); return; }
+      if (Math.abs(v - 24) < 0.1) {
+        setFeedback('fb-ex3_1_2', 'correct', 'Exact : x = 60 - 36 = 24 tubes.');
+        appState.lvl3['3-1-2'] = true;
+        document.getElementById('qitem-3-1-2').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex3_1_2', 'incorrect', '6x - 5x = 60 - 36 => x = 24.'); }
+    }
+
+    function checkEx3_1_3() {
+      const t = document.getElementById('ex3_1_3').value.trim();
+      if (!t) { setFeedback('fb-ex3_1_3', 'hint', 'Fournisseur 1, 2 ou 3 ?'); return; }
+      if (t.includes('3') || t.toLowerCase().includes('trois')) {
+        setFeedback('fb-ex3_1_3', 'correct', 'Exact : Fournisseur 3 (50 × 5 = 250 € grâce à la gratuité des frais de port !).');
+        appState.lvl3['3-1-3'] = true;
+        document.getElementById('qitem-3-1-3').classList.add('completed');
+        document.getElementById('exbox-3-2').classList.remove('locked-exercise');
+        updateProgressBar();
+      } else { setFeedback('fb-ex3_1_3', 'incorrect', 'Dès 40 tubes, le Fournisseur 3 facture seulement 5 €/tube sans frais.'); }
+    }
+
+    function checkEx3_2_1() {
+      const v = parseInputNumber(document.getElementById('ex3_2_1').value);
+      if (v === null) { setFeedback('fb-ex3_2_1', 'hint', 'Résolvez 0,04x = 60.'); return; }
+      if (Math.abs(v - 1500) < 1) {
+        setFeedback('fb-ex3_2_1', 'correct', 'Exact : 0,04x = 60 => x = 1 500 kWh par an.');
+        appState.lvl3['3-2-1'] = true;
+        document.getElementById('qitem-3-2-1').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex3_2_1', 'incorrect', '0,22 - 0,18 = 0,04 => 60 / 0,04 = 1 500 kWh.'); }
+    }
+
+    function checkEx3_2_2() {
+      const v = parseInputNumber(document.getElementById('ex3_2_2').value);
+      if (v === null) { setFeedback('fb-ex3_2_2', 'hint', 'Calculez B(3000) - H(3000).'); return; }
+      if (Math.abs(v - 60) < 0.1) {
+        setFeedback('fb-ex3_2_2', 'correct', 'Bravo ! Option Base = 840 € vs HC = 780 €. Économie : 60,00 € par an.');
+        appState.lvl3['3-2-2'] = true;
+        document.getElementById('qitem-3-2-2').classList.add('completed');
+        document.getElementById('exbox-3-3').classList.remove('locked-exercise');
+        updateProgressBar();
+      } else { setFeedback('fb-ex3_2_2', 'incorrect', 'Base : 0,22(3000)+180 = 840 € ; HC : 0,18(3000)+240 = 780 €. 840 - 780 = 60 €.'); }
+    }
+
+    function checkEx3_3_1() {
+      const t = document.getElementById('ex3_3_1').value.trim().toUpperCase().replace(/\s+/g, '');
+      if (!t) { setFeedback('fb-ex3_3_1', 'hint', 'Formule tableur avec signe ='); return; }
+      if (t === '=B1*B2+B3' || t === '=B2*B1+B3' || t === '=(B1*B2)+B3') {
+        setFeedback('fb-ex3_3_1', 'correct', 'Exact : =B1*B2+B3.');
+        appState.lvl3['3-3-1'] = true;
+        document.getElementById('qitem-3-3-1').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex3_3_1', 'incorrect', 'La formule est =B1*B2+B3.'); }
+    }
+
+    function checkEx3_3_2() {
+      const t = document.getElementById('ex3_3_2').value.trim().toUpperCase().replace(/\s+/g, '');
+      if (!t) { setFeedback('fb-ex3_3_2', 'hint', 'Formule tableur avec signe ='); return; }
+      if (t === '=B1*B4+B5' || t === '=B4*B1+B5' || t === '=(B1*B4)+B5') {
+        setFeedback('fb-ex3_3_2', 'correct', 'Bravo ! =B1*B4+B5. NIVEAU 3 EXPERT COMPLÉTÉ À 100% !');
+        appState.lvl3['3-3-2'] = true;
+        document.getElementById('qitem-3-3-2').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex3_3_2', 'incorrect', 'La formule est =B1*B4+B5.'); }
+    }
+
+    /* ================= ÉVALUATION ================= */
+    function checkEval1() {
+      const f = document.getElementById('eval_1_f').value.trim().toLowerCase();
+      const g = document.getElementById('eval_1_g').value.trim().toLowerCase();
+      if (!f || !g) { setFeedback('fb-eval-1', 'hint', 'Renseignez les deux natures.'); return; }
+      if (f.includes('lin') && g.includes('aff')) {
+        setFeedback('fb-eval-1', 'correct', 'Correct (1/1 pt) : f est linéaire et g est affine.');
+        document.getElementById('qitem-eval-1').classList.add('completed');
+      } else { setFeedback('fb-eval-1', 'incorrect', 'f(x)=15x est linéaire (sans constante) et g(x)=10x+35 est affine.'); }
+    }
+
+    function checkEval2() {
+      const p1 = parseInputNumber(document.getElementById('eval_2_p1').value);
+      const p2 = parseInputNumber(document.getElementById('eval_2_p2').value);
+      if (p1 === null || p2 === null) { setFeedback('fb-eval-2', 'hint', 'Calculez les deux montants.'); return; }
+      if (Math.abs(p1 - 60) < 0.1 && Math.abs(p2 - 75) < 0.1) {
+        setFeedback('fb-eval-2', 'correct', 'Correct (1,5/1,5 pt) : f(4) = 60 € et g(4) = 75 €.');
+        document.getElementById('qitem-eval-2').classList.add('completed');
+      } else { setFeedback('fb-eval-2', 'incorrect', '15 × 4 = 60 € et 10 × 4 + 35 = 75 €.'); }
+    }
+
+    function checkEval3() {
+      const v = parseInputNumber(document.getElementById('eval_3_x0').value);
+      if (v === null) { setFeedback('fb-eval-3', 'hint', 'Résolvez 5x = 35.'); return; }
+      if (Math.abs(v - 7) < 0.1) {
+        setFeedback('fb-eval-3', 'correct', 'Correct (2/2 pts) : 15x - 10x = 35 => 5x = 35 => x0 = 7 litres.');
+        document.getElementById('qitem-eval-3').classList.add('completed');
+      } else { setFeedback('fb-eval-3', 'incorrect', '15x - 10x = 5x => 35 / 5 = 7 litres.'); }
+    }
+
+    function checkEval4() {
+      const v = parseInputNumber(document.getElementById('eval_4_y0').value);
+      if (v === null) { setFeedback('fb-eval-4', 'hint', 'Calculez 15 × 7.'); return; }
+      if (Math.abs(v - 105) < 0.1) {
+        setFeedback('fb-eval-4', 'correct', 'Correct (1/1 pt) : y0 = 15 × 7 = 105 €.');
+        document.getElementById('qitem-eval-4').classList.add('completed');
+      } else { setFeedback('fb-eval-4', 'incorrect', '15 × 7 = 105 €.'); }
+    }
+
+    function checkEval5() {
+      const c = document.getElementById('eval_5_choice').value.trim().toUpperCase();
+      const s = parseInputNumber(document.getElementById('eval_5_saving').value);
+      if (!c || s === null) { setFeedback('fb-eval-5', 'hint', 'Indiquez la proposition et l\'économie.'); return; }
+      if ((c.includes('2') || c.includes('ALIZ')) && Math.abs(s - 25) < 0.1) {
+        setFeedback('fb-eval-5', 'correct', 'Excellent (1,5/1,5 pt) ! Proposition 2 retenue (155 € contre 180 €) avec une économie de 25,00 €.');
+        document.getElementById('qitem-eval-5').classList.add('completed');
+      } else { setFeedback('fb-eval-5', 'incorrect', 'Pour 12 L (> 7 L) : Prop. 1 = 180 € ; Prop. 2 = 120 + 35 = 155 €. Économie = 25 €.'); }
+    }
+
+    /* ================= CANVAS 1 : DÉCOUVERTE ================= */
+    const discCanvas = document.getElementById('discoveryCanvas');
+    const discCtx = discCanvas.getContext('2d');
+    let discHoverX = 10;
+
+    function initDiscoveryCanvas() {
+      resizeDiscoveryCanvas();
+      window.addEventListener('resize', resizeDiscoveryCanvas);
+      discCanvas.addEventListener('mousemove', (e) => handleCanvasInput(e, discCanvas, false));
+      discCanvas.addEventListener('touchmove', (e) => handleCanvasInput(e, discCanvas, true), { passive: true });
+    }
+
+    function handleCanvasInput(e, canvas, isTouch) {
+      const rect = canvas.getBoundingClientRect();
+      const clientX = isTouch ? e.touches[0].clientX : e.clientX;
+      const xPixel = clientX - rect.left;
+      const padL = 46;
+      const plotW = rect.width - padL - 24;
+      if (plotW <= 0) return;
+
+      let xVal = ((xPixel - padL) / plotW) * 20;
+      xVal = Math.max(0, Math.min(20, xVal));
+      discHoverX = Math.round(xVal * 10) / 10;
+      drawDiscoveryPlot();
+    }
+
+    function resizeDiscoveryCanvas() {
+      if (!discCanvas) return;
+      discCanvas.width = discCanvas.parentElement.getBoundingClientRect().width;
+      discCanvas.height = discCanvas.parentElement.getBoundingClientRect().height;
+      drawDiscoveryPlot();
+    }
+
+    function drawDiscoveryPlot() {
+      if (!discCanvas) return;
+      const w = discCanvas.width;
+      const h = discCanvas.height;
+      discCtx.clearRect(0, 0, w, h);
+
+      const padL = 48, padR = 24, padT = 24, padB = 34;
+      const plotW = w - padL - padR;
+      const plotH = h - padT - padB;
+
+      // Échelles : x de 0 à 20 L, y de 0 à 260 €
+      const xToPx = (x) => padL + (x / 20) * plotW;
+      const yToPx = (y) => padT + (1 - (y / 260)) * plotH;
+
+      // Grille
+      discCtx.strokeStyle = '#E2E8F0';
+      discCtx.lineWidth = 1;
+
+      for (let y = 0; y <= 260; y += 40) {
+        const py = yToPx(y);
+        discCtx.beginPath();
+        discCtx.moveTo(padL, py);
+        discCtx.lineTo(w - padR, py);
+        discCtx.stroke();
+
+        discCtx.fillStyle = '#64748B';
+        discCtx.font = '11px Arial';
+        discCtx.textAlign = 'right';
+        discCtx.fillText(y + ' €', padL - 6, py + 4);
+      }
+
+      for (let x = 0; x <= 20; x += 5) {
+        const px = xToPx(x);
+        discCtx.beginPath();
+        discCtx.moveTo(px, padT);
+        discCtx.lineTo(px, h - padB);
+        discCtx.stroke();
+
+        discCtx.fillStyle = '#64748B';
+        discCtx.font = '11px Arial';
+        discCtx.textAlign = 'center';
+        discCtx.fillText(x + ' L', px, h - padB + 16);
+      }
+
+      // Droite d1 (Fournisseur A : f(x) = 12x)
+      discCtx.beginPath();
+      discCtx.strokeStyle = '#0284C7';
+      discCtx.lineWidth = 3;
+      discCtx.moveTo(xToPx(0), yToPx(0));
+      discCtx.lineTo(xToPx(20), yToPx(12 * 20));
+      discCtx.stroke();
+
+      // Droite d2 (Fournisseur B : g(x) = 8x + 40)
+      discCtx.beginPath();
+      discCtx.strokeStyle = '#D97706';
+      discCtx.lineWidth = 3;
+      discCtx.moveTo(xToPx(0), yToPx(40));
+      discCtx.lineTo(xToPx(20), yToPx(8 * 20 + 40));
+      discCtx.stroke();
+
+      // Point d'intersection I(10 ; 120)
+      const ix = xToPx(10);
+      const iy = yToPx(120);
+
+      discCtx.strokeStyle = '#94A3B8';
+      discCtx.lineWidth = 1.5;
+      discCtx.setLineDash([3, 3]);
+
+      discCtx.beginPath();
+      discCtx.moveTo(ix, iy);
+      discCtx.lineTo(ix, h - padB);
+      discCtx.stroke();
+
+      discCtx.beginPath();
+      discCtx.moveTo(ix, iy);
+      discCtx.lineTo(padL, iy);
+      discCtx.stroke();
+      discCtx.setLineDash([]);
+
+      discCtx.fillStyle = '#A50F23';
+      discCtx.beginPath();
+      discCtx.arc(ix, iy, 6, 0, Math.PI * 2);
+      discCtx.fill();
+      discCtx.strokeStyle = '#FFFFFF';
+      discCtx.lineWidth = 2;
+      discCtx.stroke();
+
+      discCtx.fillStyle = '#A50F23';
+      discCtx.font = 'bold 12px Arial';
+      discCtx.textAlign = 'left';
+      discCtx.fillText('  I(10 L ; 120 €)', ix + 4, iy - 6);
+
+      // Curseur interactif
+      const cx = xToPx(discHoverX);
+      const cyA = yToPx(12 * discHoverX);
+      const cyB = yToPx(8 * discHoverX + 40);
+
+      discCtx.fillStyle = '#0284C7';
+      discCtx.beginPath();
+      discCtx.arc(cx, cyA, 5, 0, Math.PI * 2);
+      discCtx.fill();
+
+      discCtx.fillStyle = '#D97706';
+      discCtx.beginPath();
+      discCtx.arc(cx, cyB, 5, 0, Math.PI * 2);
+      discCtx.fill();
+    }
+
+    /* ================= CANVAS 2 : SIMULATEUR ================= */
+    const simCanvas = document.getElementById('simCanvas');
+    const simCtx = simCanvas.getContext('2d');
+
+    const sA1 = document.getElementById('sim-a1');
+    const sA2 = document.getElementById('sim-a2');
+    const sB2 = document.getElementById('sim-b2');
+
+    function initSimCanvas() {
+      resizeSimCanvas();
+      window.addEventListener('resize', resizeSimCanvas);
+      sA1.addEventListener('input', updateSimView);
+      sA2.addEventListener('input', updateSimView);
+      sB2.addEventListener('input', updateSimView);
+    }
+
+    function resizeSimCanvas() {
+      if (!simCanvas) return;
+      simCanvas.width = simCanvas.parentElement.getBoundingClientRect().width;
+      simCanvas.height = simCanvas.parentElement.getBoundingClientRect().height;
+      drawSimPlot();
+    }
+
+    function updateSimView() {
+      const a1 = parseFloat(sA1.value);
+      const a2 = parseFloat(sA2.value);
+      const b2 = parseFloat(sB2.value);
+
+      document.getElementById('lbl-a1').textContent = a1.toFixed(2) + ' €/L';
+      document.getElementById('lbl-a2').textContent = a2.toFixed(2) + ' €/L';
+      document.getElementById('lbl-b2').textContent = b2.toFixed(2) + ' €';
+
+      if (a1 !== a2) {
+        const x0 = b2 / (a1 - a2);
+        const y0 = a1 * x0;
+        if (x0 > 0 && x0 <= 30) {
+          document.getElementById('stat-pt-i').textContent = `I(${x0.toFixed(1)} L ; ${y0.toFixed(1)} €)`;
+          document.getElementById('stat-decision').textContent = `A si < ${x0.toFixed(1)} L | B si > ${x0.toFixed(1)} L`;
+        } else {
+          document.getElementById('stat-pt-i').textContent = 'Hors repère';
+          document.getElementById('stat-decision').textContent = a1 < a2 ? 'Fournisseur A toujours moins cher' : 'Fournisseur B toujours moins cher';
+        }
+      } else {
+        document.getElementById('stat-pt-i').textContent = 'Droites parallèles';
+        document.getElementById('stat-decision').textContent = 'Fournisseur A toujours moins cher';
+      }
+
+      drawSimPlot();
+    }
+
+    function drawSimPlot() {
+      if (!simCanvas) return;
+      const w = simCanvas.width;
+      const h = simCanvas.height;
+      simCtx.clearRect(0, 0, w, h);
+
+      const a1 = parseFloat(sA1.value);
+      const a2 = parseFloat(sA2.value);
+      const b2 = parseFloat(sB2.value);
+
+      const padL = 48, padR = 24, padT = 24, padB = 34;
+      const plotW = w - padL - padR;
+      const plotH = h - padT - padB;
+
+      const xToPx = (x) => padL + (x / 25) * plotW;
+      const yToPx = (y) => padT + (1 - (y / 320)) * plotH;
+
+      // Grille
+      simCtx.strokeStyle = '#E2E8F0';
+      simCtx.lineWidth = 1;
+
+      for (let y = 0; y <= 320; y += 40) {
+        const py = yToPx(y);
+        simCtx.beginPath();
+        simCtx.moveTo(padL, py);
+        simCtx.lineTo(w - padR, py);
+        simCtx.stroke();
+
+        simCtx.fillStyle = '#64748B';
+        simCtx.font = '11px Arial';
+        simCtx.textAlign = 'right';
+        simCtx.fillText(y + ' €', padL - 6, py + 4);
+      }
+
+      for (let x = 0; x <= 25; x += 5) {
+        const px = xToPx(x);
+        simCtx.beginPath();
+        simCtx.moveTo(px, padT);
+        simCtx.lineTo(px, h - padB);
+        simCtx.stroke();
+
+        simCtx.fillStyle = '#64748B';
+        simCtx.font = '11px Arial';
+        simCtx.textAlign = 'center';
+        simCtx.fillText(x + ' L', px, h - padB + 16);
+      }
+
+      // Droite A
+      simCtx.beginPath();
+      simCtx.strokeStyle = '#0284C7';
+      simCtx.lineWidth = 3;
+      simCtx.moveTo(xToPx(0), yToPx(0));
+      simCtx.lineTo(xToPx(25), yToPx(a1 * 25));
+      simCtx.stroke();
+
+      // Droite B
+      simCtx.beginPath();
+      simCtx.strokeStyle = '#D97706';
+      simCtx.lineWidth = 3;
+      simCtx.moveTo(xToPx(0), yToPx(b2));
+      simCtx.lineTo(xToPx(25), yToPx(a2 * 25 + b2));
+      simCtx.stroke();
+
+      // Intersection
+      if (a1 !== a2) {
+        const x0 = b2 / (a1 - a2);
+        const y0 = a1 * x0;
+        if (x0 >= 0 && x0 <= 25 && y0 <= 320) {
+          const ix = xToPx(x0);
+          const iy = yToPx(y0);
+
+          simCtx.strokeStyle = '#94A3B8';
+          simCtx.lineWidth = 1.5;
+          simCtx.setLineDash([3, 3]);
+
+          simCtx.beginPath();
+          simCtx.moveTo(ix, iy);
+          simCtx.lineTo(ix, h - padB);
+          simCtx.stroke();
+
+          simCtx.beginPath();
+          simCtx.moveTo(ix, iy);
+          simCtx.lineTo(padL, iy);
+          simCtx.stroke();
+          simCtx.setLineDash([]);
+
+          simCtx.fillStyle = '#A50F23';
+          simCtx.beginPath();
+          simCtx.arc(ix, iy, 6, 0, Math.PI * 2);
+          simCtx.fill();
+          simCtx.strokeStyle = '#FFFFFF';
+          simCtx.lineWidth = 2;
+          simCtx.stroke();
+
+          simCtx.fillStyle = '#A50F23';
+          simCtx.font = 'bold 12px Arial';
+          simCtx.textAlign = 'left';
+          simCtx.fillText(`  I(${x0.toFixed(1)} L ; ${y0.toFixed(0)} €)`, ix + 4, iy - 6);
+        }
+      }
+    }
+  </script>
+</body>
+</html>

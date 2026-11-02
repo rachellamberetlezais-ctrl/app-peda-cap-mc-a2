@@ -1,0 +1,2913 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>S5 M1 - Fonctions : Lecture graphique d'optimum | CMA Formation Sainte-Clotilde</title>
+  
+  <!-- Configuration MathJax v3 -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      },
+      options: {
+        enableMenu: false
+      }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <style>
+    /* Charte graphique officielle CMA Formation */
+    :root {
+      --cma-bordeaux: #A50F23;
+      --cma-bordeaux-dark: #7F0B1A;
+      --cma-corail: #EE3C3D;
+      --cma-corail-light: #FDE8E8;
+      --cma-bg: #F8FAFC;
+      --cma-card-bg: #FFFFFF;
+      --cma-text: #1E293B;
+      --cma-text-muted: #64748B;
+      --cma-border: #E2E8F0;
+      --cma-success: #16A34A;
+      --cma-success-bg: #DCFCE7;
+      --cma-warning: #D97706;
+      --cma-warning-bg: #FEF3C7;
+      --radius: 12px;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+      --shadow-md: 0 4px 12px rgba(165, 15, 35, 0.08);
+      --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: var(--cma-bg);
+      color: var(--cma-text);
+      line-height: 1.5;
+      font-size: 15px;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* Puce rouge CMA */
+    .icon-bullet {
+      height: 18px;
+      width: 18px;
+      object-fit: contain;
+      display: inline-block;
+      vertical-align: middle;
+      flex-shrink: 0;
+      margin-right: 8px;
+    }
+
+    /* Header CMA et ruban vague */
+    .app-header {
+      position: relative;
+      overflow: hidden;
+      padding: 16px 16px 24px 16px;
+      background: linear-gradient(135deg, #FFFFFF 0%, #FFF5F5 100%);
+      border-bottom: 1px solid var(--cma-border);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .header-content {
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .app-logo {
+      height: 48px;
+      width: auto;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+
+    .header-titles {
+      flex: 1;
+    }
+
+    .header-titles h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--cma-bordeaux);
+      line-height: 1.25;
+    }
+
+    .header-titles p {
+      font-size: 0.82rem;
+      color: var(--cma-text-muted);
+      margin-top: 3px;
+    }
+
+    .cma-wave-border {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: auto;
+      height: 14px;
+      margin: 0;
+      border: 0;
+      background-image: url("ruban_vague.png");
+      background-repeat: repeat-x;
+      background-size: 102.941176px 102.941176px;
+      background-position: left -46.941176px;
+    }
+
+    /* Barre de progression compacte de 8 px */
+    .progress-track {
+      width: 100%;
+      height: 8px;
+      background-color: #E2E8F0;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--cma-corail) 0%, var(--cma-bordeaux) 100%);
+      transition: width 0.4s ease;
+    }
+
+    /* Navigation tactile et mobile-first */
+    .nav-container {
+      max-width: 960px;
+      margin: 12px auto 6px auto;
+      padding: 0 12px;
+      width: 100%;
+    }
+
+    .nav-tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .nav-tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .nav-btn {
+      flex: 1 0 auto;
+      min-height: 44px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      border: 1.5px solid var(--cma-border);
+      background: #FFFFFF;
+      color: var(--cma-text);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .nav-btn:hover {
+      border-color: var(--cma-corail);
+      color: var(--cma-bordeaux);
+    }
+
+    .nav-btn.active {
+      background: var(--cma-bordeaux);
+      color: #FFFFFF;
+      border-color: var(--cma-bordeaux);
+      box-shadow: 0 2px 8px rgba(165, 15, 35, 0.3);
+    }
+
+    /* Conteneur principal */
+    .main-container {
+      max-width: 960px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 12px 14px 40px 14px;
+      flex: 1;
+    }
+
+    /* Sections */
+    .step-section {
+      display: none;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .step-section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Cartes */
+    .card {
+      background: var(--cma-card-bg);
+      border-radius: var(--radius);
+      border: 1px solid var(--cma-border);
+      padding: 18px 16px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .card-title {
+      font-size: 1.08rem;
+      font-weight: 700;
+      color: var(--cma-bordeaux);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+    }
+
+    .badge-tag {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 999px;
+      margin-left: 8px;
+      letter-spacing: 0.5px;
+    }
+
+    .tag-cap {
+      background: var(--cma-corail-light);
+      color: var(--cma-bordeaux);
+    }
+
+    .tag-bonus {
+      background: #FEF3C7;
+      color: #B45309;
+    }
+
+    .tag-expert {
+      background: #EDE9FE;
+      color: #6D28D9;
+    }
+
+    /* Alertes et mises en avant */
+    .info-callout {
+      background: #F1F5F9;
+      border-left: 4px solid var(--cma-corail);
+      padding: 12px 14px;
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 14px;
+      font-size: 0.93rem;
+    }
+
+    .info-callout strong {
+      color: var(--cma-bordeaux);
+    }
+
+    /* Tableaux interactifs et responsives */
+    .table-scroll {
+      width: 100%;
+      overflow-x: auto;
+      margin: 12px 0;
+      border-radius: 8px;
+      border: 1px solid var(--cma-border);
+    }
+
+    .cma-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: center;
+      font-size: 0.92rem;
+      min-width: 480px;
+    }
+
+    .cma-table th {
+      background: #F8FAFC;
+      color: var(--cma-bordeaux);
+      font-weight: 700;
+      padding: 10px;
+      border-bottom: 2px solid var(--cma-border);
+      border-right: 1px solid var(--cma-border);
+    }
+
+    .cma-table td {
+      padding: 10px;
+      border-bottom: 1px solid var(--cma-border);
+      border-right: 1px solid var(--cma-border);
+      background: #FFFFFF;
+    }
+
+    .cma-table td:last-child, .cma-table th:last-child {
+      border-right: none;
+    }
+
+    /* Formulaires et champs de saisie (Mobile First min 16px font, 44px min height) */
+    .input-group {
+      margin-bottom: 14px;
+    }
+
+    .input-label {
+      display: block;
+      font-weight: 600;
+      font-size: 0.92rem;
+      margin-bottom: 6px;
+      color: var(--cma-text);
+    }
+
+    .input-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .cma-input {
+      font-size: 16px; /* Évite le zoom iOS */
+      height: 44px;
+      padding: 8px 12px;
+      border: 1.5px solid var(--cma-border);
+      border-radius: 8px;
+      color: var(--cma-text);
+      background: #FFFFFF;
+      min-width: 130px;
+      flex: 1;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .cma-input:focus {
+      outline: none;
+      border-color: var(--cma-corail);
+      box-shadow: 0 0 0 3px rgba(238, 60, 61, 0.15);
+    }
+
+    .input-unit {
+      font-weight: 600;
+      color: var(--cma-text-muted);
+      font-size: 0.95rem;
+      white-space: nowrap;
+    }
+
+    .btn {
+      min-height: 44px;
+      min-width: 44px;
+      padding: 10px 18px;
+      border-radius: 8px;
+      border: none;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--cma-bordeaux);
+      color: #FFFFFF;
+    }
+
+    .btn-primary:hover {
+      background: var(--cma-bordeaux-dark);
+    }
+
+    .btn-corail {
+      background: var(--cma-corail);
+      color: #FFFFFF;
+    }
+
+    .btn-corail:hover {
+      background: #D92B2C;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1.5px solid var(--cma-border);
+      color: var(--cma-text);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--cma-bordeaux);
+      color: var(--cma-bordeaux);
+    }
+
+    .btn-sm {
+      min-height: 38px;
+      padding: 6px 14px;
+      font-size: 0.88rem;
+    }
+
+    /* Feedback d'exercice */
+    .feedback-box {
+      margin-top: 10px;
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      display: none;
+      animation: fadeIn 0.25s ease;
+    }
+
+    .feedback-box.correct {
+      display: block;
+      background: var(--cma-success-bg);
+      border: 1px solid var(--cma-success);
+      color: #065F46;
+    }
+
+    .feedback-box.incorrect {
+      display: block;
+      background: #FEE2E2;
+      border: 1px solid #EF4444;
+      color: #991B1B;
+    }
+
+    .feedback-box.hint {
+      display: block;
+      background: var(--cma-warning-bg);
+      border: 1px solid var(--cma-warning);
+      color: #92400E;
+    }
+
+    /* Accordéons pour le cours */
+    .accordion-item {
+      border: 1px solid var(--cma-border);
+      border-radius: 8px;
+      margin-bottom: 10px;
+      overflow: hidden;
+      background: #FFFFFF;
+    }
+
+    .accordion-header {
+      padding: 14px 16px;
+      min-height: 48px;
+      background: #FFFFFF;
+      font-weight: 700;
+      color: var(--cma-bordeaux);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+    }
+
+    .accordion-header:hover {
+      background: #F8FAFC;
+    }
+
+    .accordion-header::after {
+      content: '+';
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: var(--cma-corail);
+      transition: transform 0.2s;
+    }
+
+    .accordion-item.open .accordion-header::after {
+      content: '−';
+    }
+
+    .accordion-body {
+      padding: 14px 16px;
+      border-top: 1px solid var(--cma-border);
+      background: #FDFDFE;
+      display: none;
+      font-size: 0.93rem;
+    }
+
+    .accordion-item.open .accordion-body {
+      display: block;
+    }
+
+    /* Simulateur interactif */
+    .simulator-container {
+      background: #FFFFFF;
+      border-radius: 12px;
+      border: 1px solid var(--cma-border);
+      padding: 14px;
+      margin-bottom: 16px;
+    }
+
+    .canvas-wrapper {
+      position: relative;
+      width: 100%;
+      height: 280px;
+      background: #FAFAFA;
+      border-radius: 8px;
+      border: 1px solid #E2E8F0;
+      overflow: hidden;
+      margin-bottom: 14px;
+      touch-action: none;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .sim-controls {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    @media (min-width: 640px) {
+      .sim-controls {
+        grid-template-columns: 1fr 1fr;
+      }
+      .canvas-wrapper {
+        height: 330px;
+      }
+    }
+
+    .slider-card {
+      background: #F8FAFC;
+      border: 1px solid var(--cma-border);
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.88rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--cma-bordeaux);
+    }
+
+    .sim-range {
+      width: 100%;
+      height: 38px; /* Surface tactile confortable */
+      cursor: pointer;
+    }
+
+    .sim-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .stat-box {
+      background: #FFF5F5;
+      border: 1px solid #FED7D7;
+      border-radius: 8px;
+      padding: 8px 10px;
+      text-align: center;
+    }
+
+    .stat-label {
+      font-size: 0.76rem;
+      color: var(--cma-text-muted);
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .stat-val {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--cma-bordeaux);
+      margin-top: 2px;
+    }
+
+    /* Système de gamification & niveaux séquentiels */
+    .level-header-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #FFFFFF;
+      border: 1.5px solid var(--cma-border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.2s;
+    }
+
+    .level-header-card.active-level {
+      border-color: var(--cma-bordeaux);
+      box-shadow: 0 0 0 2px rgba(165, 15, 35, 0.1);
+    }
+
+    .level-header-card.locked {
+      background: #F1F5F9;
+      opacity: 0.75;
+      cursor: not-allowed;
+    }
+
+    .level-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .level-pill {
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+
+    .pill-l1 { background: #DCFCE7; color: #15803D; }
+    .pill-l2 { background: #FEF3C7; color: #B45309; }
+    .pill-l3 { background: #EDE9FE; color: #6D28D9; }
+
+    .exercise-box {
+      background: #FFFFFF;
+      border: 1.5px solid var(--cma-border);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .exercise-box.locked-exercise {
+      display: none;
+    }
+
+    .exercise-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--cma-text-muted);
+    }
+
+    .q-item {
+      padding: 12px;
+      border-radius: 8px;
+      background: #F8FAFC;
+      border: 1px solid var(--cma-border);
+      margin-bottom: 12px;
+    }
+
+    .q-item.completed {
+      background: #F0FDF4;
+      border-color: #BBF7D0;
+    }
+
+    .q-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 8px;
+      color: var(--cma-text);
+    }
+
+    /* Score and status banner */
+    .score-summary-bar {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .score-chip {
+      background: #FFFFFF;
+      border: 1px solid var(--cma-border);
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .score-chip.cap-primary {
+      border-color: #86EFAC;
+      background: #F0FDF4;
+    }
+
+    .score-chip-title {
+      font-size: 0.74rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--cma-text-muted);
+    }
+
+    .score-chip-value {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--cma-bordeaux);
+      margin-top: 2px;
+    }
+
+    /* Attestation officielle CMA */
+    .attestation-wrapper {
+      background: #FFFFFF;
+      border: 3px double var(--cma-bordeaux);
+      border-radius: 14px;
+      padding: 24px 20px;
+      margin: 16px 0;
+      box-shadow: var(--shadow-md);
+      position: relative;
+    }
+
+    .attestation-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      border-bottom: 2px solid var(--cma-corail);
+      padding-bottom: 14px;
+      margin-bottom: 16px;
+      gap: 10px;
+    }
+
+    .att-logo {
+      max-height: 48px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .attestation-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--cma-bordeaux);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .attestation-subtitle {
+      font-size: 0.88rem;
+      color: var(--cma-text-muted);
+      font-weight: 600;
+    }
+
+    .attestation-body {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: var(--cma-text);
+    }
+
+    .attestation-body strong {
+      color: var(--cma-bordeaux);
+    }
+
+    .att-learner-name {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--cma-bordeaux);
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    .att-grid-details {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin: 16px 0;
+      background: #F8FAFC;
+      border-radius: 8px;
+      padding: 12px;
+      border: 1px solid var(--cma-border);
+    }
+
+    @media (min-width: 600px) {
+      .att-grid-details {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .att-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-top: 20px;
+      padding-top: 14px;
+      border-top: 1px dashed var(--cma-border);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .att-signature {
+      text-align: right;
+      font-size: 0.85rem;
+    }
+
+    .att-signature-name {
+      font-weight: 700;
+      color: var(--cma-bordeaux);
+      margin-top: 4px;
+    }
+
+    /* Badges list */
+    .badge-collection {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 14px 0;
+    }
+
+    .cma-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #FFFFFF;
+      border: 1.5px solid var(--cma-border);
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .cma-badge.unlocked {
+      border-color: #F59E0B;
+      background: #FFFBEB;
+      color: #92400E;
+    }
+
+    .cma-badge.locked {
+      opacity: 0.5;
+      background: #F1F5F9;
+      color: #94A3B8;
+    }
+
+    /* Styles pour l'impression / Enregistrement PDF */
+    @media print {
+      body {
+        background: #FFFFFF;
+        color: #000000;
+      }
+      .app-header, .progress-track, .nav-container, .step-section:not(#step-4), .no-print, .btn, .input-group {
+        display: none !important;
+      }
+      #step-4 {
+        display: block !important;
+      }
+      .main-container {
+        padding: 0;
+        max-width: 100%;
+      }
+      .attestation-wrapper {
+        border: 2px solid #A50F23;
+        box-shadow: none;
+        page-break-inside: avoid;
+        margin: 0;
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header officiel CMA Formation Sainte-Clotilde -->
+  <header class="app-header">
+    <div class="header-content">
+      <img src="logo.png" alt="Logo CMA Formation" class="app-logo" onerror="this.src='https://placehold.co/120x48/A50F23/ffffff?text=CMA+Formation'">
+      <div class="header-titles">
+        <h1>Fonctions : Lecture graphique d'optimum & zones de rentabilité</h1>
+        <p>CAP Métiers de la Coiffure | S5 M1 | CMA Formation Sainte-Clotilde (Rachel Lamberet-Lezais)</p>
+      </div>
+    </div>
+    <!-- Motif officiel ruban vague répété au bord inférieur -->
+    <div class="cma-wave-border"></div>
+  </header>
+
+  <!-- Barre de progression compacte (8 px) -->
+  <div class="progress-track" aria-label="Progression de la séance">
+    <div class="progress-bar-fill" id="globalProgressBar"></div>
+  </div>
+
+  <!-- Barre de navigation tactile Mobile-First -->
+  <div class="nav-container">
+    <nav class="nav-tabs" role="tablist">
+      <button class="nav-btn active" onclick="switchStep(1)" id="tab-step-1" role="tab" aria-selected="true">
+        <span>1.</span> Découverte
+      </button>
+      <button class="nav-btn" onclick="switchStep(2)" id="tab-step-2" role="tab" aria-selected="false">
+        <span>2.</span> Cours & Simulateur
+      </button>
+      <button class="nav-btn" onclick="switchStep(3)" id="tab-step-3" role="tab" aria-selected="false">
+        <span>3.</span> Entraînement
+      </button>
+      <button class="nav-btn" onclick="switchStep(4)" id="tab-step-4" role="tab" aria-selected="false">
+        <span>4.</span> Bilan & Attestation
+      </button>
+    </nav>
+  </div>
+
+  <!-- Contenu principal -->
+  <main class="main-container">
+
+    <!-- ========================================== -->
+    <!-- ÉTAPE 1 — DÉCOUVERTE                      -->
+    <!-- ========================================== -->
+    <section id="step-1" class="step-section active">
+      <div class="card">
+        <h2 class="card-title">
+          <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+          Mise en situation : Salon « L'Atelier Kréol » à Sainte-Clotilde
+        </h2>
+        <div class="info-callout">
+          <strong>Contexte professionnel :</strong> Au salon « L'Atelier Kréol » situé à Sainte-Clotilde, la gérante souhaite ajuster les plannings du personnel du samedi pour répondre efficacement aux fortes variations de fréquentation.<br>
+          Le salon ouvre en continu de <strong>8 h 00 à 18 h 00</strong> (soit une plage d'ouverture de 10 heures).
+        </div>
+        <p style="margin-bottom: 10px;">
+          La caisse enregistreuse a relevé le nombre de clients présents à chaque heure. On modélise ce nombre par la fonction $f$ définie sur $[8 ; 18]$ :
+        </p>
+        <p style="text-align: center; font-size: 1.15rem; font-weight: 700; color: var(--cma-bordeaux); margin: 10px 0;">
+          $$f(x) = -0,5x^2 + 14x - 86$$
+        </p>
+        <p style="font-size: 0.92rem; color: var(--cma-text-muted);">
+          Ce profil montre une montée en matinée, un pic de fréquentation très prononcé à midi (habitudes réunionnaises : soin défrisant ou coiffage express durant la pause), puis une décrue en fin d'après-midi.
+        </p>
+      </div>
+
+      <!-- Tableau de valeurs et Graphe interactif -->
+      <div class="card">
+        <h3 class="card-title">
+          <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+          Tableau de relevé de l'affluence du samedi
+        </h3>
+        <div class="table-scroll">
+          <table class="cma-table">
+            <thead>
+              <tr>
+                <th>Heure $x$</th>
+                <th>8 h</th>
+                <th>10 h</th>
+                <th>12 h</th>
+                <th>14 h</th>
+                <th>16 h</th>
+                <th>18 h</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="font-weight: 600;">$f(x) = -0,5x^2 + 14x - 86$</td>
+                <td>$-0,5(64)+112-86$</td>
+                <td>$-0,5(100)+140-86$</td>
+                <td>$-0,5(144)+168-86$</td>
+                <td><strong>$-0,5(196)+196-86$</strong></td>
+                <td>$-0,5(256)+224-86$</td>
+                <td>$-0,5(324)+252-86$</td>
+              </tr>
+              <tr>
+                <td style="font-weight: 700; color: var(--cma-bordeaux);">Clients $f(x)$</td>
+                <td>2 clients</td>
+                <td>4 clients</td>
+                <td>10 clients</td>
+                <td style="color: var(--cma-corail); font-weight: 800;" id="table-val-14">?</td>
+                <td>10 clients</td>
+                <td>4 clients</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div style="margin-top: 16px;">
+          <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 8px; color: var(--cma-bordeaux);">
+            Courbe représentative $C_f$ sur $[8 ; 18]$ (Relevé caisse & GeoGebra)
+          </h4>
+          <div class="canvas-wrapper">
+            <canvas id="discoveryCanvas"></canvas>
+          </div>
+          <p style="font-size: 0.82rem; color: var(--cma-text-muted); text-align: center;">
+            Touchez ou déplacez le curseur sur le graphique pour explorer l'heure $x$ et le nombre de clients $f(x)$.
+          </p>
+        </div>
+      </div>
+
+      <!-- Questions d'investigation -->
+      <div class="card">
+        <h3 class="card-title">
+          <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+          Questions d'investigation professionnelle
+        </h3>
+        
+        <!-- Q1 -->
+        <div class="q-item" id="block-q1">
+          <div class="q-title">1. [C1 - S'informer] Relever l'heure d'ouverture et l'heure de fermeture du salon (intervalle $[a ; b]$).</div>
+          <div class="input-row">
+            <label class="input-label" style="margin: 0;">De :</label>
+            <input type="text" inputmode="decimal" class="cma-input" id="q1_a" placeholder="Votre résultat..." style="max-width: 90px;">
+            <span class="input-unit">h à</span>
+            <input type="text" inputmode="decimal" class="cma-input" id="q1_b" placeholder="Votre résultat..." style="max-width: 90px;">
+            <span class="input-unit">h</span>
+            <button class="btn btn-primary btn-sm" onclick="checkQ1()">Valider</button>
+          </div>
+          <div class="feedback-box" id="fb-q1"></div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="q-item" id="block-q2">
+          <div class="q-title">2. [C2 - Exécuter] Calculer la valeur de $f(14)$ : nombre de clients attendus à 14 h.</div>
+          <div class="input-row">
+            <input type="text" inputmode="decimal" class="cma-input" id="q2_val" placeholder="Votre résultat...">
+            <span class="input-unit">clients</span>
+            <button class="btn btn-primary btn-sm" onclick="checkQ2()">Valider</button>
+          </div>
+          <div class="feedback-box" id="fb-q2"></div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="q-item" id="block-q3">
+          <div class="q-title">3. [C3 - Appliquer] Relever les coordonnées du sommet $S(x_{\max} ; y_{\max})$ sur la courbe.</div>
+          <div class="input-row">
+            <span class="input-unit">$x_{\max} =$</span>
+            <input type="text" inputmode="decimal" class="cma-input" id="q3_x" placeholder="Votre résultat..." style="max-width: 100px;">
+            <span class="input-unit">h , $y_{\max} =$</span>
+            <input type="text" inputmode="decimal" class="cma-input" id="q3_y" placeholder="Votre résultat..." style="max-width: 100px;">
+            <span class="input-unit">clients</span>
+            <button class="btn btn-primary btn-sm" onclick="checkQ3()">Valider</button>
+          </div>
+          <div class="feedback-box" id="fb-q3"></div>
+        </div>
+
+        <!-- Q4 -->
+        <div class="q-item" id="block-q4">
+          <div class="q-title">4. [C3 - Appliquer] Ce sommet $S$ correspond-il à un maximum ou à un minimum de la fonction ?</div>
+          <div class="input-row">
+            <input type="text" class="cma-input" id="q4_text" placeholder="maximum ou minimum ?">
+            <button class="btn btn-primary btn-sm" onclick="checkQ4()">Valider</button>
+          </div>
+          <div class="feedback-box" id="fb-q4"></div>
+        </div>
+
+        <!-- Q5 -->
+        <div class="q-item" id="block-q5">
+          <div class="q-title">5. [C2 - Exécuter] Décrire le sens de variation : à quelle heure la fréquentation cesse-t-elle de croître pour commencer à décroître ?</div>
+          <div class="input-row">
+            <span class="input-unit">Croissante de 8 h à</span>
+            <input type="text" inputmode="decimal" class="cma-input" id="q5_h" placeholder="Votre résultat..." style="max-width: 90px;">
+            <span class="input-unit">h puis décroissante.</span>
+            <button class="btn btn-primary btn-sm" onclick="checkQ5()">Valider</button>
+          </div>
+          <div class="feedback-box" id="fb-q5"></div>
+        </div>
+
+        <!-- Q6 -->
+        <div class="q-item" id="block-q6">
+          <div class="q-title">6. [C3 - Appliquer] Plage horaire où le salon compte au moins 10 clients ($f(x) \ge 10$) :</div>
+          <div class="input-row">
+            <span class="input-unit">De</span>
+            <input type="text" inputmode="decimal" class="cma-input" id="q6_start" placeholder="Votre résultat..." style="max-width: 90px;">
+            <span class="input-unit">h à</span>
+            <input type="text" inputmode="decimal" class="cma-input" id="q6_end" placeholder="Votre résultat..." style="max-width: 90px;">
+            <span class="input-unit">h</span>
+            <button class="btn btn-primary btn-sm" onclick="checkQ6()">Valider</button>
+          </div>
+          <div class="feedback-box" id="fb-q6"></div>
+        </div>
+
+        <!-- Q7 -->
+        <div class="q-item" id="block-q7">
+          <div class="q-title">7. [C4 - Communiquer] Préconisation pour la gérante : quelle est la tranche d'affluence critique (au moins 10 clients) pendant laquelle aucune pause déjeuner ne doit être prise ?</div>
+          <div class="input-row">
+            <span class="input-unit">Tranche de :</span>
+            <input type="text" inputmode="decimal" class="cma-input" id="q7_start" placeholder="Votre résultat..." style="max-width: 90px;">
+            <span class="input-unit">h à</span>
+            <input type="text" inputmode="decimal" class="cma-input" id="q7_end" placeholder="Votre résultat..." style="max-width: 90px;">
+            <span class="input-unit">h</span>
+            <button class="btn btn-primary btn-sm" onclick="checkQ7()">Valider</button>
+          </div>
+          <div class="feedback-box" id="fb-q7"></div>
+        </div>
+
+        <div style="text-align: right; margin-top: 14px;">
+          <button class="btn btn-corail" onclick="switchStep(2)">Passer au Cours & Simulateur →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- ÉTAPE 2 — COURS ET SIMULATEUR INTERACTIF   -->
+    <!-- ========================================== -->
+    <section id="step-2" class="step-section">
+      <div class="card">
+        <h2 class="card-title">
+          <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+          Synthèse de cours : Extremums et lecture graphique d'optimum
+        </h2>
+        
+        <div class="accordion-item open">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            1. Définition : Notion d'extremum d'une fonction (Optimum)
+          </div>
+          <div class="accordion-body">
+            <p>Soit une fonction $f$ définie sur un intervalle $[a ; b]$, et $C_f$ sa courbe représentative dans un repère orthogonal :</p>
+            <ul style="padding-left: 20px; margin: 8px 0;">
+              <li><strong>Maximum :</strong> On dit que $f$ admet un maximum $M$ en $x_0$ si, pour tout $x$ de l'intervalle, $f(x) \le M$. Le nombre $M$ est la valeur maximale (axe vertical des ordonnées), et $x_0$ est l'antécédent (axe horizontal des abscisses).</li>
+              <li><strong>Minimum :</strong> On dit que $f$ admet un minimum $m$ en $x_0$ si, pour tout $x$ de l'intervalle, $f(x) \ge m$.</li>
+              <li><strong>Optimum :</strong> Désigne soit un maximum (ex : chiffre d'affaires, affluence), soit un minimum (ex : consommation électrique, coût de revient).</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            2. Méthode de lecture graphique d'un extremum
+          </div>
+          <div class="accordion-body">
+            <p>Sur une courbe :</p>
+            <ul style="padding-left: 20px; margin: 8px 0;">
+              <li>Le <strong>maximum</strong> correspond au sommet le plus haut de la courbe (« la crête »).</li>
+              <li>Le <strong>minimum</strong> correspond au point le plus bas de la courbe (« le creux »).</li>
+            </ul>
+            <div class="info-callout" style="margin-top: 10px;">
+              <strong>Règle de projection :</strong><br>
+              1. Pour trouver l'abscisse $x_0$ (l'heure, la quantité) : on projette <em>verticalement</em> sur l'axe horizontal.<br>
+              2. Pour trouver la valeur optimale $f(x_0)$ (le nombre de clientes, le montant en €) : on projette <em>horizontalement</em> sur l'axe vertical.
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <div class="accordion-header" onclick="toggleAccordion(this)">
+            3. Tableau de variations & Résolution de seuils
+          </div>
+          <div class="accordion-body">
+            <p><strong>Tableau de variations :</strong> Il résume les zones où la fonction monte ($\nearrow$ croissante) et descend ($\searrow$ décroissante). L'optimum se situe exactement au changement de sens de variation.</p>
+            <p style="margin-top: 8px;"><strong>Résolution graphique d'inéquations de seuil ($f(x) \ge k$) :</strong></p>
+            <p>Pour trouver les valeurs vérifiant $f(x) \ge k$, on trace la droite horizontale $y = k$. Les solutions sont les abscisses $x$ des points situés sur ou au-dessus de cette droite.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Simulateur interactif dynamique -->
+      <div class="card">
+        <h3 class="card-title">
+          <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+          Simulateur interactif GeoGebra-like : Analyseur d'affluence et de seuil
+        </h3>
+        <p style="font-size: 0.92rem; color: var(--cma-text-muted); margin-bottom: 12px;">
+          Ajustez les curseurs ci-dessous pour observer en temps réel la position du sommet $S(x_{\max} ; y_{\max})$ et la plage horaire où le salon dépasse la droite de seuil $y = k$.
+        </p>
+
+        <div class="simulator-container">
+          <div class="canvas-wrapper">
+            <canvas id="simCanvas"></canvas>
+          </div>
+
+          <div class="sim-controls">
+            <div class="slider-card">
+              <div class="slider-header">
+                <span>Pic d'affluence (Heure $x_0$) :</span>
+                <span id="lbl-param-x0" style="color: var(--cma-bordeaux);">14.0 h</span>
+              </div>
+              <input type="range" class="sim-range" id="sim-x0" min="10" max="16" step="0.5" value="14">
+            </div>
+
+            <div class="slider-card">
+              <div class="slider-header">
+                <span>Capacité maximale (Clients max $y_0$) :</span>
+                <span id="lbl-param-y0" style="color: var(--cma-bordeaux);">12 clients</span>
+              </div>
+              <input type="range" class="sim-range" id="sim-y0" min="8" max="18" step="1" value="12">
+            </div>
+
+            <div class="slider-card" style="grid-column: 1 / -1;">
+              <div class="slider-header">
+                <span>Seuil de renfort du personnel ($y = k$) :</span>
+                <span id="lbl-param-k" style="color: var(--cma-corail);">10 clients</span>
+              </div>
+              <input type="range" class="sim-range" id="sim-k" min="2" max="16" step="0.5" value="10">
+            </div>
+          </div>
+
+          <div class="sim-stats-grid">
+            <div class="stat-box">
+              <div class="stat-label">Sommet Crête $S$</div>
+              <div class="stat-val" id="stat-sommet">S(14.0 ; 12.0)</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-label">Plage $f(x) \ge k$</div>
+              <div class="stat-val" id="stat-seuil">[12.0 h ; 16.0 h]</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="text-align: right; margin-top: 14px;">
+          <button class="btn btn-corail" onclick="switchStep(3)">Accéder aux Entraînements Différenciés →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- ÉTAPE 3 — ENTRAÎNEMENT GAMIFIÉ             -->
+    <!-- ========================================== -->
+    <section id="step-3" class="step-section">
+      
+      <!-- Barre d'état de progression & score -->
+      <div class="score-summary-bar">
+        <div class="score-chip cap-primary">
+          <div class="score-chip-title">Socle CAP (Niveau 1)</div>
+          <div class="score-chip-value" id="capProgressDisplay">0%</div>
+        </div>
+        <div class="score-chip">
+          <div class="score-chip-title">Bonus Élite / Dépassement</div>
+          <div class="score-chip-value" id="bonusScoreDisplay">+0 pts</div>
+        </div>
+      </div>
+
+      <!-- SÉLECTEUR DE NIVEAU ACCORDÉON / BOUTONS -->
+      <div class="level-header-card active-level" id="header-lvl-1" onclick="selectLevelTab(1)">
+        <div class="level-info">
+          <span class="level-pill pill-l1">NIVEAU 1 🟢</span>
+          <div>
+            <div style="font-weight: 700;">Débutant / Socle CAP (5 Exercices)</div>
+            <div style="font-size: 0.78rem; color: var(--cma-text-muted);">Valide 100% du Socle CAP et débloque l'attestation</div>
+          </div>
+        </div>
+        <span id="lvl1-status" style="font-weight: bold; color: var(--cma-bordeaux);">En cours</span>
+      </div>
+
+      <div class="level-header-card locked" id="header-lvl-2" onclick="selectLevelTab(2)">
+        <div class="level-info">
+          <span class="level-pill pill-l2">NIVEAU 2 🟡</span>
+          <div>
+            <div style="font-weight: 700;">Avancé / Dépassement (4 Exercices)</div>
+            <div style="font-size: 0.78rem; color: var(--cma-text-muted);">Points Bonus & situations professionnelles complexes</div>
+          </div>
+        </div>
+        <span id="lvl2-status" style="font-size: 0.82rem; color: var(--cma-text-muted);">🔒 Verrouillé</span>
+      </div>
+
+      <div class="level-header-card locked" id="header-lvl-3" onclick="selectLevelTab(3)">
+        <div class="level-info">
+          <span class="level-pill pill-l3">NIVEAU 3 🔴</span>
+          <div>
+            <div style="font-weight: 700;">Expert / Excellence (3 Exercices)</div>
+            <div style="font-size: 0.78rem; color: var(--cma-text-muted);">Solaire réunionnais & modélisation algorithmique</div>
+          </div>
+        </div>
+        <span id="lvl3-status" style="font-size: 0.82rem; color: var(--cma-text-muted);">🔒 Verrouillé</span>
+      </div>
+
+      <!-- ================= CONTENEURS D'EXERCICES ================= -->
+      
+      <!-- CONTENEUR NIVEAU 1 -->
+      <div id="container-lvl-1">
+
+        <!-- Ex 1.1 -->
+        <div class="exercise-box" id="exbox-1-1">
+          <div class="exercise-meta">
+            <span>Exercice 1.1 / 1.5</span>
+            <span class="badge-tag tag-cap">Socle CAP</span>
+          </div>
+          <h4 style="color: var(--cma-bordeaux); margin-bottom: 8px;">
+            <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+            Identification d'un maximum sur une courbe d'affluence
+          </h4>
+          <p style="font-size: 0.92rem; margin-bottom: 12px;">
+            La courbe d'affluence dans un salon de coiffure de Saint-Denis entre 9 h et 17 h présente un point le plus haut ayant pour coordonnées $S(13 ; 8)$.
+          </p>
+
+          <div class="q-item" id="qitem-1-1-1">
+            <div class="q-title">1. Relever l'heure à laquelle l'affluence est maximale (abscisse de $S$) :</div>
+            <div class="input-row">
+              <input type="text" inputmode="decimal" class="cma-input" id="ex1_1_1" placeholder="Votre résultat...">
+              <span class="input-unit">h</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx1_1_1()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex1-1-1"></div>
+          </div>
+
+          <div class="q-item" id="qitem-1-1-2">
+            <div class="q-title">2. Relever le nombre maximal de clientes présentes au salon (ordonnée de $S$) :</div>
+            <div class="input-row">
+              <input type="text" inputmode="decimal" class="cma-input" id="ex1_1_2" placeholder="Votre résultat...">
+              <span class="input-unit">clientes</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx1_1_2()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex1-1-2"></div>
+          </div>
+
+          <div class="q-item" id="qitem-1-1-3">
+            <div class="q-title">3. Préciser si la fonction est croissante ou décroissante entre 9 h et 13 h :</div>
+            <div class="input-row">
+              <input type="text" class="cma-input" id="ex1_1_3" placeholder="croissante ou décroissante ?">
+              <button class="btn btn-primary btn-sm" onclick="checkEx1_1_3()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex1-1-3"></div>
+          </div>
+        </div>
+
+        <!-- Ex 1.2 -->
+        <div class="exercise-box locked-exercise" id="exbox-1-2">
+          <div class="exercise-meta">
+            <span>Exercice 1.2 / 1.5</span>
+            <span class="badge-tag tag-cap">Socle CAP</span>
+          </div>
+          <h4 style="color: var(--cma-bordeaux); margin-bottom: 8px;">
+            <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+            Identification d'un minimum sur un coût de revient
+          </h4>
+          <p style="font-size: 0.92rem; margin-bottom: 12px;">
+            La fonction $C(x)$ donne le coût moyen en euros d'un forfait technique en fonction du nombre $x$ de soins réalisés par semaine. La courbe admet un point le plus bas en $M(25 ; 18)$.
+          </p>
+
+          <div class="q-item" id="qitem-1-2-1">
+            <div class="q-title">1. Pour quel nombre de soins $x$ le coût moyen est-il minimal ?</div>
+            <div class="input-row">
+              <input type="text" inputmode="decimal" class="cma-input" id="ex1_2_1" placeholder="Votre résultat...">
+              <span class="input-unit">soins</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx1_2_1()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex1-2-1"></div>
+          </div>
+
+          <div class="q-item" id="qitem-1-2-2">
+            <div class="q-title">2. Quelle est la valeur de ce coût moyen minimal en euros ?</div>
+            <div class="input-row">
+              <input type="text" inputmode="decimal" class="cma-input" id="ex1_2_2" placeholder="Votre résultat...">
+              <span class="input-unit">€</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx1_2_2()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex1-2-2"></div>
+          </div>
+
+          <div class="q-item" id="qitem-1-2-3">
+            <div class="q-title">3. Compléter : Le coût moyen est décroissant pour $x$ compris entre 0 et :</div>
+            <div class="input-row">
+              <span class="input-unit">Entre 0 et</span>
+              <input type="text" inputmode="decimal" class="cma-input" id="ex1_2_3" placeholder="Votre résultat..." style="max-width: 100px;">
+              <span class="input-unit">soins.</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx1_2_3()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex1-2-3"></div>
+          </div>
+        </div>
+
+        <!-- Ex 1.3 -->
+        <div class="exercise-box locked-exercise" id="exbox-1-3">
+          <div class="exercise-meta">
+            <span>Exercice 1.3 / 1.5</span>
+            <span class="badge-tag tag-cap">Socle CAP</span>
+          </div>
+          <h4 style="color: var(--cma-bordeaux); margin-bottom: 8px;">
+            <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+            Lecture d'images et d'antécédents sur tableau de valeurs
+          </h4>
+          <p style="font-size: 0.92rem; margin-bottom: 12px;">
+            On donne le tableau de valeurs suivant d'une fonction $f$ modélisant la recette horaire :<br>
+            <strong>$x$ (heures) :</strong> 8 ; 10 ; 12 ; 14 ; 16 ; 18<br>
+            <strong>$f(x)$ (€) :</strong> 40 ; 90 ; 160 ; 160 ; 110 ; 50
+          </p>
+
+          <div class="q-item" id="qitem-1-3-1">
+            <div class="q-title">1. Quelle est l'image de 10 par la fonction $f$ ?</div>
+            <div class="input-row">
+              <input type="text" inputmode="decimal" class="cma-input" id="ex1_3_1" placeholder="Votre résultat...">
+              <span class="input-unit">€</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx1_3_1()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex1-3-1"></div>
+          </div>
+
+          <div class="q-item" id="qitem-1-3-2">
+            <div class="q-title">2. Quel est l'antécédent de 40 ?</div>
+            <div class="input-row">
+              <input type="text" inputmode="decimal" class="cma-input" id="ex1_3_2" placeholder="Votre résultat...">
+              <span class="input-unit">h</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx1_3_2()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex1-3-2"></div>
+          </div>
+
+          <div class="q-item" id="qitem-1-3-3">
+            <div class="q-title">3. Entre quelles heures se situe la recette horaire maximale de 160 € ?</div>
+            <div class="input-row">
+              <span class="input-unit">De</span>
+              <input type="text" inputmode="decimal" class="cma-input" id="ex1_3_3_a" placeholder="Votre résultat..." style="max-width: 90px;">
+              <span class="input-unit">h à</span>
+              <input type="text" inputmode="decimal" class="cma-input" id="ex1_3_3_b" placeholder="Votre résultat..." style="max-width: 90px;">
+              <span class="input-unit">h</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx1_3_3()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex1-3-3"></div>
+          </div>
+        </div>
+
+        <!-- Ex 1.4 -->
+        <div class="exercise-box locked-exercise" id="exbox-1-4">
+          <div class="exercise-meta">
+            <span>Exercice 1.4 / 1.5</span>
+            <span class="badge-tag tag-cap">Socle CAP</span>
+          </div>
+          <h4 style="color: var(--cma-bordeaux); margin-bottom: 8px;">
+            <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+            Tracé d'un tableau de variations guidé (Casque séchant)
+          </h4>
+          <p style="font-size: 0.92rem; margin-bottom: 12px;">
+            Une courbe thermique de casque séchant monte de $25^\circ\text{C}$ à 0 min jusqu'à un maximum de $60^\circ\text{C}$ à 15 min, puis redescend à $30^\circ\text{C}$ à 30 min.
+          </p>
+
+          <div class="q-item" id="qitem-1-4-1">
+            <div class="q-title">1. À quelle durée en minutes le casque atteint-il son maximum de température ?</div>
+            <div class="input-row">
+              <input type="text" inputmode="decimal" class="cma-input" id="ex1_4_1" placeholder="Votre résultat...">
+              <span class="input-unit">min</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx1_4_1()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex1-4-1"></div>
+          </div>
+
+          <div class="q-item" id="qitem-1-4-2">
+            <div class="q-title">2. Donner la température maximale atteinte sous le casque :</div>
+            <div class="input-row">
+              <input type="text" inputmode="decimal" class="cma-input" id="ex1_4_2" placeholder="Votre résultat...">
+              <span class="input-unit">°C</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx1_4_2()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex1-4-2"></div>
+          </div>
+        </div>
+
+        <!-- Ex 1.5 -->
+        <div class="exercise-box locked-exercise" id="exbox-1-5">
+          <div class="exercise-meta">
+            <span>Exercice 1.5 / 1.5</span>
+            <span class="badge-tag tag-cap">Socle CAP</span>
+          </div>
+          <h4 style="color: var(--cma-bordeaux); margin-bottom: 8px;">
+            <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+            Résolution graphique d'un seuil simple (Appels salon)
+          </h4>
+          <p style="font-size: 0.92rem; margin-bottom: 12px;">
+            Sur un graphique représentant le nombre d'appels téléphoniques au salon entre 8 h et 18 h :<br>
+            La droite horizontale $y = 6$ coupe la courbe en deux points d'abscisses $x_1 = 10$ et $x_2 = 16$.
+          </p>
+
+          <div class="q-item" id="qitem-1-5-1">
+            <div class="q-title">1. Combien d'appels reçoit le salon à 10 h et à 16 h ?</div>
+            <div class="input-row">
+              <input type="text" inputmode="decimal" class="cma-input" id="ex1_5_1" placeholder="Votre résultat...">
+              <span class="input-unit">appels</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx1_5_1()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex1-5-1"></div>
+          </div>
+
+          <div class="q-item" id="qitem-1-5-2">
+            <div class="q-title">2. Préciser la plage horaire pendant laquelle le salon reçoit au moins 6 appels par heure ($f(x) \ge 6$) :</div>
+            <div class="input-row">
+              <span class="input-unit">De</span>
+              <input type="text" inputmode="decimal" class="cma-input" id="ex1_5_2_a" placeholder="Votre résultat..." style="max-width: 90px;">
+              <span class="input-unit">h à</span>
+              <input type="text" inputmode="decimal" class="cma-input" id="ex1_5_2_b" placeholder="Votre résultat..." style="max-width: 90px;">
+              <span class="input-unit">h</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx1_5_2()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex1-5-2"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- CONTENEUR NIVEAU 2 -->
+      <div id="container-lvl-2" style="display: none;">
+
+        <!-- Ex 2.1 -->
+        <div class="exercise-box" id="exbox-2-1">
+          <div class="exercise-meta">
+            <span>Exercice 2.1 / 2.4</span>
+            <span class="badge-tag tag-bonus">Bonus Élite</span>
+          </div>
+          <h4 style="color: var(--cma-bordeaux); margin-bottom: 8px;">
+            <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+            Optimisation de la rentabilité d'une offre forfaitaire à Saint-Gilles
+          </h4>
+          <p style="font-size: 0.92rem; margin-bottom: 12px;">
+            La gérante d'un salon balnéaire teste un forfait « Balayage & Soin Solaire ».<br>
+            Le bénéfice net hebdomadaire $B(x)$ en euros dépend du prix $x$ fixé (entre 40 € et 90 €) selon :<br>
+            $$B(x) = -x^2 + 130x - 3\,200$$
+            La courbe admet pour sommet le point $S(65 ; 1\,025)$.
+          </p>
+
+          <div class="q-item" id="qitem-2-1-1">
+            <div class="q-title">1. Déterminer le prix de vente optimal $x$ qui maximise le bénéfice :</div>
+            <div class="input-row">
+              <input type="text" inputmode="decimal" class="cma-input" id="ex2_1_1" placeholder="Votre résultat...">
+              <span class="input-unit">€</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx2_1_1()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex2-1-1"></div>
+          </div>
+
+          <div class="q-item" id="qitem-2-1-2">
+            <div class="q-title">2. Quel est le montant du bénéfice maximal réalisable à ce tarif ?</div>
+            <div class="input-row">
+              <input type="text" inputmode="decimal" class="cma-input" id="ex2_1_2" placeholder="Votre résultat...">
+              <span class="input-unit">€</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx2_1_2()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex2-1-2"></div>
+          </div>
+
+          <div class="q-item" id="qitem-2-1-3">
+            <div class="q-title">3. Si la gérante fixe le prix à 50 €, calculer le bénéfice $B(50) = -(50)^2 + 130(50) - 3\,200$ :</div>
+            <div class="input-row">
+              <input type="text" inputmode="decimal" class="cma-input" id="ex2_1_3" placeholder="Votre résultat...">
+              <span class="input-unit">€</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx2_1_3()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex2-1-3"></div>
+          </div>
+        </div>
+
+        <!-- Ex 2.2 -->
+        <div class="exercise-box locked-exercise" id="exbox-2-2">
+          <div class="exercise-meta">
+            <span>Exercice 2.2 / 2.4</span>
+            <span class="badge-tag tag-bonus">Bonus Élite</span>
+          </div>
+          <h4 style="color: var(--cma-bordeaux); margin-bottom: 8px;">
+            <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+            Température optimale de séchage sous casque en climat réunionnais
+          </h4>
+          <p style="font-size: 0.92rem; margin-bottom: 12px;">
+            Pour un masque à la kératine, le taux de pénétration $P(T)$ en % pour $T$ variant de $30^\circ\text{C}$ à $70^\circ\text{C}$ forme une courbe en cloche dont le sommet est atteint à $T = 55^\circ\text{C}$ avec un taux de 92%.
+          </p>
+
+          <div class="q-item" id="qitem-2-2-1">
+            <div class="q-title">1. Relever la température optimale $T_{\mathrm{opt}}$ :</div>
+            <div class="input-row">
+              <input type="text" inputmode="decimal" class="cma-input" id="ex2_2_1" placeholder="Votre résultat...">
+              <span class="input-unit">°C</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx2_2_1()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex2-2-1"></div>
+          </div>
+
+          <div class="q-item" id="qitem-2-2-2">
+            <div class="q-title">2. Relever le taux maximal d'efficacité correspondant :</div>
+            <div class="input-row">
+              <input type="text" inputmode="decimal" class="cma-input" id="ex2_2_2" placeholder="Votre résultat...">
+              <span class="input-unit">%</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx2_2_2()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex2-2-2"></div>
+          </div>
+
+          <div class="q-item" id="qitem-2-2-3">
+            <div class="q-title">3. Pour préserver les cheveux décolorés, le taux doit être $\ge 80\%$. Cette condition est vérifiée sur $[45 ; 65]$. Quelle est la température minimale recommandée ?</div>
+            <div class="input-row">
+              <input type="text" inputmode="decimal" class="cma-input" id="ex2_2_3" placeholder="Votre résultat...">
+              <span class="input-unit">°C</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx2_2_3()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex2-2-3"></div>
+          </div>
+        </div>
+
+        <!-- Ex 2.3 -->
+        <div class="exercise-box locked-exercise" id="exbox-2-3">
+          <div class="exercise-meta">
+            <span>Exercice 2.3 / 2.4</span>
+            <span class="badge-tag tag-bonus">Bonus Élite</span>
+          </div>
+          <h4 style="color: var(--cma-bordeaux); margin-bottom: 8px;">
+            <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+            Analyse comparée : Semaine vs Samedi (Sainte-Clotilde)
+          </h4>
+          <p style="font-size: 0.92rem; margin-bottom: 12px;">
+            Un salon d'application compare ses courbes de fréquentation :<br>
+            • <strong>Le jeudi :</strong> pic d'affluence atteint à 16 h avec 6 clientes.<br>
+            • <strong>Le samedi :</strong> pic d'affluence atteint à 11 h 30 avec 14 clientes.
+          </p>
+
+          <div class="q-item" id="qitem-2-3-1">
+            <div class="q-title">1. Quel jour enregistre le pic maximal d'affluence le plus élevé ?</div>
+            <div class="input-row">
+              <input type="text" class="cma-input" id="ex2_3_1" placeholder="jeudi ou samedi ?">
+              <button class="btn btn-primary btn-sm" onclick="checkEx2_3_1()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex2-3-1"></div>
+          </div>
+
+          <div class="q-item" id="qitem-2-3-2">
+            <div class="q-title">2. Combien de clientes supplémentaires sont présentes au pic du samedi par rapport au pic du jeudi ?</div>
+            <div class="input-row">
+              <input type="text" inputmode="decimal" class="cma-input" id="ex2_3_2" placeholder="Votre résultat...">
+              <span class="input-unit">clientes de plus</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx2_3_2()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex2-3-2"></div>
+          </div>
+        </div>
+
+        <!-- Ex 2.4 -->
+        <div class="exercise-box locked-exercise" id="exbox-2-4">
+          <div class="exercise-meta">
+            <span>Exercice 2.4 / 2.4</span>
+            <span class="badge-tag tag-bonus">Bonus Élite</span>
+          </div>
+          <h4 style="color: var(--cma-bordeaux); margin-bottom: 8px;">
+            <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+            Lecture graphique d'un seuil de rentabilité critique
+          </h4>
+          <p style="font-size: 0.92rem; margin-bottom: 12px;">
+            La recette $R(x)$ de vente de soins atteint un maximum de 850 € pour $x = 35$ forfaits. Les charges s'élèvent à 400 € ($y = 400$). La droite coupe la recette en $x_1 = 10$ et $x_2 = 50$.
+          </p>
+
+          <div class="q-item" id="qitem-2-4-1">
+            <div class="q-title">1. Pour quel nombre de forfaits $x$ la rentabilité est-elle maximale ?</div>
+            <div class="input-row">
+              <input type="text" inputmode="decimal" class="cma-input" id="ex2_4_1" placeholder="Votre résultat...">
+              <span class="input-unit">forfaits</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx2_4_1()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex2-4-1"></div>
+          </div>
+
+          <div class="q-item" id="qitem-2-4-2">
+            <div class="q-title">2. Donner l'intervalle de vente pour lequel le salon dégage un bénéfice ($R(x) \ge 400$) :</div>
+            <div class="input-row">
+              <span class="input-unit">De</span>
+              <input type="text" inputmode="decimal" class="cma-input" id="ex2_4_2_a" placeholder="Votre résultat..." style="max-width: 90px;">
+              <span class="input-unit">à</span>
+              <input type="text" inputmode="decimal" class="cma-input" id="ex2_4_2_b" placeholder="Votre résultat..." style="max-width: 90px;">
+              <span class="input-unit">forfaits</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx2_4_2()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex2-4-2"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- CONTENEUR NIVEAU 3 -->
+      <div id="container-lvl-3" style="display: none;">
+
+        <!-- Ex 3.1 -->
+        <div class="exercise-box" id="exbox-3-1">
+          <div class="exercise-meta">
+            <span>Exercice 3.1 / 3.3</span>
+            <span class="badge-tag tag-expert">Expert / Excellence</span>
+          </div>
+          <h4 style="color: var(--cma-bordeaux); margin-bottom: 8px;">
+            <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+            Modélisation de la courbe de puissance d'un salon solaire à Sainte-Marie
+          </h4>
+          <p style="font-size: 0.92rem; margin-bottom: 12px;">
+            Un salon éco-responsable produit son électricité solaire. La puissance instantanée $P(t)$ en kW (entre 6 h et 18 h) vaut :<br>
+            $$P(t) = -0,1(t - 12)^2 + 3,6$$
+          </p>
+
+          <div class="q-item" id="qitem-3-1-1">
+            <div class="q-title">1. Calculer la puissance produite à 6 h ($t = 6$) en kW :</div>
+            <div class="input-row">
+              <input type="text" inputmode="decimal" class="cma-input" id="ex3_1_1" placeholder="Votre résultat...">
+              <span class="input-unit">kW</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx3_1_1()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex3-1-1"></div>
+          </div>
+
+          <div class="q-item" id="qitem-3-1-2">
+            <div class="q-title">2. En déduire la valeur de la puissance maximale $P_{\max}$ produite à midi solaire ($t = 12$) :</div>
+            <div class="input-row">
+              <input type="text" inputmode="decimal" class="cma-input" id="ex3_1_2" placeholder="Votre résultat...">
+              <span class="input-unit">kW</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx3_1_2()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex3-1-2"></div>
+          </div>
+
+          <div class="q-item" id="qitem-3-1-3">
+            <div class="q-title">3. Les appareils demandent au moins 2,7 kW. Résoudre $P(t) \ge 2,7$ : donner la plage horaire d'autonomie solaire :</div>
+            <div class="input-row">
+              <span class="input-unit">De</span>
+              <input type="text" inputmode="decimal" class="cma-input" id="ex3_1_3_a" placeholder="Votre résultat..." style="max-width: 90px;">
+              <span class="input-unit">h à</span>
+              <input type="text" inputmode="decimal" class="cma-input" id="ex3_1_3_b" placeholder="Votre résultat..." style="max-width: 90px;">
+              <span class="input-unit">h</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx3_1_3()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex3-1-3"></div>
+          </div>
+        </div>
+
+        <!-- Ex 3.2 -->
+        <div class="exercise-box locked-exercise" id="exbox-3-2">
+          <div class="exercise-meta">
+            <span>Exercice 3.2 / 3.3</span>
+            <span class="badge-tag tag-expert">Expert / Excellence</span>
+          </div>
+          <h4 style="color: var(--cma-bordeaux); margin-bottom: 8px;">
+            <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+            Optimisation de l'espace vitrine et surface d'exposition
+          </h4>
+          <p style="font-size: 0.92rem; margin-bottom: 12px;">
+            Avec 16 m de vitrage le long d'un mur, l'aire est modélisée par $A(x) = -2x^2 + 16x$ pour $x \in [0 ; 8]$.
+          </p>
+
+          <div class="q-item" id="qitem-3-2-1">
+            <div class="q-title">1. Déterminer la largeur $x$ en mètres qui maximise la surface d'exposition :</div>
+            <div class="input-row">
+              <input type="text" inputmode="decimal" class="cma-input" id="ex3_2_1" placeholder="Votre résultat...">
+              <span class="input-unit">m</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx3_2_1()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex3-2-1"></div>
+          </div>
+
+          <div class="q-item" id="qitem-3-2-2">
+            <div class="q-title">2. Calculer l'aire maximale $A_{\max}$ obtenue en m² :</div>
+            <div class="input-row">
+              <input type="text" inputmode="decimal" class="cma-input" id="ex3_2_2" placeholder="Votre résultat...">
+              <span class="input-unit">m²</span>
+              <button class="btn btn-primary btn-sm" onclick="checkEx3_2_2()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex3-2-2"></div>
+          </div>
+        </div>
+
+        <!-- Ex 3.3 -->
+        <div class="exercise-box locked-exercise" id="exbox-3-3">
+          <div class="exercise-meta">
+            <span>Exercice 3.3 / 3.3</span>
+            <span class="badge-tag tag-expert">Expert / Excellence</span>
+          </div>
+          <h4 style="color: var(--cma-bordeaux); margin-bottom: 8px;">
+            <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+            Automatisation sur tableur et algorithmique de recherche
+          </h4>
+          <p style="font-size: 0.92rem; margin-bottom: 12px;">
+            Sur un tableur, la colonne A contient les heures (A2:A12) et la colonne B la recette horaire (B2:B12).
+          </p>
+
+          <div class="q-item" id="qitem-3-3-1">
+            <div class="q-title">1. Quelle fonction tableur standard permet de trouver la recette maximale de la plage B2:B12 ?</div>
+            <div class="input-row">
+              <input type="text" class="cma-input" id="ex3_3_1" placeholder="Ex: =SOMME(B2:B12)">
+              <button class="btn btn-primary btn-sm" onclick="checkEx3_3_1()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex3-3-1"></div>
+          </div>
+
+          <div class="q-item" id="qitem-3-3-2">
+            <div class="q-title">2. Dans un algorithme parcourant 10 valeurs, quelle structure permet de tester si la valeur courante est supérieure au maximum mémorisé ?</div>
+            <div class="input-row">
+              <input type="text" class="cma-input" id="ex3_3_2" placeholder="Ex: SI ... ALORS">
+              <button class="btn btn-primary btn-sm" onclick="checkEx3_3_2()">Valider</button>
+            </div>
+            <div class="feedback-box" id="fb-ex3-3-2"></div>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ========================================== -->
+    <!-- ÉTAPE 4 — BILAN ET ATTESTATION OFFICIELLE  -->
+    <!-- ========================================== -->
+    <section id="step-4" class="step-section">
+      <div class="card no-print">
+        <h2 class="card-title">
+          <img src="fleche_rouge.png" alt="" class="icon-bullet" onerror="this.style.display='none'">
+          Bilan de compétences & Récompenses de la séance
+        </h2>
+        <p style="font-size: 0.93rem; color: var(--cma-text-muted); margin-bottom: 12px;">
+          Félicitations pour vos travaux sur l'analyse d'optimum et la planification horaire ! Saisissez votre identité ci-dessous pour générer votre attestation officielle.
+        </p>
+
+        <div class="input-group">
+          <label class="input-label" for="learnerNameInput">Nom et Prénom de l'apprenant(e) :</label>
+          <div class="input-row">
+            <input type="text" class="cma-input" id="learnerNameInput" placeholder="Ex: Jean VALMY" oninput="updateLearnerName(this.value)">
+            <button class="btn btn-corail" onclick="window.print()">
+              🖨️ Imprimer / PDF
+            </button>
+          </div>
+        </div>
+
+        <div class="badge-collection">
+          <div class="cma-badge" id="badge-cap">
+            <span>🎓</span>
+            <span>Maître de l'Optimum & Planning (Socle CAP)</span>
+          </div>
+          <div class="cma-badge locked" id="badge-bonus">
+            <span>⭐</span>
+            <span>Stratège Balnéaire & Éco-Coiffure</span>
+          </div>
+          <div class="cma-badge locked" id="badge-expert">
+            <span>🏆</span>
+            <span>Expert Solaire & Modélisation</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ATTESTATION NUMÉRIQUE OFFICIELLE IMPRIMABLE -->
+      <div class="attestation-wrapper" id="attestationPrintArea">
+        <div class="attestation-header">
+          <img src="logo.png" alt="Logo CMA Formation" class="att-logo" onerror="this.src='https://placehold.co/120x48/A50F23/ffffff?text=CMA+Formation'">
+          <div>
+            <h2 class="attestation-title">Attestation Pédagogique de Réussite</h2>
+            <div class="attestation-subtitle">CMA Formation de Sainte-Clotilde • Île de La Réunion</div>
+          </div>
+        </div>
+
+        <div class="attestation-body">
+          <p>La direction pédagogique et le pôle Mathématiques-Sciences attestent que l'apprenant(e) :</p>
+          <p style="text-align: center; margin: 12px 0;">
+            <span class="att-learner-name" id="displayLearnerName">APPRENANT(E) EN FORMATION</span>
+          </p>
+          <p>
+            a suivi avec succès la séance pédagogique interactive et validé les compétences du référentiel en mathématiques appliquées aux métiers de l'artisanat.
+          </p>
+
+          <div class="att-grid-details">
+            <div>
+              <strong>Séance :</strong> S5 M1 - Lecture d'optimum & rentabilité<br>
+              <strong>Diplôme :</strong> CAP Métiers de la Coiffure (Gr. 1)<br>
+              <strong>Date d'évaluation :</strong> <span id="attestationDate"></span>
+            </div>
+            <div>
+              <strong>Socle CAP validé :</strong> <span id="attSocleScore" style="color: var(--cma-bordeaux); font-weight: bold;">0%</span><br>
+              <strong>Dépassement / Bonus :</strong> <span id="attBonusScore" style="color: var(--cma-corail); font-weight: bold;">0 pts</span><br>
+              <strong>Statut :</strong> <span id="attStatus" style="font-weight: bold;">En cours d'acquisition</span>
+            </div>
+          </div>
+
+          <p style="font-size: 0.88rem; color: var(--cma-text-muted); margin-top: 10px;">
+            <strong>Compétences attestées :</strong> C1 (Identifier l'intervalle et les variables d'un problème professionnel), C2 (Exécuter un calcul d'image et dresser un tableau de variations), C3 (Déterminer graphiquement un extremum $S(x_0 ; y_0)$ et résoudre une inéquation de seuil), C4 (Formuler des préconisations managériales d'organisation de salon).
+          </p>
+        </div>
+
+        <div class="att-footer">
+          <div style="font-size: 0.8rem; color: var(--cma-text-muted);">
+            Attestation pédagogique de réussite de séance • Document numérique authentifié
+          </div>
+          <div class="att-signature">
+            <div>Formatrice Référente Mathématiques & Sciences :</div>
+            <div class="att-signature-name">Rachel Lamberet-Lezais</div>
+            <div style="font-size: 0.78rem; color: var(--cma-text-muted);">CMA Formation Sainte-Clotilde</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- JAVASCRIPT GLOBAL EMBARQUÉ SANS DÉPENDANCES SUPPLÉMENTAIRES -->
+  <script>
+    /* État global de l'application */
+    const appState = {
+      currentStep: 1,
+      learnerName: "APPRENANT(E) EN FORMATION",
+      scores: {
+        discoveryDone: false,
+        capProgress: 0,
+        bonusScore: 0
+      },
+      // Suivi de validation des exercices
+      lvl1: {
+        '1-1-1': false, '1-1-2': false, '1-1-3': false,
+        '1-2-1': false, '1-2-2': false, '1-2-3': false,
+        '1-3-1': false, '1-3-2': false, '1-3-3': false,
+        '1-4-1': false, '1-4-2': false,
+        '1-5-1': false, '1-5-2': false
+      },
+      lvl2: {
+        '2-1-1': false, '2-1-2': false, '2-1-3': false,
+        '2-2-1': false, '2-2-2': false, '2-2-3': false,
+        '2-3-1': false, '2-3-2': false,
+        '2-4-1': false, '2-4-2': false
+      },
+      lvl3: {
+        '3-1-1': false, '3-1-2': false, '3-1-3': false,
+        '3-2-1': false, '3-2-2': false,
+        '3-3-1': false, '3-3-2': false
+      },
+      unlockedLvl2: false,
+      unlockedLvl3: false
+    };
+
+    /* Initialisation au chargement */
+    window.addEventListener('DOMContentLoaded', () => {
+      // Date du jour pour l'attestation
+      const today = new Date();
+      const options = { day: 'numeric', month: 'long', year: 'numeric' };
+      document.getElementById('attestationDate').textContent = today.toLocaleDateString('fr-FR', options);
+
+      // Initialiser les toiles de tracé
+      initDiscoveryCanvas();
+      initSimCanvas();
+      updateProgressBar();
+    });
+
+    /* Navigation entre les 4 étapes */
+    function switchStep(stepNumber) {
+      appState.currentStep = stepNumber;
+      
+      // Mise à jour visuelle des onglets
+      for (let i = 1; i <= 4; i++) {
+        const tab = document.getElementById(`tab-step-${i}`);
+        const sec = document.getElementById(`step-${i}`);
+        if (tab && sec) {
+          if (i === stepNumber) {
+            tab.classList.add('active');
+            tab.setAttribute('aria-selected', 'true');
+            sec.classList.add('active');
+          } else {
+            tab.classList.remove('active');
+            tab.setAttribute('aria-selected', 'false');
+            sec.classList.remove('active');
+          }
+        }
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // Redessiner les canvas après passage sur l'onglet
+      if (stepNumber === 1) resizeDiscoveryCanvas();
+      if (stepNumber === 2) resizeSimCanvas();
+
+      // MathJax re-render au besoin
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise();
+      }
+    }
+
+    /* Accordéons pour le cours */
+    function toggleAccordion(headerElement) {
+      const item = headerElement.parentElement;
+      item.classList.toggle('open');
+    }
+
+    /* Mise à jour du nom de l'élève */
+    function updateLearnerName(val) {
+      const trimmed = val.trim();
+      const displayElem = document.getElementById('displayLearnerName');
+      if (trimmed.length > 0) {
+        displayElem.textContent = trimmed.toUpperCase();
+        appState.learnerName = trimmed;
+      } else {
+        displayElem.textContent = "APPRENANT(E) EN FORMATION";
+        appState.learnerName = "APPRENANT(E) EN FORMATION";
+      }
+    }
+
+    /* Normalisation des nombres (virgule -> point) et validation */
+    function parseInputNumber(valStr) {
+      if (!valStr) return null;
+      const clean = valStr.toString().trim().replace(',', '.');
+      const num = parseFloat(clean);
+      return isNaN(num) ? null : num;
+    }
+
+    /* Affichage des retours pédagogiques */
+    function setFeedback(elemId, type, message) {
+      const fb = document.getElementById(elemId);
+      if (!fb) return;
+      fb.className = `feedback-box ${type}`;
+      fb.innerHTML = message;
+    }
+
+    /* Mise à jour de la barre de progression globale et des scores */
+    function updateProgressBar() {
+      // Calcul socle CAP (13 items dans le niveau 1)
+      const totalLvl1 = Object.keys(appState.lvl1).length;
+      let countLvl1 = 0;
+      for (const k in appState.lvl1) {
+        if (appState.lvl1[k]) countLvl1++;
+      }
+
+      const percentCAP = Math.round((countLvl1 / totalLvl1) * 100);
+      appState.scores.capProgress = percentCAP;
+
+      document.getElementById('capProgressDisplay').textContent = `${percentCAP}%`;
+      document.getElementById('attSocleScore').textContent = `${percentCAP}%`;
+
+      // Déblocage niveau 2 si 100% CAP
+      if (percentCAP >= 100 && !appState.unlockedLvl2) {
+        appState.unlockedLvl2 = true;
+        const h2 = document.getElementById('header-lvl-2');
+        h2.classList.remove('locked');
+        document.getElementById('lvl2-status').textContent = 'Disponible !';
+        document.getElementById('lvl1-status').textContent = '✅ Validé (100%)';
+        
+        // Badge officiel CAP
+        const badgeCap = document.getElementById('badge-cap');
+        badgeCap.classList.add('unlocked');
+        document.getElementById('attStatus').textContent = 'Admis au Socle CAP avec Mention';
+        document.getElementById('attStatus').style.color = 'var(--cma-success)';
+      }
+
+      // Calcul des points Bonus (Niveau 2 et 3)
+      let bonusPts = 0;
+      for (const k in appState.lvl2) if (appState.lvl2[k]) bonusPts += 10;
+      for (const k in appState.lvl3) if (appState.lvl3[k]) bonusPts += 20;
+
+      appState.scores.bonusScore = bonusPts;
+      document.getElementById('bonusScoreDisplay').textContent = `+${bonusPts} pts`;
+      document.getElementById('attBonusScore').textContent = `+${bonusPts} pts`;
+
+      // Déblocage niveau 3 si Niveau 2 complété
+      const totalLvl2 = Object.keys(appState.lvl2).length;
+      let countLvl2 = 0;
+      for (const k in appState.lvl2) if (appState.lvl2[k]) countLvl2++;
+
+      if (countLvl2 === totalLvl2 && !appState.unlockedLvl3) {
+        appState.unlockedLvl3 = true;
+        const h3 = document.getElementById('header-lvl-3');
+        h3.classList.remove('locked');
+        document.getElementById('lvl3-status').textContent = 'Disponible !';
+        document.getElementById('lvl2-status').textContent = '✅ Validé (Bonus max)';
+        document.getElementById('badge-bonus').classList.remove('locked');
+        document.getElementById('badge-bonus').classList.add('unlocked');
+      }
+
+      // Badge Expert
+      const totalLvl3 = Object.keys(appState.lvl3).length;
+      let countLvl3 = 0;
+      for (const k in appState.lvl3) if (appState.lvl3[k]) countLvl3++;
+      if (countLvl3 === totalLvl3) {
+        document.getElementById('lvl3-status').textContent = '✅ Maîtrise totale !';
+        document.getElementById('badge-expert').classList.remove('locked');
+        document.getElementById('badge-expert').classList.add('unlocked');
+      }
+
+      // Barre visuelle compacte de 8px
+      const globalPct = Math.min(100, Math.round((countLvl1 + countLvl2 + countLvl3) / (totalLvl1 + totalLvl2 + totalLvl3) * 100));
+      document.getElementById('globalProgressBar').style.width = `${globalPct}%`;
+    }
+
+    /* Navigation entre onglets de niveaux dans l'étape 3 */
+    function selectLevelTab(lvl) {
+      if (lvl === 2 && !appState.unlockedLvl2) {
+        alertModal("Le Niveau 2 🟡 est verrouillé. Vous devez d'abord compléter l'ensemble des exercices du Niveau 1 🟢 (Socle CAP) !");
+        return;
+      }
+      if (lvl === 3 && !appState.unlockedLvl3) {
+        alertModal("Le Niveau 3 🔴 est verrouillé. Vous devez d'abord réussir l'ensemble des défis du Niveau 2 🟡 !");
+        return;
+      }
+
+      for (let i = 1; i <= 3; i++) {
+        const header = document.getElementById(`header-lvl-${i}`);
+        const container = document.getElementById(`container-lvl-${i}`);
+        if (header && container) {
+          if (i === lvl) {
+            header.classList.add('active-level');
+            container.style.display = 'block';
+          } else {
+            header.classList.remove('active-level');
+            container.style.display = 'none';
+          }
+        }
+      }
+    }
+
+    /* Modal / Message propre sans alert() */
+    function alertModal(msg) {
+      const existing = document.getElementById('cma-custom-dialog');
+      if (existing) existing.remove();
+
+      const dialog = document.createElement('div');
+      dialog.id = 'cma-custom-dialog';
+      dialog.style.position = 'fixed';
+      dialog.style.top = '0';
+      dialog.style.left = '0';
+      dialog.style.width = '100vw';
+      dialog.style.height = '100vh';
+      dialog.style.backgroundColor = 'rgba(0, 0, 0, 0.4)';
+      dialog.style.display = 'flex';
+      dialog.style.alignItems = 'center';
+      dialog.style.justifyContent = 'center';
+      dialog.style.zIndex = '9999';
+      dialog.style.padding = '16px';
+
+      dialog.innerHTML = `
+        <div style="background: white; border-radius: 12px; max-width: 380px; width: 100%; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); border-left: 6px solid #A50F23;">
+          <h3 style="color: #A50F23; margin-bottom: 10px; font-size: 1.1rem;">Information CMA Formation</h3>
+          <p style="font-size: 0.95rem; color: #1E293B; line-height: 1.5; margin-bottom: 16px;">${msg}</p>
+          <div style="text-align: right;">
+            <button class="btn btn-primary btn-sm" onclick="document.getElementById('cma-custom-dialog').remove()">D'accord</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(dialog);
+    }
+
+    /* =========================================================================
+       VALIDATIONS ÉTAPE 1 : QUESTIONS D'INVESTIGATION
+       ========================================================================= */
+    function checkQ1() {
+      const a = parseInputNumber(document.getElementById('q1_a').value);
+      const b = parseInputNumber(document.getElementById('q1_b').value);
+      if (a === null || b === null) {
+        setFeedback('fb-q1', 'hint', 'Veuillez saisir les deux heures d\'ouverture et de fermeture.');
+        return;
+      }
+      if (a === 8 && b === 18) {
+        setFeedback('fb-q1', 'correct', 'Exact ! Le salon est ouvert de 8 h à 18 h (intervalle [8 ; 18]).');
+        document.getElementById('block-q1').classList.add('completed');
+      } else {
+        setFeedback('fb-q1', 'incorrect', 'Vérifiez les horaires d\'ouverture indiqués dans le texte de présentation (de 8 h à 18 h).');
+      }
+    }
+
+    function checkQ2() {
+      const val = parseInputNumber(document.getElementById('q2_val').value);
+      if (val === null) {
+        setFeedback('fb-q2', 'hint', 'Veuillez saisir le résultat du calcul.');
+        return;
+      }
+      if (Math.abs(val - 12) < 0.1) {
+        setFeedback('fb-q2', 'correct', 'Excellent ! f(14) = -0,5(196) + 14(14) - 86 = -98 + 196 - 86 = 12 clients.');
+        document.getElementById('table-val-14').textContent = '12 clients';
+        document.getElementById('block-q2').classList.add('completed');
+      } else {
+        setFeedback('fb-q2', 'incorrect', 'Calcul : -0,5 × 14² + 14 × 14 - 86 = -0,5 × 196 + 196 - 86. Recommencez.');
+      }
+    }
+
+    function checkQ3() {
+      const x = parseInputNumber(document.getElementById('q3_x').value);
+      const y = parseInputNumber(document.getElementById('q3_y').value);
+      if (x === null || y === null) {
+        setFeedback('fb-q3', 'hint', 'Veuillez renseigner les deux coordonnées du sommet.');
+        return;
+      }
+      if (Math.abs(x - 14) < 0.2 && Math.abs(y - 12) < 0.2) {
+        setFeedback('fb-q3', 'correct', 'Parfait ! Le sommet de la courbe se situe bien au point S(14 ; 12).');
+        document.getElementById('block-q3').classList.add('completed');
+      } else {
+        setFeedback('fb-q3', 'incorrect', 'Regardez le point le plus haut de la courbe : son abscisse est 14 et son ordonnée est 12.');
+      }
+    }
+
+    function checkQ4() {
+      const text = document.getElementById('q4_text').value.trim().toLowerCase();
+      if (!text) {
+        setFeedback('fb-q4', 'hint', 'Tapez « maximum » ou « minimum ».');
+        return;
+      }
+      if (text.includes('max')) {
+        setFeedback('fb-q4', 'correct', 'Correct ! Il s\'agit d\'un maximum (la crête la plus haute de la courbe).');
+        document.getElementById('block-q4').classList.add('completed');
+      } else {
+        setFeedback('fb-q4', 'incorrect', 'Puisque la courbe est orientée vers le haut, le sommet représente la valeur la plus grande (le maximum).');
+      }
+    }
+
+    function checkQ5() {
+      const h = parseInputNumber(document.getElementById('q5_h').value);
+      if (h === null) {
+        setFeedback('fb-q5', 'hint', 'Saisissez l\'heure de bascule de la variation.');
+        return;
+      }
+      if (Math.abs(h - 14) < 0.2) {
+        setFeedback('fb-q5', 'correct', 'Bravo ! La fonction croît de 8 h à 14 h, puis décroît de 14 h à 18 h.');
+        document.getElementById('block-q5').classList.add('completed');
+      } else {
+        setFeedback('fb-q5', 'incorrect', 'Observez l\'abscisse du sommet où la courbe s\'arrête de monter pour redescendre.');
+      }
+    }
+
+    function checkQ6() {
+      const start = parseInputNumber(document.getElementById('q6_start').value);
+      const end = parseInputNumber(document.getElementById('q6_end').value);
+      if (start === null || end === null) {
+        setFeedback('fb-q6', 'hint', 'Renseignez les deux bornes horaires.');
+        return;
+      }
+      if (Math.abs(start - 12) < 0.2 && Math.abs(end - 16) < 0.2) {
+        setFeedback('fb-q6', 'correct', 'Très bien ! La courbe est supérieure ou égale à 10 clients entre 12 h et 16 h.');
+        document.getElementById('block-q6').classList.add('completed');
+      } else {
+        setFeedback('fb-q6', 'incorrect', 'Regardez les points où la courbe coupe la ligne horizontale y = 10 : ils se situent à 12 h et 16 h.');
+      }
+    }
+
+    function checkQ7() {
+      const start = parseInputNumber(document.getElementById('q7_start').value);
+      const end = parseInputNumber(document.getElementById('q7_end').value);
+      if (start === null || end === null) {
+        setFeedback('fb-q7', 'hint', 'Indiquez la tranche horaire critique.');
+        return;
+      }
+      if (Math.abs(start - 12) < 0.2 && Math.abs(end - 16) < 0.2) {
+        setFeedback('fb-q7', 'correct', 'Excellente préconisation managériale ! Entre 12 h et 16 h, tout le personnel doit être mobilisé aux bacs et postes de coiffage.');
+        document.getElementById('block-q7').classList.add('completed');
+      } else {
+        setFeedback('fb-q7', 'incorrect', 'La période critique correspond au seuil f(x) ≥ 10, soit de 12 h à 16 h.');
+      }
+    }
+
+    /* =========================================================================
+       VALIDATIONS ÉTAPE 3 : ENTRAÎNEMENT NIVEAU 1 (SOCLE CAP)
+       ========================================================================= */
+    function checkEx1_1_1() {
+      const v = parseInputNumber(document.getElementById('ex1_1_1').value);
+      if (v === null) { setFeedback('fb-ex1-1-1', 'hint', 'Entrez une heure.'); return; }
+      if (Math.abs(v - 13) < 0.1) {
+        setFeedback('fb-ex1-1-1', 'correct', 'Exact : abscisse x = 13 h.');
+        appState.lvl1['1-1-1'] = true;
+        document.getElementById('qitem-1-1-1').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex1-1-1', 'incorrect', 'L\'abscisse du point S(13 ; 8) est la première coordonnée.'); }
+    }
+
+    function checkEx1_1_2() {
+      const v = parseInputNumber(document.getElementById('ex1_1_2').value);
+      if (v === null) { setFeedback('fb-ex1-1-2', 'hint', 'Entrez un nombre de clientes.'); return; }
+      if (Math.abs(v - 8) < 0.1) {
+        setFeedback('fb-ex1-1-2', 'correct', 'Exact : ordonnée y = 8 clientes.');
+        appState.lvl1['1-1-2'] = true;
+        document.getElementById('qitem-1-1-2').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex1-1-2', 'incorrect', 'L\'ordonnée du point S(13 ; 8) est la deuxième coordonnée.'); }
+    }
+
+    function checkEx1_1_3() {
+      const t = document.getElementById('ex1_1_3').value.trim().toLowerCase();
+      if (!t) { setFeedback('fb-ex1-1-3', 'hint', 'Tapez croissante ou décroissante.'); return; }
+      if (t.includes('croiss') && !t.includes('décroiss')) {
+        setFeedback('fb-ex1-1-3', 'correct', 'Exact : la courbe monte entre 9 h et 13 h, elle est donc croissante.');
+        appState.lvl1['1-1-3'] = true;
+        document.getElementById('qitem-1-1-3').classList.add('completed');
+        document.getElementById('exbox-1-2').classList.remove('locked-exercise');
+        updateProgressBar();
+      } else { setFeedback('fb-ex1-1-3', 'incorrect', 'La courbe monte de 9 h jusqu\'au sommet à 13 h : elle est croissante.'); }
+    }
+
+    function checkEx1_2_1() {
+      const v = parseInputNumber(document.getElementById('ex1_2_1').value);
+      if (v === null) { setFeedback('fb-ex1-2-1', 'hint', 'Entrez le nombre de soins.'); return; }
+      if (Math.abs(v - 25) < 0.1) {
+        setFeedback('fb-ex1-2-1', 'correct', 'Exact : x = 25 soins.');
+        appState.lvl1['1-2-1'] = true;
+        document.getElementById('qitem-1-2-1').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex1-2-1', 'incorrect', 'Regardez l\'abscisse du minimum M(25 ; 18).'); }
+    }
+
+    function checkEx1_2_2() {
+      const v = parseInputNumber(document.getElementById('ex1_2_2').value);
+      if (v === null) { setFeedback('fb-ex1-2-2', 'hint', 'Entrez le montant en euros.'); return; }
+      if (Math.abs(v - 18) < 0.1) {
+        setFeedback('fb-ex1-2-2', 'correct', 'Exact : le coût moyen minimal est de 18 €.');
+        appState.lvl1['1-2-2'] = true;
+        document.getElementById('qitem-1-2-2').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex1-2-2', 'incorrect', 'Regardez l\'ordonnée du minimum M(25 ; 18).'); }
+    }
+
+    function checkEx1_2_3() {
+      const v = parseInputNumber(document.getElementById('ex1_2_3').value);
+      if (v === null) { setFeedback('fb-ex1-2-3', 'hint', 'Entrez la valeur.'); return; }
+      if (Math.abs(v - 25) < 0.1) {
+        setFeedback('fb-ex1-2-3', 'correct', 'Bravo ! Décroissant de 0 à 25 soins, puis croissant.');
+        appState.lvl1['1-2-3'] = true;
+        document.getElementById('qitem-1-2-3').classList.add('completed');
+        document.getElementById('exbox-1-3').classList.remove('locked-exercise');
+        updateProgressBar();
+      } else { setFeedback('fb-ex1-2-3', 'incorrect', 'La descente s\'arrête au minimum x = 25.'); }
+    }
+
+    function checkEx1_3_1() {
+      const v = parseInputNumber(document.getElementById('ex1_3_1').value);
+      if (v === null) { setFeedback('fb-ex1-3-1', 'hint', 'Entrez la valeur.'); return; }
+      if (Math.abs(v - 90) < 0.1) {
+        setFeedback('fb-ex1-3-1', 'correct', 'Exact : l\'image de 10 est f(10) = 90 €.');
+        appState.lvl1['1-3-1'] = true;
+        document.getElementById('qitem-1-3-1').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex1-3-1', 'incorrect', 'Dans la colonne x = 10, lisez la ligne f(x).'); }
+    }
+
+    function checkEx1_3_2() {
+      const v = parseInputNumber(document.getElementById('ex1_3_2').value);
+      if (v === null) { setFeedback('fb-ex1-3-2', 'hint', 'Entrez l\'heure.'); return; }
+      if (Math.abs(v - 8) < 0.1) {
+        setFeedback('fb-ex1-3-2', 'correct', 'Exact : l\'antécédent de 40 est 8 h.');
+        appState.lvl1['1-3-2'] = true;
+        document.getElementById('qitem-1-3-2').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex1-3-2', 'incorrect', 'Pour f(x) = 40, quelle est la valeur de x sur la première ligne ?'); }
+    }
+
+    function checkEx1_3_3() {
+      const a = parseInputNumber(document.getElementById('ex1_3_3_a').value);
+      const b = parseInputNumber(document.getElementById('ex1_3_3_b').value);
+      if (a === null || b === null) { setFeedback('fb-ex1-3-3', 'hint', 'Entrez les deux heures.'); return; }
+      if ((a === 12 && b === 14) || (a === 14 && b === 12)) {
+        setFeedback('fb-ex1-3-3', 'correct', 'Exact : la recette max de 160 € se situe entre 12 h et 14 h.');
+        appState.lvl1['1-3-3'] = true;
+        document.getElementById('qitem-1-3-3').classList.add('completed');
+        document.getElementById('exbox-1-4').classList.remove('locked-exercise');
+        updateProgressBar();
+      } else { setFeedback('fb-ex1-3-3', 'incorrect', 'Repérez la valeur 160 dans le tableau : elle apparaît à 12 h et 14 h.'); }
+    }
+
+    function checkEx1_4_1() {
+      const v = parseInputNumber(document.getElementById('ex1_4_1').value);
+      if (v === null) { setFeedback('fb-ex1-4-1', 'hint', 'Entrez la durée en minutes.'); return; }
+      if (Math.abs(v - 15) < 0.1) {
+        setFeedback('fb-ex1-4-1', 'correct', 'Exact : le sommet est atteint à 15 minutes.');
+        appState.lvl1['1-4-1'] = true;
+        document.getElementById('qitem-1-4-1').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex1-4-1', 'incorrect', 'Relisez l\'énoncé : « ...jusqu\'à un maximum de 60 °C à 15 min... ».'); }
+    }
+
+    function checkEx1_4_2() {
+      const v = parseInputNumber(document.getElementById('ex1_4_2').value);
+      if (v === null) { setFeedback('fb-ex1-4-2', 'hint', 'Entrez la température en °C.'); return; }
+      if (Math.abs(v - 60) < 0.1) {
+        setFeedback('fb-ex1-4-2', 'correct', 'Bravo ! La température maximale est de 60 °C.');
+        appState.lvl1['1-4-2'] = true;
+        document.getElementById('qitem-1-4-2').classList.add('completed');
+        document.getElementById('exbox-1-5').classList.remove('locked-exercise');
+        updateProgressBar();
+      } else { setFeedback('fb-ex1-4-2', 'incorrect', 'La température de crête indiquée est de 60 °C.'); }
+    }
+
+    function checkEx1_5_1() {
+      const v = parseInputNumber(document.getElementById('ex1_5_1').value);
+      if (v === null) { setFeedback('fb-ex1-5-1', 'hint', 'Entrez le nombre d\'appels.'); return; }
+      if (Math.abs(v - 6) < 0.1) {
+        setFeedback('fb-ex1-5-1', 'correct', 'Exact : à ces heures, la courbe coupe la droite y = 6, soit 6 appels.');
+        appState.lvl1['1-5-1'] = true;
+        document.getElementById('qitem-1-5-1').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex1-5-1', 'incorrect', 'La droite horizontale tracée a pour équation y = 6.'); }
+    }
+
+    function checkEx1_5_2() {
+      const a = parseInputNumber(document.getElementById('ex1_5_2_a').value);
+      const b = parseInputNumber(document.getElementById('ex1_5_2_b').value);
+      if (a === null || b === null) { setFeedback('fb-ex1-5-2', 'hint', 'Entrez les deux bornes.'); return; }
+      if (Math.abs(a - 10) < 0.2 && Math.abs(b - 16) < 0.2) {
+        setFeedback('fb-ex1-5-2', 'correct', 'Parfait ! De 10 h à 16 h (intervalle [10 ; 16]). NIVEAU 1 COMPLÉTÉ À 100% !');
+        appState.lvl1['1-5-2'] = true;
+        document.getElementById('qitem-1-5-2').classList.add('completed');
+        updateProgressBar();
+        alertModal("Félicitations ! Vous avez validé l'intégralité du Niveau 1 🟢 (Socle CAP à 100%). L'attestation officielle de réussite est débloquée et le Niveau 2 🟡 est maintenant ouvert pour relever les défis bonus !");
+      } else { setFeedback('fb-ex1-5-2', 'incorrect', 'Les deux abscisses de croisement données sont x1 = 10 et x2 = 16.'); }
+    }
+
+    /* =========================================================================
+       VALIDATIONS ÉTAPE 3 : ENTRAÎNEMENT NIVEAU 2 (BONUS AVANCÉ)
+       ========================================================================= */
+    function checkEx2_1_1() {
+      const v = parseInputNumber(document.getElementById('ex2_1_1').value);
+      if (v === null) { setFeedback('fb-ex2_1_1', 'hint', 'Entrez le prix.'); return; }
+      if (Math.abs(v - 65) < 0.1) {
+        setFeedback('fb-ex2_1_1', 'correct', 'Exact : x = 65 € (abscisse de S).');
+        appState.lvl2['2-1-1'] = true;
+        document.getElementById('qitem-2-1-1').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex2_1_1', 'incorrect', 'L\'abscisse du sommet S(65 ; 1 025) est 65.'); }
+    }
+
+    function checkEx2_1_2() {
+      const v = parseInputNumber(document.getElementById('ex2_1_2').value);
+      if (v === null) { setFeedback('fb-ex2_1_2', 'hint', 'Entrez le bénéfice maximal.'); return; }
+      if (Math.abs(v - 1025) < 1) {
+        setFeedback('fb-ex2_1_2', 'correct', 'Exact : bénéfice maximal = 1 025 €.');
+        appState.lvl2['2-1-2'] = true;
+        document.getElementById('qitem-2-1-2').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex2_1_2', 'incorrect', 'L\'ordonnée du sommet S(65 ; 1 025) est 1 025.'); }
+    }
+
+    function checkEx2_1_3() {
+      const v = parseInputNumber(document.getElementById('ex2_1_3').value);
+      if (v === null) { setFeedback('fb-ex2_1_3', 'hint', 'Entrez le calcul de B(50).'); return; }
+      if (Math.abs(v - 800) < 1) {
+        setFeedback('fb-ex2_1_3', 'correct', 'Exact : B(50) = -2500 + 6500 - 3200 = 800 €.');
+        appState.lvl2['2-1-3'] = true;
+        document.getElementById('qitem-2-1-3').classList.add('completed');
+        document.getElementById('exbox-2-2').classList.remove('locked-exercise');
+        updateProgressBar();
+      } else { setFeedback('fb-ex2_1_3', 'incorrect', 'Calcul : -(50)² + 130×50 - 3200 = -2500 + 6500 - 3200 = 800 €.'); }
+    }
+
+    function checkEx2_2_1() {
+      const v = parseInputNumber(document.getElementById('ex2_2_1').value);
+      if (v === null) { setFeedback('fb-ex2_2_1', 'hint', 'Entrez la température.'); return; }
+      if (Math.abs(v - 55) < 0.1) {
+        setFeedback('fb-ex2_2_1', 'correct', 'Exact : T = 55 °C.');
+        appState.lvl2['2-2-1'] = true;
+        document.getElementById('qitem-2-2-1').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex2_2_1', 'incorrect', 'Le sommet de la cloche est atteint à 55 °C.'); }
+    }
+
+    function checkEx2_2_2() {
+      const v = parseInputNumber(document.getElementById('ex2_2_2').value);
+      if (v === null) { setFeedback('fb-ex2_2_2', 'hint', 'Entrez le pourcentage.'); return; }
+      if (Math.abs(v - 92) < 0.1) {
+        setFeedback('fb-ex2_2_2', 'correct', 'Exact : efficacité maximale de 92%.');
+        appState.lvl2['2-2-2'] = true;
+        document.getElementById('qitem-2-2-2').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex2_2_2', 'incorrect', 'L\'efficacité au sommet est de 92%.'); }
+    }
+
+    function checkEx2_2_3() {
+      const v = parseInputNumber(document.getElementById('ex2_2_3').value);
+      if (v === null) { setFeedback('fb-ex2_2_3', 'hint', 'Entrez la borne minimale.'); return; }
+      if (Math.abs(v - 45) < 0.1) {
+        setFeedback('fb-ex2_2_3', 'correct', 'Bravo ! La borne minimale de réglage est de 45 °C.');
+        appState.lvl2['2-2-3'] = true;
+        document.getElementById('qitem-2-2-3').classList.add('completed');
+        document.getElementById('exbox-2-3').classList.remove('locked-exercise');
+        updateProgressBar();
+      } else { setFeedback('fb-ex2_2_3', 'incorrect', 'L\'intervalle recommandé est [45 ; 65], la borne basse est 45 °C.'); }
+    }
+
+    function checkEx2_3_1() {
+      const t = document.getElementById('ex2_3_1').value.trim().toLowerCase();
+      if (!t) { setFeedback('fb-ex2_3_1', 'hint', 'Indiquez jeudi ou samedi.'); return; }
+      if (t.includes('samedi')) {
+        setFeedback('fb-ex2_3_1', 'correct', 'Exact : le samedi compte un pic de 14 clientes (contre 6 le jeudi).');
+        appState.lvl2['2-3-1'] = true;
+        document.getElementById('qitem-2-3-1').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex2_3_1', 'incorrect', 'Comparez 14 clientes (samedi) et 6 clientes (jeudi).'); }
+    }
+
+    function checkEx2_3_2() {
+      const v = parseInputNumber(document.getElementById('ex2_3_2').value);
+      if (v === null) { setFeedback('fb-ex2_3_2', 'hint', 'Entrez la différence.'); return; }
+      if (Math.abs(v - 8) < 0.1) {
+        setFeedback('fb-ex2_3_2', 'correct', 'Exact : 14 - 6 = 8 clientes de plus simultanément.');
+        appState.lvl2['2-3-2'] = true;
+        document.getElementById('qitem-2-3-2').classList.add('completed');
+        document.getElementById('exbox-2-4').classList.remove('locked-exercise');
+        updateProgressBar();
+      } else { setFeedback('fb-ex2_3_2', 'incorrect', 'Calculez 14 clientes - 6 clientes = 8.'); }
+    }
+
+    function checkEx2_4_1() {
+      const v = parseInputNumber(document.getElementById('ex2_4_1').value);
+      if (v === null) { setFeedback('fb-ex2_4_1', 'hint', 'Entrez le nombre de forfaits.'); return; }
+      if (Math.abs(v - 35) < 0.1) {
+        setFeedback('fb-ex2_4_1', 'correct', 'Exact : le sommet de la recette se situe à x = 35 forfaits.');
+        appState.lvl2['2-4-1'] = true;
+        document.getElementById('qitem-2-4-1').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex2_4_1', 'incorrect', 'Relisez l\'énoncé : « ...maximum de 850 € pour x = 35 forfaits... ».'); }
+    }
+
+    function checkEx2_4_2() {
+      const a = parseInputNumber(document.getElementById('ex2_4_2_a').value);
+      const b = parseInputNumber(document.getElementById('ex2_4_2_b').value);
+      if (a === null || b === null) { setFeedback('fb-ex2_4_2', 'hint', 'Entrez les deux bornes.'); return; }
+      if (Math.abs(a - 10) < 0.2 && Math.abs(b - 50) < 0.2) {
+        setFeedback('fb-ex2_4_2', 'correct', 'Bravo ! Intervalle [10 ; 50] forfaits. Le niveau 2 🟡 est entièrement réussi !');
+        appState.lvl2['2-4-2'] = true;
+        document.getElementById('qitem-2-4-2').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex2_4_2', 'incorrect', 'Les deux coupures avec les charges à 400 € ont lieu en x1 = 10 et x2 = 50.'); }
+    }
+
+    /* =========================================================================
+       VALIDATIONS ÉTAPE 3 : ENTRAÎNEMENT NIVEAU 3 (EXCELLENCE)
+       ========================================================================= */
+    function checkEx3_1_1() {
+      const v = parseInputNumber(document.getElementById('ex3_1_1').value);
+      if (v === null) { setFeedback('fb-ex3_1_1', 'hint', 'Entrez la puissance calculée.'); return; }
+      if (Math.abs(v - 0) < 0.1) {
+        setFeedback('fb-ex3_1_1', 'correct', 'Exact : P(6) = -0,1(6-12)² + 3,6 = -0,1(36) + 3,6 = 0 kW (lever du soleil).');
+        appState.lvl3['3-1-1'] = true;
+        document.getElementById('qitem-3-1-1').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex3_1_1', 'incorrect', 'Calcul : -0,1 × (6 - 12)² + 3,6 = -0,1 × (-6)² + 3,6 = -3,6 + 3,6 = 0.'); }
+    }
+
+    function checkEx3_1_2() {
+      const v = parseInputNumber(document.getElementById('ex3_1_2').value);
+      if (v === null) { setFeedback('fb-ex3_1_2', 'hint', 'Entrez la puissance max.'); return; }
+      if (Math.abs(v - 3.6) < 0.1) {
+        setFeedback('fb-ex3_1_2', 'correct', 'Exact : à midi solaire, le carré s\'annule et P_max = 3,6 kW.');
+        appState.lvl3['3-1-2'] = true;
+        document.getElementById('qitem-3-1-2').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex3_1_2', 'incorrect', 'Pour t = 12 : P(12) = -0,1(0)² + 3,6 = 3,6 kW.'); }
+    }
+
+    function checkEx3_1_3() {
+      const a = parseInputNumber(document.getElementById('ex3_1_3_a').value);
+      const b = parseInputNumber(document.getElementById('ex3_1_3_b').value);
+      if (a === null || b === null) { setFeedback('fb-ex3_1_3', 'hint', 'Entrez les deux heures.'); return; }
+      if (Math.abs(a - 9) < 0.2 && Math.abs(b - 15) < 0.2) {
+        setFeedback('fb-ex3_1_3', 'correct', 'Parfait : de 9 h à 15 h ! Durant ces 6 heures, les gros appareils tournent à 100% à l\'énergie solaire sans facture EDF.');
+        appState.lvl3['3-1-3'] = true;
+        document.getElementById('qitem-3-1-3').classList.add('completed');
+        document.getElementById('exbox-3-2').classList.remove('locked-exercise');
+        updateProgressBar();
+      } else { setFeedback('fb-ex3_1_3', 'incorrect', 'Résolvez -0,1(t-12)² + 3,6 ≥ 2,7 => (t-12)² ≤ 9 => -3 ≤ t-12 ≤ 3, soit entre 9 h et 15 h.'); }
+    }
+
+    function checkEx3_2_1() {
+      const v = parseInputNumber(document.getElementById('ex3_2_1').value);
+      if (v === null) { setFeedback('fb-ex3_2_1', 'hint', 'Entrez la largeur x.'); return; }
+      if (Math.abs(v - 4) < 0.1) {
+        setFeedback('fb-ex3_2_1', 'correct', 'Exact : l\'abscisse du sommet de A(x) = -2x² + 16x est x = -b/(2a) = -16 / (-4) = 4 m.');
+        appState.lvl3['3-2-1'] = true;
+        document.getElementById('qitem-3-2-1').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex3_2_1', 'incorrect', 'La dérivée s\'annule en -4x + 16 = 0 => x = 4 mètres.'); }
+    }
+
+    function checkEx3_2_2() {
+      const v = parseInputNumber(document.getElementById('ex3_2_2').value);
+      if (v === null) { setFeedback('fb-ex3_2_2', 'hint', 'Entrez la surface maximale.'); return; }
+      if (Math.abs(v - 32) < 0.1) {
+        setFeedback('fb-ex3_2_2', 'correct', 'Bravo ! Aire max = 4 × (16 - 2×4) = 4 × 8 = 32 m².');
+        appState.lvl3['3-2-2'] = true;
+        document.getElementById('qitem-3-2-2').classList.add('completed');
+        document.getElementById('exbox-3-3').classList.remove('locked-exercise');
+        updateProgressBar();
+      } else { setFeedback('fb-ex3_2_2', 'incorrect', 'Calculez A(4) = -2(16) + 16(4) = -32 + 64 = 32 m².'); }
+    }
+
+    function checkEx3_3_1() {
+      const t = document.getElementById('ex3_3_1').value.trim().toUpperCase();
+      if (!t) { setFeedback('fb-ex3_3_1', 'hint', 'Entrez la formule tableur.'); return; }
+      if (t.includes('MAX') && t.includes('B2') && t.includes('B12')) {
+        setFeedback('fb-ex3_3_1', 'correct', 'Exact : =MAX(B2:B12) renvoie la valeur la plus haute.');
+        appState.lvl3['3-3-1'] = true;
+        document.getElementById('qitem-3-3-1').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex3_3_1', 'incorrect', 'La formule attendue est =MAX(B2:B12).'); }
+    }
+
+    function checkEx3_3_2() {
+      const t = document.getElementById('ex3_3_2').value.trim().toUpperCase();
+      if (!t) { setFeedback('fb-ex3_3_2', 'hint', 'Entrez le mot-clé de condition.'); return; }
+      if (t.includes('SI')) {
+        setFeedback('fb-ex3_3_2', 'correct', 'Excellente analyse : la structure conditionnelle SI ... ALORS permet de comparer chaque valeur au maximum en cours. NIVEAU 3 EXPERT COMPLÉTÉ !');
+        appState.lvl3['3-3-2'] = true;
+        document.getElementById('qitem-3-3-2').classList.add('completed');
+        updateProgressBar();
+      } else { setFeedback('fb-ex3_3_2', 'incorrect', 'On utilise une instruction de condition « SI » (Si val > max Alors ...).'); }
+    }
+
+    /* =========================================================================
+       CANVAS 1 : DÉCOUVERTE DU SALON L'ATELIER KRÉOL (PARABOLE D'AFFLUENCE)
+       ========================================================================= */
+    const discCanvas = document.getElementById('discoveryCanvas');
+    const discCtx = discCanvas.getContext('2d');
+    let discHoverX = 14;
+
+    function initDiscoveryCanvas() {
+      resizeDiscoveryCanvas();
+      window.addEventListener('resize', resizeDiscoveryCanvas);
+
+      // Gestion tactile et souris
+      discCanvas.addEventListener('mousemove', (e) => handleCanvasInput(e, discCanvas, false));
+      discCanvas.addEventListener('touchmove', (e) => handleCanvasInput(e, discCanvas, true), { passive: true });
+    }
+
+    function handleCanvasInput(e, canvas, isTouch) {
+      const rect = canvas.getBoundingClientRect();
+      const clientX = isTouch ? e.touches[0].clientX : e.clientX;
+      const xPixel = clientX - rect.left;
+      const width = rect.width;
+      
+      // Projection pixel vers x dans [8 ; 18]
+      const padL = 40;
+      const padR = 20;
+      const plotW = width - padL - padR;
+      if (plotW <= 0) return;
+
+      let xVal = 8 + ((xPixel - padL) / plotW) * 10;
+      xVal = Math.max(8, Math.min(18, xVal));
+      discHoverX = Math.round(xVal * 10) / 10;
+      drawDiscoveryPlot();
+    }
+
+    function resizeDiscoveryCanvas() {
+      if (!discCanvas) return;
+      const rect = discCanvas.parentElement.getBoundingClientRect();
+      discCanvas.width = rect.width;
+      discCanvas.height = rect.height;
+      drawDiscoveryPlot();
+    }
+
+    function fSalon(x) {
+      return -0.5 * x * x + 14 * x - 86;
+    }
+
+    function drawDiscoveryPlot() {
+      if (!discCanvas) return;
+      const w = discCanvas.width;
+      const h = discCanvas.height;
+      discCtx.clearRect(0, 0, w, h);
+
+      const padL = 46;
+      const padR = 24;
+      const padT = 24;
+      const padB = 34;
+
+      const plotW = w - padL - padR;
+      const plotH = h - padT - padB;
+
+      // Échelles : x de 8 à 18, y de 0 à 14
+      const xToPx = (x) => padL + ((x - 8) / 10) * plotW;
+      const yToPx = (y) => padT + (1 - (y / 14)) * plotH;
+
+      // Grille de fond
+      discCtx.strokeStyle = '#E2E8F0';
+      discCtx.lineWidth = 1;
+
+      // Lignes horizontales
+      for (let y = 0; y <= 14; y += 2) {
+        const py = yToPx(y);
+        discCtx.beginPath();
+        discCtx.moveTo(padL, py);
+        discCtx.lineTo(w - padR, py);
+        discCtx.stroke();
+
+        discCtx.fillStyle = '#64748B';
+        discCtx.font = '11px Arial';
+        discCtx.textAlign = 'right';
+        discCtx.fillText(y.toString(), padL - 8, py + 4);
+      }
+
+      // Lignes verticales
+      for (let x = 8; x <= 18; x += 2) {
+        const px = xToPx(x);
+        discCtx.beginPath();
+        discCtx.moveTo(px, padT);
+        discCtx.lineTo(px, h - padB);
+        discCtx.stroke();
+
+        discCtx.fillStyle = '#64748B';
+        discCtx.font = '11px Arial';
+        discCtx.textAlign = 'center';
+        discCtx.fillText(x + 'h', px, h - padB + 16);
+      }
+
+      // Ligne de seuil y = 10 (renfort coiffeurs)
+      const pSeuilY = yToPx(10);
+      discCtx.strokeStyle = '#EE3C3D';
+      discCtx.setLineDash([5, 4]);
+      discCtx.lineWidth = 2;
+      discCtx.beginPath();
+      discCtx.moveTo(padL, pSeuilY);
+      discCtx.lineTo(w - padR, pSeuilY);
+      discCtx.stroke();
+      discCtx.setLineDash([]);
+
+      discCtx.fillStyle = '#A50F23';
+      discCtx.font = 'bold 11px Arial';
+      discCtx.textAlign = 'left';
+      discCtx.fillText('Seuil renfort (y = 10)', padL + 8, pSeuilY - 6);
+
+      // Tracé de la parabole f(x)
+      discCtx.beginPath();
+      discCtx.strokeStyle = '#A50F23';
+      discCtx.lineWidth = 3;
+
+      for (let x = 8; x <= 18; x += 0.1) {
+        const y = fSalon(x);
+        const px = xToPx(x);
+        const py = yToPx(y);
+        if (x === 8) discCtx.moveTo(px, py);
+        else discCtx.lineTo(px, py);
+      }
+      discCtx.stroke();
+
+      // Sommet S(14 ; 12)
+      const sx = xToPx(14);
+      const sy = yToPx(12);
+
+      // Pointillé vers les axes
+      discCtx.strokeStyle = '#94A3B8';
+      discCtx.lineWidth = 1.5;
+      discCtx.setLineDash([3, 3]);
+
+      discCtx.beginPath();
+      discCtx.moveTo(sx, sy);
+      discCtx.lineTo(sx, h - padB);
+      discCtx.stroke();
+
+      discCtx.beginPath();
+      discCtx.moveTo(sx, sy);
+      discCtx.lineTo(padL, sy);
+      discCtx.stroke();
+      discCtx.setLineDash([]);
+
+      // Cercle du sommet
+      discCtx.fillStyle = '#EE3C3D';
+      discCtx.beginPath();
+      discCtx.arc(sx, sy, 6, 0, Math.PI * 2);
+      discCtx.fill();
+      discCtx.strokeStyle = '#FFFFFF';
+      discCtx.lineWidth = 2;
+      discCtx.stroke();
+
+      discCtx.fillStyle = '#A50F23';
+      discCtx.font = 'bold 12px Arial';
+      discCtx.textAlign = 'center';
+      discCtx.fillText('Sommet S(14 ; 12)', sx, sy - 10);
+
+      // Curseur interactif de l'apprenant
+      const hx = xToPx(discHoverX);
+      const hy = yToPx(fSalon(discHoverX));
+
+      discCtx.fillStyle = '#0284C7';
+      discCtx.beginPath();
+      discCtx.arc(hx, hy, 5, 0, Math.PI * 2);
+      discCtx.fill();
+
+      discCtx.fillStyle = '#0F172A';
+      discCtx.font = 'bold 11px Arial';
+      discCtx.textAlign = 'center';
+      discCtx.fillText(`${discHoverX}h : ${fSalon(discHoverX).toFixed(1)} cl.`, hx, hy + 18);
+    }
+
+    /* =========================================================================
+       CANVAS 2 : SIMULATEUR INTERACTIF DU COURS (SLIDERS MULTIPARAMÈTRES)
+       ========================================================================= */
+    const simCanvas = document.getElementById('simCanvas');
+    const simCtx = simCanvas.getContext('2d');
+
+    const sliderX0 = document.getElementById('sim-x0');
+    const sliderY0 = document.getElementById('sim-y0');
+    const sliderK = document.getElementById('sim-k');
+
+    function initSimCanvas() {
+      resizeSimCanvas();
+      window.addEventListener('resize', resizeSimCanvas);
+
+      sliderX0.addEventListener('input', updateSimView);
+      sliderY0.addEventListener('input', updateSimView);
+      sliderK.addEventListener('input', updateSimView);
+    }
+
+    function resizeSimCanvas() {
+      if (!simCanvas) return;
+      const rect = simCanvas.parentElement.getBoundingClientRect();
+      simCanvas.width = rect.width;
+      simCanvas.height = rect.height;
+      drawSimPlot();
+    }
+
+    function updateSimView() {
+      const x0 = parseFloat(sliderX0.value);
+      const y0 = parseFloat(sliderY0.value);
+      const k = parseFloat(sliderK.value);
+
+      document.getElementById('lbl-param-x0').textContent = x0.toFixed(1) + ' h';
+      document.getElementById('lbl-param-y0').textContent = y0.toFixed(0) + ' clients';
+      document.getElementById('lbl-param-k').textContent = k.toFixed(1) + ' clients';
+
+      // Calcul des intersections pour f(x) = k => -0.5*(x-x0)^2 + y0 = k
+      // 0.5*(x-x0)^2 = y0 - k => (x-x0)^2 = 2*(y0 - k)
+      const diff = y0 - k;
+      let seuilTxt = "Aucun créneau";
+      if (diff >= 0) {
+        const deltaX = Math.sqrt(2 * diff);
+        const x1 = Math.max(8, x0 - deltaX);
+        const x2 = Math.min(18, x0 + deltaX);
+        seuilTxt = `[${x1.toFixed(1)} h ; ${x2.toFixed(1)} h]`;
+      }
+
+      document.getElementById('stat-sommet').textContent = `S(${x0.toFixed(1)} ; ${y0.toFixed(1)})`;
+      document.getElementById('stat-seuil').textContent = seuilTxt;
+
+      drawSimPlot();
+    }
+
+    function drawSimPlot() {
+      if (!simCanvas) return;
+      const w = simCanvas.width;
+      const h = simCanvas.height;
+      simCtx.clearRect(0, 0, w, h);
+
+      const x0 = parseFloat(sliderX0.value);
+      const y0 = parseFloat(sliderY0.value);
+      const k = parseFloat(sliderK.value);
+
+      const padL = 46;
+      const padR = 24;
+      const padT = 24;
+      const padB = 34;
+
+      const plotW = w - padL - padR;
+      const plotH = h - padT - padB;
+
+      const xToPx = (x) => padL + ((x - 8) / 10) * plotW;
+      const yToPx = (y) => padT + (1 - (y / 20)) * plotH; // max y = 20
+
+      // Grille
+      simCtx.strokeStyle = '#E2E8F0';
+      simCtx.lineWidth = 1;
+
+      for (let y = 0; y <= 20; y += 4) {
+        const py = yToPx(y);
+        simCtx.beginPath();
+        simCtx.moveTo(padL, py);
+        simCtx.lineTo(w - padR, py);
+        simCtx.stroke();
+
+        simCtx.fillStyle = '#64748B';
+        simCtx.font = '11px Arial';
+        simCtx.textAlign = 'right';
+        simCtx.fillText(y.toString(), padL - 8, py + 4);
+      }
+
+      for (let x = 8; x <= 18; x += 2) {
+        const px = xToPx(x);
+        simCtx.beginPath();
+        simCtx.moveTo(px, padT);
+        simCtx.lineTo(px, h - padB);
+        simCtx.stroke();
+
+        simCtx.fillStyle = '#64748B';
+        simCtx.font = '11px Arial';
+        simCtx.textAlign = 'center';
+        simCtx.fillText(x + 'h', px, h - padB + 16);
+      }
+
+      // Zone f(x) >= k hachurée ou teintée
+      const diff = y0 - k;
+      if (diff > 0) {
+        const deltaX = Math.sqrt(2 * diff);
+        const x1 = Math.max(8, x0 - deltaX);
+        const x2 = Math.min(18, x0 + deltaX);
+
+        if (x1 < x2) {
+          simCtx.fillStyle = 'rgba(238, 60, 61, 0.12)';
+          simCtx.beginPath();
+          simCtx.moveTo(xToPx(x1), yToPx(k));
+          for (let x = x1; x <= x2; x += 0.1) {
+            const yCurve = -0.5 * Math.pow(x - x0, 2) + y0;
+            simCtx.lineTo(xToPx(x), yToPx(Math.max(k, yCurve)));
+          }
+          simCtx.lineTo(xToPx(x2), yToPx(k));
+          simCtx.closePath();
+          simCtx.fill();
+        }
+      }
+
+      // Ligne de seuil k
+      const pkY = yToPx(k);
+      simCtx.strokeStyle = '#EE3C3D';
+      simCtx.lineWidth = 2;
+      simCtx.setLineDash([6, 4]);
+      simCtx.beginPath();
+      simCtx.moveTo(padL, pkY);
+      simCtx.lineTo(w - padR, pkY);
+      simCtx.stroke();
+      simCtx.setLineDash([]);
+
+      simCtx.fillStyle = '#EE3C3D';
+      simCtx.font = 'bold 11px Arial';
+      simCtx.textAlign = 'right';
+      simCtx.fillText(`Seuil y = ${k.toFixed(1)}`, w - padR, pkY - 6);
+
+      // Courbe parabole dynamique
+      simCtx.beginPath();
+      simCtx.strokeStyle = '#A50F23';
+      simCtx.lineWidth = 3;
+
+      for (let x = 8; x <= 18; x += 0.1) {
+        const yCurve = -0.5 * Math.pow(x - x0, 2) + y0;
+        const px = xToPx(x);
+        const py = yToPx(yCurve);
+        if (x === 8) simCtx.moveTo(px, py);
+        else simCtx.lineTo(px, py);
+      }
+      simCtx.stroke();
+
+      // Sommet
+      const sx = xToPx(x0);
+      const sy = yToPx(y0);
+
+      simCtx.fillStyle = '#A50F23';
+      simCtx.beginPath();
+      simCtx.arc(sx, sy, 7, 0, Math.PI * 2);
+      simCtx.fill();
+      simCtx.strokeStyle = '#FFFFFF';
+      simCtx.lineWidth = 2;
+      simCtx.stroke();
+
+      simCtx.fillStyle = '#A50F23';
+      simCtx.font = 'bold 12px Arial';
+      simCtx.textAlign = 'center';
+      simCtx.fillText(`Crête S(${x0.toFixed(1)} ; ${y0.toFixed(0)})`, sx, sy - 12);
+    }
+  </script>
+</body>
+</html>
